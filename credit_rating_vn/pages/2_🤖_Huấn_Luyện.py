@@ -21,6 +21,7 @@ from src.evaluation import (
     plot_feature_importance, plot_model_comparison,
     cross_val_scores,
 )
+from src.data_loader import get_raw_bytes
 
 st.set_page_config(page_title="Huấn luyện", page_icon="🤖", layout="wide")
 st.title("🤖 Huấn luyện & Đánh giá mô hình")
@@ -28,15 +29,17 @@ st.title("🤖 Huấn luyện & Đánh giá mô hình")
 
 # ── Cache dữ liệu ─────────────────────────────────────────────────────────────
 @st.cache_data(show_spinner="Đang tải dữ liệu…")
-def load_prepared():
-    df = pd.read_excel(DATA_RAW)
+def load_prepared(raw_bytes: bytes):
+    import io
+    df = pd.read_excel(io.BytesIO(raw_bytes))
     X, y = prepare(df, DROP_COLS, TARGET_COL)
     cat_p = [c for c in CATEGORICAL_COLS if c in X.columns]
     num_p = [c for c in NUMERICAL_COLS   if c in X.columns]
     return X, y, cat_p, num_p
 
 
-X_all, y_all, cat_cols, num_cols = load_prepared()
+_raw_bytes = get_raw_bytes(DATA_RAW)
+X_all, y_all, cat_cols, num_cols = load_prepared(_raw_bytes)
 y_0 = y_all - 1  # 0-based cho XGBoost
 
 X_train, X_test, y_train, y_test = train_test_split(

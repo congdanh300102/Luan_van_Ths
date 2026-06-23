@@ -22,6 +22,7 @@ from src.scoring import (
     plot_score_by_group, score_gauge,
     proba_to_score, classify_score,
 )
+from src.data_loader import get_raw_bytes
 
 st.set_page_config(page_title="Chấm điểm", page_icon="💳", layout="wide")
 st.title("💳 Chấm điểm Tín dụng")
@@ -29,8 +30,8 @@ st.title("💳 Chấm điểm Tín dụng")
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 @st.cache_data(show_spinner="Đang tải dữ liệu…")
-def load_test_set():
-    df = pd.read_excel(DATA_RAW)
+def load_test_set(raw_bytes: bytes):
+    df = pd.read_excel(io.BytesIO(raw_bytes))
     X, y = prepare(df, DROP_COLS, TARGET_COL)
     y_0  = y - 1
     _, X_test, _, y_test = train_test_split(
@@ -57,7 +58,7 @@ with st.sidebar:
 
     best_txt = MODEL_DIR / "best_model.txt"
     default_key = best_txt.read_text().strip() if best_txt.exists() else None
-    default_label = next((l for l, k in MODEL_OPTIONS.items() if k == default_key), None)
+    default_label = next((l for l, k in available_models().items() if k == default_key), None)
 
     if not available:
         st.warning("Chưa có mô hình nào. Hãy huấn luyện ở Trang 2 trước.")
@@ -87,6 +88,10 @@ if pipe is None:
 
 st.success(f"✅ Đang dùng mô hình: **{model_label}**")
 
+# ── Load dữ liệu ─────────────────────────────────────────────────────────────
+_raw_bytes = get_raw_bytes(DATA_RAW)
+_df_raw = pd.read_excel(io.BytesIO(_raw_bytes))
+
 # ── Tabs ─────────────────────────────────────────────────────────────────────
 tab1, tab2 = st.tabs(["📋 Đánh giá tập Test", "🔎 Nhập tay / Upload"])
 
@@ -94,7 +99,7 @@ tab1, tab2 = st.tabs(["📋 Đánh giá tập Test", "🔎 Nhập tay / Upload"]
 with tab1:
     st.subheader("Kết quả chấm điểm trên tập kiểm tra")
 
-    X_test, y_test = load_test_set()
+    X_test, y_test = load_test_set(_raw_bytes)
     y_pred  = pipe.predict(X_test) + 1
     y_proba = pipe.predict_proba(X_test)
     y_true  = y_test + 1
@@ -155,7 +160,7 @@ with tab2:
     if input_mode == "Nhập tay 1 khách hàng":
         st.subheader("Thông tin khách hàng")
 
-        df_raw_all = pd.read_excel(DATA_RAW)
+        df_raw_all = _df_raw
 
         col1, col2, col3 = st.columns(3)
         with col1:

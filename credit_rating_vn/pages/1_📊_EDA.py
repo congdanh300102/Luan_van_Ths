@@ -12,20 +12,23 @@ import streamlit as st
 
 from config.config import DATA_RAW, TARGET_COL, NHOMNO_LABELS, GROUP_COLORS
 from src.preprocessing import parse_dates, engineer_features
+from src.data_loader import get_raw_bytes
 
 st.set_page_config(page_title="EDA", page_icon="📊", layout="wide")
 st.title("📊 Phân tích khám phá dữ liệu")
 
 
-@st.cache_data
-def load_data():
-    df = pd.read_excel(DATA_RAW)
+@st.cache_data(show_spinner="Đang tải dữ liệu…")
+def load_data(raw_bytes: bytes):
+    import io
+    df = pd.read_excel(io.BytesIO(raw_bytes))
     df2 = parse_dates(df)
     df2 = engineer_features(df2)
     return df, df2
 
 
-df_raw, df = load_data()
+_raw_bytes = get_raw_bytes(DATA_RAW)
+df_raw, df = load_data(_raw_bytes)
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
 tab1, tab2, tab3, tab4 = st.tabs(
