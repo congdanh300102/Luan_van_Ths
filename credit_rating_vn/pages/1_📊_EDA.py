@@ -140,10 +140,14 @@ with tab3:
     st.markdown("---")
     st.subheader("Phân bổ SEX theo nhóm nợ")
     if "SEX" in df_raw.columns:
-        cross = (pd.crosstab(df_raw[TARGET_COL], df_raw["SEX"], normalize="index") * 100).round(1)
-        cross.index = [NHOMNO_LABELS.get(i, i) for i in cross.index]
-        fig_sex = px.bar(cross.reset_index(), x=TARGET_COL,
-                         y=cross.columns.tolist(),
+        # Bỏ NaN trong SEX trước khi crosstab để tránh cột NaN trong Plotly
+        df_sex = df_raw.dropna(subset=["SEX"]).copy()
+        cross = (pd.crosstab(df_sex[TARGET_COL], df_sex["SEX"], normalize="index") * 100).round(1)
+        # reset_index trước, rồi mới đổi nhãn để tên cột TARGET_COL còn nguyên
+        cross = cross.reset_index()
+        cross[TARGET_COL] = cross[TARGET_COL].map(lambda x: NHOMNO_LABELS.get(x, str(x)))
+        sex_cols = [c for c in cross.columns if c != TARGET_COL]
+        fig_sex = px.bar(cross, x=TARGET_COL, y=sex_cols,
                          barmode="stack",
                          title="Tỷ lệ giới tính theo nhóm nợ (%)")
         fig_sex.update_layout(height=380)
