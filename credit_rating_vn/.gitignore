@@ -1,0 +1,27 @@
+# Data files (quá lớn cho git — dùng GitLab LFS hoặc chia sẻ riêng)
+data/raw/*.xlsx
+data/raw/*.csv
+data/processed/
+
+# Model files (binary lớn)
+models/*.pkl
+models/best_model.txt
+
+# Reports
+reports/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Môi trường ảo
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.DS_Store
