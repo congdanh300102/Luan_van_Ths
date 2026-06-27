@@ -19,21 +19,21 @@ GROUP_COLORS = {1: "#2ecc71", 2: "#f1c40f", 3: "#e67e22", 4: "#e74c3c", 5: "#8e4
 
 DROP_COLS = [
     "NHOMNO_TCBS",   # text version của target — leakage
-    "CURRENCYCD",    # chỉ có 1 giá trị (VND) — không có thông tin
-    "NHOMNO",        # leakage: corr=0.98 với NHOMNOMOI, giống 98.3% — model sẽ chỉ copy
-    "DUNO_QD",       # redundant: 100% giống CURR_BAL
-    "MIACCTTYPDESC", # text description trùng với CURRMIACCTTYPCD
-    "MJACCTTYPDESC", # text description trùng với MJACCTTYPCD
-    "ID_TIME",       # chỉ 3 giá trị (period ID), không phải feature khách hàng
+    "CURRENCYCD",    # 1 giá trị duy nhất (VND) — IV=0.00
+    "NHOMNO",        # leakage: corr=0.98, IV=1.06 (suspicious)
+    "DUNO_QD",       # 100% giống CURR_BAL — redundant
+    "MIACCTTYPDESC", # text duplicate của CURRMIACCTTYPCD
+    "MJACCTTYPDESC", # text duplicate của MJACCTTYPCD
+    "ID_TIME",       # period ID, 3 giá trị — IV=0.006 (useless)
     "DESC_TIME",     # text version của ID_TIME
+    "SEX",           # IV=0.008 — gần như không có predictive power
+    "LOAIKH",        # IV=0.000 — hoàn toàn không dự báo được
 ]
 
 CATEGORICAL_COLS = [
-    "MJACCTTYPCD",       # loại sản phẩm vay chính (3 nhóm)
-    "CURRMIACCTTYPCD",   # loại sản phẩm vay chi tiết (31 nhóm)
-    "SEX",               # giới tính
-    "MUCDICHVAY",        # mục đích vay (79 nhóm)
-    "LOAIKH",            # loại khách hàng (1=cá nhân, 2=tổ chức)
+    "MJACCTTYPCD",       # IV=0.97 — loại sản phẩm vay chính (3 nhóm)
+    "CURRMIACCTTYPCD",   # IV=1.99 — loại sản phẩm vay chi tiết (31 nhóm)
+    "MUCDICHVAY",        # IV=1.41 — mục đích vay (79 nhóm)
 ]
 
 NUMERICAL_COLS = [

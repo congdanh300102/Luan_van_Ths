@@ -13,6 +13,7 @@ import streamlit as st
 from config.config import DATA_RAW, TARGET_COL, NHOMNO_LABELS, GROUP_COLORS
 from src.preprocessing import parse_dates, engineer_features
 from src.data_loader import get_raw_bytes
+from src.iv_analysis import compute_iv_table, plot_iv_bar, plot_woe_bins
 
 st.set_page_config(page_title="EDA", page_icon="📊", layout="wide")
 st.title("📊 Phân tích khám phá dữ liệu")
@@ -31,8 +32,8 @@ _raw_bytes = get_raw_bytes(DATA_RAW)
 df_raw, df = load_data(_raw_bytes)
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4 = st.tabs(
-    ["Tổng quan", "Phân phối biến", "Phân tích nhóm nợ", "Tương quan"]
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["Tổng quan", "Phân phối biến", "Phân tích nhóm nợ", "Tương quan", "📊 IV Analysis"]
 )
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -181,3 +182,42 @@ with tab4:
     )
     fig_ct.update_layout(height=400, showlegend=False)
     st.plotly_chart(fig_ct, use_container_width=True)
+
+# ══════════════════════════════════════════════════════════════════════════════
+with tab5:
+    st.subheader("Information Value (IV) — Chuẩn Basel II/III")
+    st.markdown("""
+    IV đo khả năng phân biệt **good** (nhóm 1) vs **bad** (nhóm 2–5) của từng feature.
+    Áp dụng được cho cả biến **categorical** lẫn **numerical** — khắc phục giới hạn của Correlation.
+
+    | IV | Mức độ |
+    |----|--------|
+    | < 0.02 | Useless — loại khỏi model |
+    | 0.02–0.1 | Weak |
+    | 0.1–0.3 | Medium |
+    | 0.3–0.5 | Strong |
+    | 0.5–1.0 | Very strong |
+    | > 1.0 | ⚠️ Nghi ngờ leakage |
+    """)
+
+    with st.spinner("Đang tính IV…"):
+        iv_tbl = compute_iv_table(df_raw, TARGET_COL, good_class=1)
+
+    fig_iv = plot_iv_bar(iv_tbl, threshold=0.02)
+    st.plotly_chart(fig_iv, use_container_width=True)
+
+    st.markdown("#### Bảng IV chi tiết")
+    st.dataframe(
+        iv_tbl.style.background_gradient(subset=["iv"], cmap="RdYlGn"),
+        use_container_width=True, hide_index=True,
+    )
+
+    st.markdown("---")
+    st.markdown("#### WoE chi tiết theo bin")
+    woe_feat = st.selectbox(
+        "Chọn feature để xem WoE",
+        options=iv_tbl["feature"].tolist(),
+        index=0,
+    )
+    fig_woe = plot_woe_bins(df_raw, woe_feat, TARGET_COL)
+    st.plotly_chart(fig_woe, use_container_width=True)
