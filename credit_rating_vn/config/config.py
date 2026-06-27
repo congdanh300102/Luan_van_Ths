@@ -17,17 +17,34 @@ NHOMNO_LABELS = {
 
 GROUP_COLORS = {1: "#2ecc71", 2: "#f1c40f", 3: "#e67e22", 4: "#e74c3c", 5: "#8e44ad"}
 
-DROP_COLS = ["NHOMNO_TCBS", "CURRENCYCD"]
+DROP_COLS = [
+    "NHOMNO_TCBS",   # text version của target — leakage
+    "CURRENCYCD",    # chỉ có 1 giá trị (VND) — không có thông tin
+    "NHOMNO",        # leakage: corr=0.98 với NHOMNOMOI, giống 98.3% — model sẽ chỉ copy
+    "DUNO_QD",       # redundant: 100% giống CURR_BAL
+    "MIACCTTYPDESC", # text description trùng với CURRMIACCTTYPCD
+    "MJACCTTYPDESC", # text description trùng với MJACCTTYPCD
+    "ID_TIME",       # chỉ 3 giá trị (period ID), không phải feature khách hàng
+    "DESC_TIME",     # text version của ID_TIME
+]
 
 CATEGORICAL_COLS = [
-    "MJACCTTYPCD", "CURRMIACCTTYPCD", "MIACCTTYPDESC",
-    "MJACCTTYPDESC", "DESC_TIME", "SEX", "MUCDICHVAY",
+    "MJACCTTYPCD",       # loại sản phẩm vay chính (3 nhóm)
+    "CURRMIACCTTYPCD",   # loại sản phẩm vay chi tiết (31 nhóm)
+    "SEX",               # giới tính
+    "MUCDICHVAY",        # mục đích vay (79 nhóm)
+    "LOAIKH",            # loại khách hàng (1=cá nhân, 2=tổ chức)
 ]
 
 NUMERICAL_COLS = [
-    "LOAIKH", "BASE_BAL", "CURR_BAL", "DUNO_QD",
-    "ID_TIME", "ORGNBR", "PARENTORGNBR", "LAISUAT", "NHOMNO",
-    "LOAN_TENURE_DAYS", "DAYS_TO_MATURITY", "UTIL_RATE",
+    "BASE_BAL",          # hạn mức/dư nợ gốc
+    "CURR_BAL",          # dư nợ hiện tại
+    "LAISUAT",           # lãi suất
+    "ORGNBR",            # mã chi nhánh
+    "PARENTORGNBR",      # mã chi nhánh cấp trên
+    "LOAN_TENURE_DAYS",  # thời hạn khoản vay (ngày)
+    "DAYS_TO_MATURITY",  # số ngày đến đáo hạn
+    "UTIL_RATE",         # tỷ lệ sử dụng hạn mức = CURR_BAL / BASE_BAL
 ]
 
 RANDOM_STATE = 42
