@@ -15,7 +15,7 @@ from config.config import (
     RANDOM_STATE, TEST_SIZE, CV_FOLDS,
 )
 from src.preprocessing import prepare
-from src.models import build_pipeline, available_models
+from src.models import build_pipeline, available_models, IMBALANCE_OPTIONS
 from src.evaluation import (
     compute_metrics, plot_confusion_matrix,
     plot_feature_importance, plot_model_comparison,
@@ -56,8 +56,17 @@ with st.sidebar:
         options=list(MODEL_OPTIONS.keys()),
         default=default_choice,
     )
+    imbalance_label = st.selectbox(
+        "Chiến lược xử lý imbalance",
+        options=list(IMBALANCE_OPTIONS.keys()),
+        index=0,
+        help="SMOTE moderate: chỉ oversample minority vừa phải, không double-count với class_weight",
+    )
+    imbalance_key = IMBALANCE_OPTIONS[imbalance_label]
+
     run_cv = st.checkbox("Chạy Cross-Validation (chậm hơn)", value=False)
     st.markdown(f"**Train**: {len(X_train):,} | **Test**: {len(X_test):,}")
+    st.caption(f"Imbalance ratio: 34.7x (N1=77.6% vs N3=2.2%)")
 
 train_btn = st.button("🚀 Bắt đầu huấn luyện", type="primary",
                        disabled=len(selected_labels) == 0)
@@ -76,7 +85,8 @@ if train_btn:
     for label in selected_labels:
         key = MODEL_OPTIONS[label]
         with st.spinner(f"Đang huấn luyện {label}…"):
-            pipe = build_pipeline(key, cat_cols, num_cols, RANDOM_STATE)
+            pipe = build_pipeline(key, cat_cols, num_cols, RANDOM_STATE,
+                                  imbalance_strategy=imbalance_key)
 
             cv_info = {}
             if run_cv:
