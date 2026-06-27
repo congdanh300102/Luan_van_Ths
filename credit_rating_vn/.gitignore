@@ -1,6 +1,8 @@
 # Data files
 data/processed/
 data/raw/*.csv
+data/raw/fct_l.xlsx
+~$*
 
 # Model files (binary lớn)
 models/*.pkl
