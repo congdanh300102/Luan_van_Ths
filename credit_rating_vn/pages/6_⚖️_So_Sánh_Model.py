@@ -23,7 +23,28 @@ from config.config import (
 from src.preprocessing import prepare
 from src.fct_l_preprocessing import prepare_fct_l
 from src.models import available_models
-from src.scoring import proba_to_score, classify_score, build_score_df, plot_score_distribution, gradient_style
+from src.scoring import proba_to_score, classify_score, build_score_df, plot_score_distribution
+
+
+def gradient_style(series):
+    """Tô màu RdYlGn không cần matplotlib."""
+    _stops = [(0,(165,0,38)),(0.25,(244,109,67)),(0.5,(255,255,191)),(0.75,(166,217,106)),(1,(26,152,80))]
+    lo, hi = series.min(), series.max()
+    if lo == hi:
+        return [""] * len(series)
+    def _color(v):
+        if not pd.notna(v):
+            return ""
+        t = (v - lo) / (hi - lo)
+        for i in range(len(_stops) - 1):
+            t0, c0 = _stops[i]; t1, c1 = _stops[i+1]
+            if t0 <= t <= t1:
+                f = (t-t0)/(t1-t0)
+                r,g,b = int(c0[0]+f*(c1[0]-c0[0])), int(c0[1]+f*(c1[1]-c0[1])), int(c0[2]+f*(c1[2]-c0[2]))
+                fg = "#000" if 0.299*r+0.587*g+0.114*b > 140 else "#fff"
+                return f"background-color:rgb({r},{g},{b});color:{fg}"
+        return ""
+    return [_color(v) for v in series]
 from src.evaluation import compute_metrics, plot_confusion_matrix
 from src.data_loader import get_raw_bytes
 

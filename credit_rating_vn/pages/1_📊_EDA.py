@@ -14,7 +14,27 @@ from config.config import DATA_RAW, TARGET_COL, NHOMNO_LABELS, GROUP_COLORS
 from src.preprocessing import parse_dates, engineer_features
 from src.data_loader import get_raw_bytes
 from src.iv_analysis import compute_iv_table, plot_iv_bar, plot_woe_bins
-from src.scoring import gradient_style
+
+
+def gradient_style(series):
+    """Tô màu RdYlGn không cần matplotlib."""
+    _stops = [(0,(165,0,38)),(0.25,(244,109,67)),(0.5,(255,255,191)),(0.75,(166,217,106)),(1,(26,152,80))]
+    lo, hi = series.min(), series.max()
+    if lo == hi:
+        return [""] * len(series)
+    def _color(v):
+        if not pd.notna(v):
+            return ""
+        t = (v - lo) / (hi - lo)
+        for i in range(len(_stops) - 1):
+            t0, c0 = _stops[i]; t1, c1 = _stops[i+1]
+            if t0 <= t <= t1:
+                f = (t-t0)/(t1-t0)
+                r,g,b = int(c0[0]+f*(c1[0]-c0[0])), int(c0[1]+f*(c1[1]-c0[1])), int(c0[2]+f*(c1[2]-c0[2]))
+                fg = "#000" if 0.299*r+0.587*g+0.114*b > 140 else "#fff"
+                return f"background-color:rgb({r},{g},{b});color:{fg}"
+        return ""
+    return [_color(v) for v in series]
 
 st.set_page_config(page_title="EDA", page_icon="📊", layout="wide")
 st.title("📊 Phân tích khám phá dữ liệu")
