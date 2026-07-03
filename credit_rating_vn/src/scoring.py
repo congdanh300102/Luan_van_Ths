@@ -5,6 +5,42 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 
+# RdYlGn stops (low→red, mid→yellow, high→green) — không cần matplotlib
+_RDYLGN = [
+    (0.00, (165,  0, 38)),
+    (0.25, (244,109, 67)),
+    (0.50, (255,255,191)),
+    (0.75, (166,217,106)),
+    (1.00, ( 26,152, 80)),
+]
+
+
+def _lerp_color(t: float) -> str:
+    """Nội suy màu RdYlGn cho giá trị t ∈ [0,1]."""
+    for i in range(len(_RDYLGN) - 1):
+        t0, c0 = _RDYLGN[i]
+        t1, c1 = _RDYLGN[i + 1]
+        if t0 <= t <= t1:
+            f = (t - t0) / (t1 - t0)
+            r = int(c0[0] + f * (c1[0] - c0[0]))
+            g = int(c0[1] + f * (c1[1] - c0[1]))
+            b = int(c0[2] + f * (c1[2] - c0[2]))
+            lum = 0.299 * r + 0.587 * g + 0.114 * b
+            fg = "#000" if lum > 140 else "#fff"
+            return f"background-color: rgb({r},{g},{b}); color: {fg}"
+    return ""
+
+
+def gradient_style(series: pd.Series) -> list[str]:
+    """
+    Trả về list style strings cho một pd.Series — thay thế background_gradient().
+    Dùng với Styler.apply():  df.style.apply(gradient_style, subset=[col])
+    """
+    lo, hi = series.min(), series.max()
+    if lo == hi:
+        return [""] * len(series)
+    return [_lerp_color((v - lo) / (hi - lo)) if pd.notna(v) else "" for v in series]
+
 RISK_WEIGHTS = np.array([0.0, 0.25, 0.50, 0.75, 1.0])
 SCORE_MIN = 300
 SCORE_MAX = 850

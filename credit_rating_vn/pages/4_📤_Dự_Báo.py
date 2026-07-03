@@ -17,7 +17,7 @@ from config.config import (
 )
 from src.preprocessing import parse_dates, engineer_features, clean
 from src.models import available_models
-from src.scoring import proba_to_score, classify_score, build_score_df, plot_score_distribution
+from src.scoring import proba_to_score, classify_score, build_score_df, plot_score_distribution, gradient_style
 
 st.set_page_config(page_title="Dự báo", page_icon="📤", layout="wide")
 st.title("📤 Import dữ liệu & Dự báo")
@@ -241,9 +241,7 @@ with tab_table:
     result_cols = [c for c in result_cols if c in df_result.columns]
 
     st.dataframe(
-        df_result[result_cols].style.background_gradient(
-            subset=["diem_tin_dung"], cmap="RdYlGn"
-        ),
+        df_result[result_cols].style.apply(gradient_style, subset=["diem_tin_dung"]),
         use_container_width=True, height=420,
     )
 

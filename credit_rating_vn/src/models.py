@@ -63,7 +63,8 @@ def build_pipeline(model_key: str,
                    categorical_cols: list,
                    numerical_cols: list,
                    random_state: int = 42,
-                   imbalance_strategy: str = "smote_moderate") -> ImbPipeline:
+                   imbalance_strategy: str = "smote_moderate",
+                   custom_smote_strategy: dict | None = None) -> ImbPipeline:
     """
     imbalance_strategy:
       "none"           — không xử lý (baseline tốt nhất về Macro F1)
@@ -108,6 +109,10 @@ def build_pipeline(model_key: str,
         steps = [("preprocessor", preprocessor), ("classifier", clf)]
     elif imbalance_strategy == "smote_full":
         sampler = SMOTE(random_state=random_state, k_neighbors=3)
+        steps = [("preprocessor", preprocessor), ("smote", sampler), ("classifier", clf)]
+    elif imbalance_strategy == "custom" and custom_smote_strategy is not None:
+        sampler = SMOTE(sampling_strategy=custom_smote_strategy,
+                        random_state=random_state, k_neighbors=3)
         steps = [("preprocessor", preprocessor), ("smote", sampler), ("classifier", clf)]
     else:  # smote_moderate (mặc định)
         sampler = SMOTE(sampling_strategy=_SMOTE_MODERATE,

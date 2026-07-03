@@ -14,6 +14,7 @@ from config.config import DATA_RAW, TARGET_COL, NHOMNO_LABELS, GROUP_COLORS
 from src.preprocessing import parse_dates, engineer_features
 from src.data_loader import get_raw_bytes
 from src.iv_analysis import compute_iv_table, plot_iv_bar, plot_woe_bins
+from src.scoring import gradient_style
 
 st.set_page_config(page_title="EDA", page_icon="📊", layout="wide")
 st.title("📊 Phân tích khám phá dữ liệu")
@@ -208,7 +209,7 @@ with tab5:
 
     st.markdown("#### Bảng IV chi tiết")
     st.dataframe(
-        iv_tbl.style.background_gradient(subset=["iv"], cmap="RdYlGn"),
+        iv_tbl.style.apply(gradient_style, subset=["iv"]),
         use_container_width=True, hide_index=True,
     )
 
