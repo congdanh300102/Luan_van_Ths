@@ -38,6 +38,14 @@ def prepare_fct_l(df: pd.DataFrame,
     return X, y
 
 
+def transform_fct_l(df: pd.DataFrame,
+                    numerical_cols: list,
+                    categorical_cols: list) -> pd.DataFrame:
+    """Trích xuất feature columns để dự báo (không cần cột target)."""
+    feature_cols = [c for c in numerical_cols + categorical_cols if c in df.columns]
+    return df[feature_cols].copy()
+
+
 def fct_l_feature_info(numerical_cols: list, categorical_cols: list) -> dict:
     """Mô tả ngắn từng feature để hiển thị trên UI."""
     descriptions = {
