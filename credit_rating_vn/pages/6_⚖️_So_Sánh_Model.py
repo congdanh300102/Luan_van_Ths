@@ -86,18 +86,24 @@ def get_old_test_set(raw_bytes: bytes):
 
 
 @st.cache_data(show_spinner="Đang tải tập kiểm tra (mô hình FCT_L)…")
-def get_fct_l_test_set(use_30k: bool):
-    if use_30k and DATA_FCT_L_PROCESSED.exists():
-        df = pd.read_csv(DATA_FCT_L_PROCESSED)
-    elif DATA_FCT_L.exists():
-        df = pd.read_excel(DATA_FCT_L)
-    else:
-        return None, None
+def get_fct_l_test_set(file_bytes: bytes, is_csv: bool):
+    """Load FCT_L test set từ raw bytes (hoạt động cả local lẫn Cloud)."""
+    buf = io.BytesIO(file_bytes)
+    df = pd.read_csv(buf, low_memory=False) if is_csv else pd.read_excel(buf)
     X, y = prepare_fct_l(df, FCT_L_TARGET_COL, FCT_L_NUMERICAL_COLS, FCT_L_CATEGORICAL_COLS)
     _, X_test, _, y_test = train_test_split(
         X, y, test_size=TEST_SIZE, stratify=y, random_state=RANDOM_STATE
     )
     return X_test, y_test
+
+
+def _get_fctl_bytes_for_compare():
+    """Trả về (bytes, is_csv) hoặc None nếu không có file."""
+    if DATA_FCT_L_PROCESSED.exists():
+        return DATA_FCT_L_PROCESSED.read_bytes(), True
+    if DATA_FCT_L.exists():
+        return DATA_FCT_L.read_bytes(), False
+    return None, False
 
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
@@ -122,8 +128,6 @@ with st.sidebar:
     else:
         st.warning("Chưa có mô hình FCT_L. Huấn luyện ở **Trang 5**.")
         fctl_lbl, fctl_key = None, None
-
-    use_30k = st.checkbox("Dùng fct_l_30k (30k hồ sơ) cho tập test FCT_L", value=True)
 
     st.markdown("---")
     st.markdown("**Ghi chú**")
@@ -157,15 +161,30 @@ with st.spinner("Đang tải mô hình và dữ liệu…"):
         except Exception as e:
             st.error(f"Lỗi tải mô hình cũ: {e}")
 
-    if fctl_pipe is not None:
+    # FCT_L: ưu tiên dùng kết quả đã tính từ Trang 5 (session_state)
+    if st.session_state.get("fct_l_y_pred") is not None:
+        fctl_pred      = st.session_state["fct_l_y_pred"]
+        fctl_proba     = st.session_state["fct_l_y_proba"]
+        fctl_true      = st.session_state["fct_l_y_true"]
+        fctl_metrics   = st.session_state["fct_l_metrics"]
+        fctl_scores_df = build_score_df(fctl_proba, fctl_pred, fctl_true)
+        fctl_lbl       = st.session_state.get("fct_l_model_lbl", fctl_lbl or "FCT_L")
+    elif fctl_pipe is not None:
         try:
-            X_fctl_test, y_fctl_test = get_fct_l_test_set(use_30k)
-            if X_fctl_test is not None:
+            _fb, _is_csv = _get_fctl_bytes_for_compare()
+            if _fb is not None:
+                X_fctl_test, y_fctl_test = get_fct_l_test_set(_fb, _is_csv)
                 fctl_pred  = fctl_pipe.predict(X_fctl_test) + 1
                 fctl_proba = fctl_pipe.predict_proba(X_fctl_test)
                 fctl_true  = y_fctl_test + 1
-                fctl_metrics = compute_metrics(fctl_true, fctl_pred, fctl_proba)
+                fctl_metrics   = compute_metrics(fctl_true, fctl_pred, fctl_proba)
                 fctl_scores_df = build_score_df(fctl_proba, fctl_pred, fctl_true)
+            else:
+                st.info(
+                    "📂 Không tìm thấy file dữ liệu FCT_L trên server. "
+                    "Vui lòng **huấn luyện mô hình ở Trang 5** trước — "
+                    "kết quả sẽ được lưu vào session và hiển thị ở đây."
+                )
         except Exception as e:
             st.error(f"Lỗi tải mô hình FCT_L: {e}")
 
@@ -434,13 +453,13 @@ with tab_detail:
 
     with col_b:
         st.markdown(f"#### 🟠 Mô hình FCT_L — {fctl_lbl or 'N/A'}")
-        src_name = "fct_l_30k.csv (30k)" if use_30k else "fct_l.xlsx (5.4k)"
+        src_name = st.session_state.get("fct_l_data_source", "fct_l.xlsx")
         st.markdown(f"""
         | Thông tin | Giá trị |
         |-----------|---------|
         | **Bộ dữ liệu** | {src_name} |
         | **Target** | CLASSIFICATION (nhóm nợ) |
-        | **Số hồ sơ** | {"~30,000" if use_30k else "~5,400"} |
+        | **Số hồ sơ** | ~5,400 (gốc) / ~30,000 (augmented) |
         | **Số đặc trưng** | {len(FCT_L_NUMERICAL_COLS) + len(FCT_L_CATEGORICAL_COLS)} ({len(FCT_L_NUMERICAL_COLS)} số học + {len(FCT_L_CATEGORICAL_COLS)} phân loại) |
         | **Nguồn** | Hệ thống core banking FCT_L |
         """)
