@@ -1,0 +1,277 @@
+\documentclass[pt,a4paper]{report}
+\usepackage[utf8]{vietnam}
+\usepackage{natbib}
+\usepackage{amsmath, amsthm, 
+amssymb,latexsym,amscd,amsfonts,enumerate}
+\usepackage[top=3.5cm, bottom=3.0cm, left=3.5cm, right=2.0cm]
+{geometry}  % căn lề theo quy chuẩn KLTN
+\let\oldsubsection\subsection
+\renewcommand\subsection[1]{\oldsubsection{\Large{}#1}}
+\usepackage[font=large]{caption}
+\usepackage[unicode]{hyperref}
+\usepackage{color, fancyhdr, graphicx, wrapfig}
+\newtheorem{thuattoan}{Thuật toán}[chapter]
+\newtheorem{dn}{Định nghĩa}[chapter]
+\newtheorem{bang}{Bảng}[section]
+\newtheorem{tc}[dn]{Tính chất}
+\newtheorem{dl}{Định lí}[section]
+\newtheorem{md}{Mệnh đề}
+\newtheorem{bd}[dn]{Bổ đề}
+\newtheorem{hq}[dn]{Hệ quả}
+\newtheorem{vd}{Ví dụ}
+\newtheorem{cy}{Chú ý}[section]
+\newtheorem{nx}{Nhận xét}
+\pagenumbering{roman}\pagestyle{plain}
+%\pagestyle{fancy}
+%\rhead{\it }
+%\lfoot{\it Nguyễn Thanh Hải} 			         
+%\renewcommand{\headrulewidth}{1,2pt} 			
+%\renewcommand{\footrulewidth}{1,2pt}   % Cái này là tiêu đề chạy
+\usepackage{subfigure}
+\usepackage[utf8]{vietnam}
+\usepackage{setspace}
+\setstretch{1.5}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{float}
+\usepackage{subfigure}
+\usepackage{fancybox,graphicx}
+\usepackage{mathptmx}
+\usepackage{mathrsfs} 
+\usepackage{amsfonts}
+\usepackage{setspace} % sử dụng gói lệnh này để điều chỉnh khoảng cách giữa các dòng
+\usepackage{soul} 
+\usepackage{longtable,array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{lipsum}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.7}
+\usepackage{float}
+\usepackage{listings}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\usepackage{listingsutf8}
+\lstset{
+    basicstyle=\ttfamily,
+    inputencoding=utf8,
+    extendedchars=true,
+    literate=%
+    {á}{{\'a}}1 {ã}{{\~a}}1 {ả}{{\`a}}1 {ạ}{{\d{a}}}1
+    {à}{{\`a}}1 {â}{{\^a}}1 {ấ}{{\'a}}1 {ầ}{{\`a}}1
+    {ẩ}{{\~a}}1 {ẫ}{{\u{a}}}1 {ậ}{{\d{a}}}1
+    {ă}{{\u{a}}}1 {ắ}{{\'a}}1 {ằ}{{\`a}}1
+    {ẳ}{{\~a}}1 {ẵ}{{\u{a}}}1 {ặ}{{\d{a}}}1
+    {đ}{{\d{d}}}1
+    {é}{{\'e}}1 {è}{{\`e}}1 {ẻ}{{\`e}}1 {ẽ}{{\~e}}1
+    {ẹ}{{\d{e}}}1 {ê}{{\^e}}1 {ế}{{\'e}}1 {ề}{{\`e}}1
+    {ể}{{\~e}}1 {ễ}{{\u{e}}}1 {ệ}{{\d{e}}}1
+    {í}{{\'i}}1 {ì}{{\`i}}1 {ỉ}{{\`i}}1 {ĩ}{{\~i}}1
+    {ị}{{\d{i}}}1 {ó}{{\'o}}1 {ò}{{\`o}}1
+    {ỏ}{{\`o}}1 {õ}{{\~o}}1 {ọ}{{\d{o}}}1
+    {ô}{{\^o}}1 {ố}{{\'o}}1 {ồ}{{\`o}}1
+    {ổ}{{\~o}}1 {ỗ}{{\u{o}}}1 {ộ}{{\d{o}}}1
+    {ơ}{{\u{o}}}1 {ớ}{{\'o}}1 {ờ}{{\`o}}1
+    {ở}{{\~o}}1 {ỡ}{{\u{o}}}1 {ợ}{{\d{o}}}1
+    {ú}{{\'u}}1 {ù}{{\`u}}1 {ủ}{{\`u}}1 {ũ}{{\~u}}1
+    {ụ}{{\d{u}}}1 {ư}{{\u{u}}}1 {ứ}{{\'u}}1
+    {ừ}{{\`u}}1 {ử}{{\~u}}1 {ữ}{{\u{u}}}1
+    {ự}{{\d{u}}}1
+    {ý}{{\'y}}1 {ỳ}{{\`y}}1 {ỷ}{{\`y}}1 {ỹ}{{\~y}}1
+    {ỵ}{{\d{y}}}1
+}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\large\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+\newcommand{\inserttitle}{\@title}
+\newcommand{\insertproject}{\@project}
+\newcommand{\insertgroup}{\@group}
+\newcommand{\insertauthor}{\@author}
+\newcommand{\insertmajor}{\@major}
+\newcommand{\insertbranch}{\@branch}
+\newcommand{\insertsupervisor}{\@supervisor}
+\newcommand{\insertdate}{\@date}
+\newcommand{\insertaddress}{\@address}
+\newcommand{\insertinstitute}{\@institute}
+\makeatother
+\begin{document}
+\thispagestyle{empty}
+
+\begin{center}
+\fontsize{18pt}{15pt}\selectfont
+{\bf ĐẠI HỌC BÁCH KHOA HÀ NỘI}
+\end{center}
+\vspace{1cm}
+\begin{center}
+\fontsize{18pt}{15pt}\selectfont
+
+\vspace{1cm}
+\textbf{LUẬN VĂN THẠC SĨ}\\
+% \textbf{KHÓA LUẬN TỐT NGHIỆP}\\
+\end{center}
+
+\vspace{1cm}
+\begin{center}
+\fontsize{16pt}{16.5pt}\selectfont
+
+\bf ỨNG DỤNG TRÍ TUỆ NHÂN TẠO TRONG \\ XẾP HẠNG TÍN DỤNG: NGHIÊN CỨU TỪ MỘT NGÂN HÀNG THƯƠNG MẠI Ở VIỆT NAM
+
+\end{center}
+\vspace{1cm}
+ \begin{center}
+	\fontsize{14pt}{16pt}\selectfont 	
+	{\bf ĐÀM CÔNG DANH}\\	
+	\fontsize{13pt}{16pt}\selectfont
+	danh.dc251317M@sis.hust.edu.vn\\
+	\fontsize{14pt}{16pt}\selectfont
+	{\bf Chuyên ngành Toán Tin }\\
+	%{\bf Chuyên sâu: Tin học}\\
+\end{center}
+
+\vspace{2cm}
+\begin{center}
+\begin{tabular}{l l}
+\Large \bf Giảng viên hướng dẫn:&{\Large \bf  TS. Lê Kim Thư} \quad $_{\overline{\text{Chữ kí của GVHD}}}$\\[0.5cm]
+&\Large \bf{TS. Lê Thị Thanh An}\\[0.5cm]
+\Large \bf Bộ môn:&{\Large\bf Toán Tin}\\[0.5cm]
+\Large \bf Viện:&{\Large \bf Toán ứng dụng và Tin học}
+\end{tabular}
+
+\end{center}
+\vspace{3cm}
+\begin{center}
+\LARGE \bf HÀ NỘI - 2026
+\end{center}
+\fontsize{14pt}{18pt}\selectfont 
+
+\newpage
+\thispagestyle{empty} 
+\pagenumbering{arabic}
+\begin{center}
+\fontsize{15pt}{18pt}\selectfont \bf{CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM}\\
+\underline{Độc lập – Tự do – Hạnh phúc}
+ 
+\vspace{1 cm}
+\fontsize{18pt}{21pt}
+\bf{BẢN XÁC NHẬN CHỈNH SỬA LUẬN VĂN THẠC SĨ}
+\end{center}
+\vspace{0.5 cm} 
+ \textbf{Họ và tên tác giả luận văn:} Đàm Công Danh.\\ 
+\textbf{Đề tài luận văn:}  Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam.\\
+\textbf{Chuyên ngành:} Toán Tin.\\
+\textbf{Mã học viên:} 20251317M
+\vspace{0.5 cm}
+\par
+Tác giả, Người hướng dẫn khoa học và Hội đồng chấm luận văn xác nhận tác giả đã sửa chữa, bổ sung luận văn theo biên bản họp Hội đồng ngày ...  với các nội dung sau.
+% \begin{itemize}
+% \end{itemize}
+\begin{flushright}
+   Ngày  tháng  năm \text{2026 }
+    \textbf{}\\[0.1 cm]
+\end{flushright}
+\begin{center}
+  \textbf{Giảng viên hướng dẫn}\hspace{5.5cm}  \textbf{Tác giả luận văn}\\[3 cm]
+
+    \bf \textbf{CHỦ TỊCH HỘI ĐỒNG}
+\end{center}
+
+\newpage
+\thispagestyle{empty} 
+\begin{center}
+\fontsize{15pt}{18pt}\selectfont 
+ \bf{ĐỀ TÀI LUẬN VĂN}   
+\end{center}
+ỨNG DỤNG TRÍ TUỆ NHÂN TẠO TRONG XẾP HẠNG TÍN DỤNG: NGHIÊN CỨU TỪ MỘT NGÂN HÀNG THƯƠNG MẠI Ở VIỆT NAM.\\
+\vspace{10 cm}
+\begin{flushright}
+    Hà Nội, ngày tháng năm \text{2026 }
+    \textbf{}\\[0.1 cm]
+\end{flushright}
+\begin{center}
+   \hspace{8.8cm}  Giảng viên hướng dẫn\\[3 cm]
+
+   \hspace{8.8cm} \bf TS. Lê Kim Thư
+\end{center}
+
+\newpage
+\chapter*{Lời cảm ơn}
+\input{sections/Loicamon}
+
+\newpage
+\input{sections/Loimodau}
+
+\input{sections/Tomtatnoidung}
+
+\newpage
+\tableofcontents
+\chapter*{Một số thuật ngữ viết tắt}
+\addcontentsline{toc}{chapter}{{\bf  Một số thuật ngữ viết tắt}\rm} 
+% \begin{tabular}{l l }
+% \textbf{Np }&Proper noun\\
+% \textbf{Nc} &Classifier noun\\
+% \textbf{Nu} & Unit noun\\
+% \textbf{N} & Noun\\
+% \textbf{Ny} & Abbreviated noun\\
+% \textbf{Nb }& (Foreign) borrowed noun\\
+% \textbf{V} & Verb\\
+% \textbf{Vb} & (Foreign) borrowed verb\\
+% \textbf{A} & Adjective\\
+% \textbf{P} & Pronoun\\
+% \textbf{R} & Adverb\\
+% \textbf{L} & Determiner\\
+% \textbf{M} & Numeral/Quantity\\
+% \textbf{E }& Preposition\\
+% \textbf{C} & Subordinating conjunction\\
+% \textbf{Cc} & Coordinating conjunction\\
+% \textbf{I} & Interjection/Exclamation\\
+% \textbf{T} & Particle/Auxiliary, modal words\\
+% \textbf{Y} & Abbreviation\\
+% \textbf{Z} & Bound morpheme\\
+% \textbf{X} & Un-definition/Other\\
+% \textbf{CH} & Punctuation and symbols\\
+% \end{tabular}
+\listoffigures
+\addcontentsline{toc}{chapter}{{\bf  Danh sách hình vẽ}\rm} 
+\listoftables
+\addcontentsline{toc}{chapter}{{\bf  Danh sách bảng}\rm} 
+% \chapter{Đồ thị tri thức và đồ thị tri thức theo miền}        
+
+\newpage
+
+\input{sections/Chuong1}
+
+\input{sections/Chuong2}
+
+\input{sections/Chuong3}
+
+\input{sections/Chuong4}
+
+\input{sections/Chuong5}
+
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
+
+\nocite{*} % tạm thời dùng để hiện tất cả tài liệu trong references.bib
+
+\bibliographystyle{plain}
+\bibliography{references}  
+
+\end{document}
+

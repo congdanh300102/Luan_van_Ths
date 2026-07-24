@@ -1,0 +1,338 @@
+\chapter{DỮ LIỆU VÀ PHƯƠNG PHÁP NGHIÊN CỨU}
+
+\section{Quy trình nghiên cứu}
+
+Nghiên cứu được thực hiện theo quy trình gồm các bước chính như Hình \ref{fig:research-process}.
+
+\begin{figure}[H]
+\centering
+% \includegraphics[width=0.9\textwidth]{figures/research_process.png}
+\caption{Quy trình nghiên cứu đề xuất}
+\label{fig:research-process}
+\end{figure}
+
+Quy trình nghiên cứu bao gồm các bước:
+
+\begin{enumerate}
+    \item Thu thập dữ liệu tín dụng.
+    \item Tiền xử lý dữ liệu.
+    \item Phân tích khám phá dữ liệu (EDA).
+    \item Xây dựng đặc trưng.
+    \item Xử lý mất cân bằng dữ liệu.
+    \item Huấn luyện mô hình.
+    \item Đánh giá mô hình.
+    \item Lựa chọn mô hình tối ưu.
+\end{enumerate}
+
+Quy trình này được xây dựng dựa trên phương pháp khai phá dữ liệu CRISP-DM và các nghiên cứu ứng dụng Machine Learning trong xếp hạng tín dụng \cite{lessmann2015benchmarking,baesens2003benchmarking}.
+
+\section{Mô tả dữ liệu nghiên cứu}
+
+\subsection{Nguồn dữ liệu}
+
+Dữ liệu sử dụng trong nghiên cứu được trích xuất từ hệ thống tín dụng của một ngân hàng thương mại tại Việt Nam.
+
+Tập dữ liệu phản ánh lịch sử tín dụng của khách hàng cá nhân trong một khoảng thời gian xác định, bao gồm các thông tin:
+
+\begin{itemize}
+    \item Thông tin nhân khẩu học.
+    \item Thông tin hợp đồng tín dụng.
+    \item Thông tin dư nợ.
+    \item Thông tin lịch sử thanh toán.
+    \item Thông tin CIC.
+    \item Nhóm nợ thực tế.
+\end{itemize}
+
+Sau quá trình làm sạch dữ liệu, bộ dữ liệu nghiên cứu bao gồm khoảng 30.012 quan sát.
+
+\subsection{Biến mục tiêu}
+
+Biến mục tiêu của nghiên cứu là:
+
+\begin{center}
+\texttt{classification}
+\end{center}
+
+Biến này phản ánh mức độ rủi ro tín dụng của khách hàng.
+
+\begin{table}[H]
+\centering
+\caption{Ý nghĩa các nhóm nhãn}
+\begin{tabular}{|c|c|}
+\hline
+Nhãn & Ý nghĩa \\
+\hline
+1 & Nợ đủ tiêu chuẩn \\
+2 & Nợ cần chú ý \\
+3 & Nợ dưới tiêu chuẩn \\
+4 & Nợ nghi ngờ \\
+5 & Nợ có khả năng mất vốn \\
+\hline
+\end{tabular}
+\end{table}
+
+Bài toán nghiên cứu được xác định là bài toán phân loại đa lớp (Multi-class Classification).
+
+\subsection{Mô tả các nhóm biến}
+
+Các biến đầu vào được chia thành các nhóm chính:
+
+\begin{enumerate}
+    \item Thông tin khách hàng.
+    \item Thông tin hợp đồng tín dụng.
+    \item Thông tin dư nợ.
+    \item Thông tin lịch sử thanh toán.
+    \item Thông tin CIC.
+\end{enumerate}
+
+Ví dụ:
+
+\begin{table}[H]
+\centering
+\caption{Một số biến quan trọng trong nghiên cứu}
+\begin{tabular}{|c|c|c|}
+\hline
+Biến & Kiểu dữ liệu & Ý nghĩa \\
+\hline
+OPEN\_DATE & Date & Ngày mở khoản vay \\
+NGAYDENHAN & Date & Ngày đến hạn \\
+DU\_NO & Numeric & Dư nợ hiện tại \\
+SO\_NGAY\_QUA\_HAN & Numeric & Số ngày quá hạn \\
+SO\_HD\_TIN\_DUNG & Numeric & Số hợp đồng tín dụng \\
+classification & Target & Nhóm nợ \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Tiền xử lý dữ liệu}
+
+\subsection{Làm sạch dữ liệu}
+
+Các bước làm sạch dữ liệu bao gồm:
+
+\begin{itemize}
+    \item Loại bỏ bản ghi trùng lặp.
+    \item Chuẩn hóa tên biến.
+    \item Chuẩn hóa định dạng ngày tháng.
+    \item Kiểm tra tính hợp lệ của dữ liệu.
+\end{itemize}
+
+Ví dụ:
+
+\[
+OPEN\_DATE \le NGAYDENHAN
+\]
+
+Các bản ghi vi phạm điều kiện trên được xem là bất thường và bị loại bỏ khỏi tập dữ liệu.
+
+\subsection{Xử lý giá trị thiếu}
+
+Giá trị thiếu (Missing Values) là vấn đề phổ biến trong dữ liệu tín dụng \cite{bishop2006pattern}.
+
+Trong nghiên cứu này:
+
+\begin{itemize}
+    \item Biến số được thay thế bằng trung vị.
+    \item Biến phân loại được thay thế bằng giá trị xuất hiện nhiều nhất.
+    \item Một số biến ngày tháng được thay thế bằng ngày mặc định 01/01/3000.
+\end{itemize}
+
+\subsection{Xử lý ngoại lệ}
+
+Các giá trị bất thường được phát hiện bằng:
+
+\begin{itemize}
+    \item Boxplot.
+    \item IQR Method.
+    \item Z-score.
+\end{itemize}
+
+Các quan sát ngoại lệ cực đoan được Winsorize hoặc loại bỏ khỏi dữ liệu huấn luyện.
+
+\section{Phân tích khám phá dữ liệu}
+
+\subsection{Phân bố biến mục tiêu}
+
+Biểu đồ phân bố của biến \texttt{classification} được trình bày tại Hình \ref{fig:target-distribution}.
+
+\begin{figure}[H]
+\centering
+% \includegraphics[width=0.8\textwidth]{figures/target_distribution.png}
+\caption{Phân bố biến mục tiêu}
+\label{fig:target-distribution}
+\end{figure}
+
+Kết quả cho thấy dữ liệu bị mất cân bằng mạnh giữa các nhóm nợ.
+
+\subsection{Phân tích tương quan}
+
+Hệ số tương quan Pearson được sử dụng để đánh giá mối quan hệ giữa các biến số \cite{hosmer2013applied}.
+
+\[
+r=
+\frac{\sum (x_i-\bar{x})(y_i-\bar{y})}
+{\sqrt{\sum(x_i-\bar{x})^2\sum(y_i-\bar{y})^2}}
+\]
+
+Ma trận tương quan được trực quan hóa bằng Heatmap.
+
+\section{Xây dựng đặc trưng}
+
+Feature Engineering là bước quan trọng nhằm cải thiện hiệu quả dự báo của mô hình \cite{bishop2006pattern}.
+
+\subsection{Biến thời gian}
+
+Từ các trường ngày tháng:
+
+\begin{itemize}
+    \item OPEN\_DATE
+    \item NGAYDENHAN
+\end{itemize}
+
+tạo thêm:
+
+\begin{itemize}
+    \item Tuổi khoản vay.
+    \item Số ngày còn lại đến hạn.
+    \item Thời gian tín dụng.
+\end{itemize}
+
+Ví dụ:
+
+\[
+LoanAge =
+CurrentDate - OPEN\_DATE
+\]
+
+\subsection{Biến hành vi tín dụng}
+
+Các đặc trưng được xây dựng:
+
+\begin{itemize}
+    \item Tỷ lệ quá hạn.
+    \item Tỷ lệ sử dụng tín dụng.
+    \item Tổng số khoản vay.
+    \item Tần suất phát sinh nợ quá hạn.
+\end{itemize}
+
+\subsection{Mã hóa biến phân loại}
+
+Các biến phân loại được xử lý bằng:
+
+\begin{itemize}
+    \item Label Encoding.
+    \item One-Hot Encoding.
+\end{itemize}
+
+\section{Xử lý mất cân bằng dữ liệu}
+
+Dữ liệu tín dụng thường có hiện tượng mất cân bằng lớp nghiêm trọng \cite{lessmann2015benchmarking}.
+
+Trong nghiên cứu này áp dụng phương pháp SMOTE (Synthetic Minority Over-sampling Technique) \cite{chawla2002smote}.
+
+Nguyên lý của SMOTE là tạo thêm các mẫu tổng hợp cho lớp thiểu số:
+
+\[
+x_{new}
+=
+x_i
++
+\lambda(x_{nn}-x_i)
+\]
+
+Trong đó:
+
+\begin{itemize}
+    \item $x_i$ là điểm dữ liệu gốc.
+    \item $x_{nn}$ là láng giềng gần nhất.
+    \item $\lambda \in [0,1]$.
+\end{itemize}
+
+\section{Thiết kế thực nghiệm}
+
+\subsection{Chia tập dữ liệu}
+
+Dữ liệu được chia theo tỷ lệ:
+
+\begin{itemize}
+    \item Training set: 80\%
+    \item Test set: 20\%
+\end{itemize}
+
+Kỹ thuật Stratified Split được sử dụng để đảm bảo phân bố nhãn tương tự giữa hai tập dữ liệu.
+
+\subsection{Cross Validation}
+
+Để giảm sai lệch trong đánh giá mô hình, nghiên cứu sử dụng kỹ thuật K-Fold Cross Validation với:
+
+\[
+K = 5
+\]
+
+\section{Xây dựng mô hình}
+
+Các mô hình được huấn luyện bao gồm:
+
+\begin{enumerate}
+    \item Logistic Regression \cite{hosmer2013applied}
+    \item Decision Tree \cite{quinlan1986induction}
+    \item Random Forest \cite{breiman2001random}
+    \item XGBoost \cite{chen2016xgboost}
+    \item LightGBM \cite{ke2017lightgbm}
+    \item CatBoost \cite{prokhorenkova2018catboost}
+\end{enumerate}
+
+Mỗi mô hình được tối ưu tham số bằng Grid Search.
+
+\section{Đánh giá mô hình}
+
+Các chỉ tiêu đánh giá bao gồm:
+
+\subsection{Accuracy}
+
+\[
+Accuracy=
+\frac{TP+TN}
+{TP+TN+FP+FN}
+\]
+
+\subsection{Precision}
+
+\[
+Precision=
+\frac{TP}
+{TP+FP}
+\]
+
+\subsection{Recall}
+
+\[
+Recall=
+\frac{TP}
+{TP+FN}
+\]
+
+\subsection{F1-Score}
+
+\[
+F1=
+2
+\times
+\frac{Precision\times Recall}
+{Precision+Recall}
+\]
+
+\subsection{Confusion Matrix}
+
+Confusion Matrix cho phép đánh giá khả năng phân loại của mô hình trên từng nhóm nợ.
+
+\subsection{ROC-AUC}
+
+ROC-AUC được sử dụng để đánh giá khả năng phân biệt giữa các lớp \cite{fawcett2006roc}.
+
+\section{Tóm tắt chương}
+
+Chương này đã trình bày nguồn dữ liệu nghiên cứu, quy trình tiền xử lý dữ liệu, kỹ thuật xây dựng đặc trưng, phương pháp xử lý mất cân bằng dữ liệu, thiết kế thực nghiệm và các tiêu chí đánh giá mô hình.
+
+Các nội dung này là cơ sở để xây dựng, huấn luyện và đánh giá các mô hình trí tuệ nhân tạo phục vụ bài toán xếp hạng tín dụng trong Chương 4.
+```
