@@ -1,0 +1,14 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Quy trình nghiên cứu đề xuất}}{33}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Phân bố biến mục tiêu}}{37}{figure.caption.14}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Phân bố biến mục tiêu}}{45}{figure.caption.18}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Ma trận tương quan giữa các biến}}{45}{figure.caption.19}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces So sánh Accuracy giữa các mô hình}}{47}{figure.caption.27}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Confusion Matrix của CatBoost}}{48}{figure.caption.28}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces ROC Curve của mô hình CatBoost}}{48}{figure.caption.29}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Tầm quan trọng của các đặc trưng theo SHAP}}{49}{figure.caption.30}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces SHAP Summary Plot}}{49}{figure.caption.31}%
+\addvspace {10\p@ }

@@ -42,7 +42,11 @@ def gradient_style(series):
 
 st.set_page_config(page_title="Dự báo", page_icon="📤", layout="wide")
 st.title("📤 Import dữ liệu & Dự báo")
-st.markdown("Upload file dữ liệu mới → mô hình tự động dự báo nhóm nợ và chấm điểm tín dụng.")
+st.markdown(
+    "Upload file danh sách khách hàng (Excel/CSV) → hệ thống tự động dự báo "
+    "**nhóm nợ** và **điểm tín dụng** cho toàn bộ danh sách. "
+    "Không cần hiểu về mô hình — chỉ cần đúng định dạng file."
+)
 
 
 # ── Load model ───────────────────────────────────────────────────────────────
@@ -52,27 +56,20 @@ def load_model(key: str):
     return pickle.load(open(p, "rb")) if p.exists() else None
 
 
+avail = {l: k for l, k in available_models().items()
+         if (MODEL_DIR / f"model_{k}.pkl").exists()}
+
+if not avail:
+    st.warning("Chưa có mô hình. Huấn luyện ở **Trang 2** trước.")
+    st.stop()
+
+best_txt = MODEL_DIR / "best_model.txt"
+default_key = best_txt.read_text().strip() if best_txt.exists() else list(avail.values())[0]
+default_lbl = next((l for l, k in avail.items() if k == default_key), list(avail.keys())[0])
+
 with st.sidebar:
-    st.header("⚙️ Cấu hình")
-
-    avail = {l: k for l, k in available_models().items()
-             if (MODEL_DIR / f"model_{k}.pkl").exists()}
-
-    if not avail:
-        st.warning("Chưa có mô hình. Huấn luyện ở **Trang 2** trước.")
-        st.stop()
-
-    best_txt = MODEL_DIR / "best_model.txt"
-    default_key = best_txt.read_text().strip() if best_txt.exists() else list(avail.values())[0]
-    default_lbl = next((l for l, k in avail.items() if k == default_key), list(avail.keys())[0])
-
-    model_lbl = st.selectbox("Mô hình dự báo", list(avail.keys()),
-                              index=list(avail.keys()).index(default_lbl))
-    model_key = avail[model_lbl]
-    pipe = load_model(model_key)
-
-    st.markdown("---")
-    st.markdown("**Định dạng file hỗ trợ**")
+    st.header("📄 Hướng dẫn file import")
+    st.markdown("**Định dạng hỗ trợ**")
     st.markdown("- `.xlsx` / `.xls` (Excel)\n- `.csv`")
     st.markdown("**Cột bắt buộc** (tối thiểu):")
     st.code("\n".join([
@@ -84,9 +81,17 @@ with st.sidebar:
         "PARENTORGNBR, LAISUAT, NHOMNO",
         "OPEN_DATE, NGAYDENHAN",
     ]))
+    st.caption("💡 Dùng nút **Template Excel** bên dưới để lấy đúng cột và thứ tự.")
 
+    st.markdown("---")
+    with st.expander("⚙️ Tuỳ chọn nâng cao"):
+        model_lbl = st.selectbox("Mô hình dự báo", list(avail.keys()),
+                                  index=list(avail.keys()).index(default_lbl))
 
-st.success(f"✅ Mô hình đang dùng: **{model_lbl}**")
+model_key = avail[model_lbl]
+pipe = load_model(model_key)
+
+st.success(f"✅ Mô hình đang dùng: **{model_lbl}** (mặc định mô hình tốt nhất — có thể đổi ở mục *Tuỳ chọn nâng cao* trong sidebar)")
 st.markdown("---")
 
 # ── Upload section ────────────────────────────────────────────────────────────
@@ -97,7 +102,7 @@ with col_up:
     uploaded = st.file_uploader(
         "Chọn file Excel hoặc CSV",
         type=["xlsx", "xls", "csv"],
-        help="File phải có đủ các cột mô tả trong sidebar",
+        help="File phải có đủ các cột mô tả trong sidebar (mục Hướng dẫn file import)",
     )
 
 with col_tpl:
