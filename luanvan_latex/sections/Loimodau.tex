@@ -1,83 +1,24 @@
-% \section*{Lý do chọn đề tài}
-
-% \quad Trong nền kinh tế hiện đại, ngân hàng thương mại giữ vai trò trung gian tài chính quan trọng, thực hiện chức năng huy động vốn và phân bổ nguồn vốn cho các chủ thể trong nền kinh tế. Trong đó, hoạt động tín dụng là một trong những nghiệp vụ cốt lõi, đóng góp tỷ trọng lớn vào thu nhập của ngân hàng, đồng thời cũng là lĩnh vực tiềm ẩn nhiều rủi ro nhất. Chất lượng tín dụng không chỉ ảnh hưởng trực tiếp đến hiệu quả kinh doanh của từng ngân hàng mà còn tác động đến sự ổn định của toàn bộ hệ thống tài chính.
-
-% Xếp hạng tín dụng là công cụ quan trọng trong quản trị rủi ro tín dụng. Thông qua việc đánh giá mức độ tín nhiệm của khách hàng, ngân hàng có thể đưa ra quyết định phù hợp về cấp tín dụng, hạn mức vay, lãi suất, điều kiện bảo đảm, chính sách giám sát sau vay và trích lập dự phòng rủi ro. Một hệ thống xếp hạng tín dụng hiệu quả giúp ngân hàng nhận diện sớm khách hàng có nguy cơ suy giảm khả năng trả nợ, từ đó hạn chế phát sinh nợ xấu và nâng cao chất lượng danh mục tín dụng.
-
-% Tại Việt Nam, các ngân hàng thương mại trong nhiều năm qua đã xây dựng hệ thống xếp hạng tín dụng nội bộ nhằm phục vụ công tác thẩm định, phê duyệt và quản lý khoản vay. Tuy nhiên, trong bối cảnh dữ liệu khách hàng ngày càng lớn, hành vi tài chính ngày càng phức tạp và môi trường kinh doanh thường xuyên biến động, các phương pháp đánh giá truyền thống bộc lộ nhiều hạn chế.
-
-% Sự phát triển của trí tuệ nhân tạo, học máy và khoa học dữ liệu đã mở ra hướng tiếp cận mới cho bài toán xếp hạng tín dụng. Các mô hình trí tuệ nhân tạo có khả năng học từ dữ liệu lịch sử, phát hiện các mẫu quan hệ tiềm ẩn, xử lý dữ liệu lớn và hỗ trợ dự báo rủi ro tín dụng với độ chính xác cao hơn.
-
-% Xuất phát từ thực tiễn đó, đề tài ``Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam'' được thực hiện nhằm nghiên cứu khả năng áp dụng các mô hình trí tuệ nhân tạo vào bài toán xếp hạng tín dụng dựa trên dữ liệu thực tế của một ngân hàng thương mại tại Việt Nam.
-
-% \section*{Đối tượng và phạm vi nghiên cứu}
-
-% \quad Đối tượng nghiên cứu của đề tài là bài toán xếp hạng tín dụng khách hàng bằng các phương pháp trí tuệ nhân tạo, trong đó tập trung vào việc xây dựng mô hình dự đoán hạng tín dụng hoặc nhóm rủi ro tín dụng dựa trên dữ liệu lịch sử của khách hàng tại một ngân hàng thương mại ở Việt Nam.
-
-
-% Về nội dung, đề tài tập trung vào ứng dụng các thuật toán học máy có giám sát trong xếp hạng tín dụng. Các mô hình có thể bao gồm Logistic Regression, Decision Tree, Random Forest, XGBoost, LightGBM, CatBoost hoặc các thuật toán phù hợp khác.
-
-% Về dữ liệu, đề tài sử dụng dữ liệu tín dụng của khách hàng từ một ngân hàng thương mại ở Việt Nam. Dữ liệu có thể bao gồm thông tin khách hàng, thông tin khoản vay, lịch sử thanh toán, tình trạng dư nợ, ngày mở khoản vay, ngày đến hạn và biến mục tiêu phản ánh hạng tín dụng hoặc nhóm nợ.
-
-% Về không gian, nghiên cứu được thực hiện trong phạm vi một ngân hàng thương mại tại Việt Nam.
-
-% Về thời gian, nghiên cứu sử dụng dữ liệu lịch sử được ngân hàng cung cấp hoặc dữ liệu đã được xử lý phục vụ mục tiêu nghiên cứu.
-
-% \section*{Động lực ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng}
-
-% \quad Trí tuệ nhân tạo là lĩnh vực nghiên cứu và phát triển các hệ thống có khả năng thực hiện những nhiệm vụ đòi hỏi trí tuệ của con người, chẳng hạn như học từ dữ liệu, nhận dạng mẫu, dự báo, phân loại và ra quyết định. Trong phạm vi đề tài này, trí tuệ nhân tạo chủ yếu được tiếp cận thông qua các thuật toán học máy có giám sát nhằm dự đoán hoặc phân loại mức độ tín nhiệm của khách hàng.
-
-% Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng xuất phát từ nhiều động lực quan trọng.
-
-% Thứ nhất, ngân hàng ngày càng có nhiều dữ liệu hơn về khách hàng và khoản vay. Đây là điều kiện thuận lợi để xây dựng các mô hình học máy có khả năng học từ dữ liệu lịch sử và phát hiện các quy luật tiềm ẩn.
-
-% Thứ hai, nhu cầu tự động hóa quy trình tín dụng ngày càng cao. Các ngân hàng cần rút ngắn thời gian phê duyệt hồ sơ, giảm chi phí vận hành, đồng thời vẫn đảm bảo kiểm soát rủi ro.
-
-% Thứ ba, các mô hình học máy có khả năng xử lý quan hệ phi tuyến và tương tác phức tạp giữa các biến. Điều này đặc biệt phù hợp với bài toán tín dụng.
-
-% Thứ tư, trí tuệ nhân tạo có thể hỗ trợ ngân hàng xây dựng hệ thống cảnh báo sớm rủi ro tín dụng.
-
-% Thứ năm, việc ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng phù hợp với xu hướng ngân hàng số, quản trị dựa trên dữ liệu và nâng cao năng lực cạnh tranh của các ngân hàng thương mại Việt Nam.
-
-
 \chapter*{LỜI MỞ ĐẦU}
 \addcontentsline{toc}{chapter}{Lời mở đầu}
 
 \section*{Lý do lựa chọn đề tài}
-\addcontentsline{toc}{section}{Lý do lựa chọn đề tài}
 
-Trong nền kinh tế hiện đại, ngân hàng thương mại giữ vai trò trung gian tài chính quan trọng thông qua việc huy động vốn, cung ứng tín dụng và phân bổ nguồn lực cho các chủ thể trong nền kinh tế. Trong các hoạt động của ngân hàng thương mại, tín dụng là một nghiệp vụ cốt lõi, có đóng góp đáng kể vào thu nhập nhưng đồng thời cũng là nguồn phát sinh rủi ro lớn. Khi khách hàng không thực hiện đầy đủ nghĩa vụ trả nợ, ngân hàng có thể chịu tổn thất về dòng tiền, lợi nhuận, chi phí dự phòng và vốn tự có. Ở phạm vi rộng hơn, chất lượng tín dụng suy giảm có thể ảnh hưởng đến tính an toàn của toàn hệ thống tài chính.
+Tín dụng là hoạt động cốt lõi của ngân hàng thương mại, đồng thời là nguồn phát sinh rủi ro có ảnh hưởng trực tiếp đến lợi nhuận, chất lượng tài sản và mức độ an toàn của ngân hàng. Vì vậy, đánh giá và xếp hạng tín dụng không chỉ phục vụ quyết định cấp tín dụng mà còn hỗ trợ giám sát khoản vay, phân loại nợ và nhận diện sớm dấu hiệu suy giảm chất lượng tín dụng.
 
-Quản trị rủi ro tín dụng vì vậy không chỉ dừng ở việc xem xét hồ sơ tại thời điểm phê duyệt mà còn bao gồm hoạt động theo dõi, phân loại, cảnh báo sớm và cập nhật mức độ rủi ro trong suốt vòng đời khoản vay. Một hệ thống xếp hạng tín dụng hiệu quả giúp ngân hàng chuẩn hóa quá trình đánh giá, hỗ trợ xác định hạn mức, lãi suất, điều kiện bảo đảm, chính sách giám sát sau vay và mức độ ưu tiên xử lý đối với từng khách hàng hoặc khoản vay.
+Sự gia tăng về quy mô và mức độ đa dạng của dữ liệu ngân hàng đặt ra yêu cầu đổi mới phương pháp đánh giá rủi ro. Các phương pháp truyền thống có ưu điểm về tính minh bạch, nhưng có thể gặp hạn chế trước quan hệ phi tuyến, tương tác phức tạp và tình trạng mất cân bằng giữa các nhóm nợ. Trí tuệ nhân tạo và học máy vì vậy mở ra khả năng khai thác dữ liệu hiệu quả hơn, đồng thời hỗ trợ chuẩn hóa và tự động hóa một phần quy trình đánh giá.
 
-Trong thực tế, dữ liệu tín dụng tại ngân hàng ngày càng có quy mô lớn, đa dạng về nguồn và phức tạp về cấu trúc. Ngoài các thông tin nhân khẩu học và tài chính, ngân hàng còn lưu trữ dữ liệu về hợp đồng tín dụng, dư nợ, thời hạn vay, lịch sử trả nợ, nhóm nợ, mục đích vay, loại sản phẩm, trạng thái cơ cấu lại khoản vay và nhiều đặc trưng nghiệp vụ khác. Mối quan hệ giữa các biến này với rủi ro tín dụng thường không hoàn toàn tuyến tính và có thể thay đổi theo thời gian, theo chính sách cấp tín dụng, theo đặc điểm sản phẩm hoặc theo điều kiện kinh tế.
+Trong bối cảnh đó, đề tài \textit{``Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam''} được thực hiện nhằm đánh giá khả năng áp dụng các mô hình học máy vào phân loại năm nhóm nợ trên dữ liệu thực tế. Nghiên cứu đồng thời xem xét vai trò của các nhóm thông tin nghiệp vụ và khả năng rút gọn đặc trưng, qua đó tạo cơ sở cho việc phát triển hệ thống cảnh báo sớm rủi ro tín dụng.
 
-Các phương pháp đánh giá tín dụng truyền thống như phương pháp chuyên gia, phân tích phân biệt, hồi quy logistic và scorecard có ưu điểm về tính minh bạch, khả năng giải thích và mức độ thuận tiện trong triển khai. Tuy nhiên, các phương pháp này có thể gặp hạn chế khi cần xử lý đồng thời số lượng lớn biến, quan hệ phi tuyến, tương tác phức tạp, dữ liệu mất cân bằng và sự thay đổi phân phối theo thời gian. Sự phát triển của trí tuệ nhân tạo và học máy đã mở ra khả năng xây dựng các mô hình dự báo có năng lực khai thác dữ liệu tốt hơn, đặc biệt với các thuật toán cây, ensemble và gradient boosting.
-
-Phần lớn các công trình về chấm điểm tín dụng trước đây tiếp cận bài toán dưới dạng phân loại nhị phân, trong đó khách hàng được chia thành nhóm tốt và nhóm xấu hoặc nhóm vỡ nợ và không vỡ nợ. Trong khi đó, dữ liệu được sử dụng trong luận văn có biến mục tiêu gồm năm nhóm nợ, tương ứng với các mức rủi ro tăng dần. Đây không chỉ là bài toán phân loại đa lớp mà còn là bài toán có cấu trúc thứ tự, bởi sai số dự báo nhóm 5 thành nhóm 1 nghiêm trọng hơn sai số dự báo nhóm 5 thành nhóm 4.
-
-Xuất phát từ những vấn đề trên, đề tài \textit{``Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam''} được thực hiện nhằm xây dựng và đánh giá một quy trình phân loại năm nhóm nợ trên dữ liệu thực tế đã được ẩn danh. Nghiên cứu không đặt mục tiêu đề xuất một thuật toán học máy hoàn toàn mới, mà tập trung phát triển cách mô hình hóa, xây dựng đặc trưng, thiết kế thực nghiệm và đánh giá bài toán phù hợp hơn với đặc điểm nghiệp vụ tín dụng tại ngân hàng Việt Nam.
+Phần thực nghiệm hiện tại tập trung vào phân loại nhóm nợ và đánh giá mô hình ngoài mẫu. Dự báo khả năng chuyển nhóm nợ theo thời gian được xác định là hướng phát triển tiếp theo khi dữ liệu có đầy đủ lịch sử trạng thái và cửa sổ dự báo.
 
 \section*{Đối tượng và phạm vi nghiên cứu}
-\addcontentsline{toc}{section}{Đối tượng và phạm vi nghiên cứu}
 
-Đối tượng nghiên cứu của luận văn là các phương pháp thống kê và học máy được sử dụng để phân loại mức độ rủi ro tín dụng của khách hàng hoặc khoản vay. Trọng tâm của nghiên cứu là bài toán dự báo nhóm nợ từ 1 đến 5 dựa trên dữ liệu lịch sử.
+Đối tượng nghiên cứu là việc ứng dụng các phương pháp thống kê và học máy trong phân loại mức độ rủi ro tín dụng. Trọng tâm của luận văn gồm so sánh hiệu năng mô hình, đánh giá ảnh hưởng của mất cân bằng lớp, phân tích vai trò của đặc trưng và đề xuất định hướng dữ liệu cho cảnh báo sớm.
 
-Về dữ liệu, luận văn sử dụng dữ liệu tín dụng đã được ẩn danh từ một ngân hàng thương mại tại Việt Nam. Các nhóm thông tin được xem xét có thể bao gồm thông tin khách hàng, thông tin khoản vay, dư nợ, ngày mở, ngày đến hạn, thời hạn tín dụng, lãi suất, mục đích vay, nhóm nợ hiện tại, nhóm nợ nội bộ, trạng thái cơ cấu lại khoản vay và các biến nghiệp vụ liên quan.
+Nghiên cứu sử dụng hai bộ dữ liệu tín dụng đã được ẩn danh từ một ngân hàng thương mại tại Việt Nam. Phạm vi dữ liệu bao gồm thông tin khách hàng, khoản vay và các yếu tố nghiệp vụ liên quan; tên ngân hàng và thông tin định danh trực tiếp không được công bố.
 
-Về phương pháp, luận văn sử dụng Logistic Regression làm mô hình cơ sở và so sánh với Decision Tree, Random Forest, XGBoost, LightGBM và CatBoost. Nghiên cứu đồng thời xem xét mất cân bằng lớp, đặc trưng thời gian, tính thứ tự của nhãn và khả năng giải thích mô hình.
-
-Về không gian, nghiên cứu được thực hiện trong phạm vi dữ liệu của một ngân hàng thương mại tại Việt Nam. Do yêu cầu bảo mật, tên ngân hàng và các thông tin định danh trực tiếp không được công bố.
-
-Về thời gian, nghiên cứu sử dụng dữ liệu lịch sử trong khoảng thời gian do ngân hàng cung cấp. Việc chia dữ liệu được ưu tiên thực hiện theo thứ tự thời gian để mô phỏng điều kiện triển khai thực tế.
+Các mô hình được đánh giá theo quy trình huấn luyện và kiểm định thống nhất trên từng bộ dữ liệu. Kết quả giữa hai bộ chỉ được đối chiếu về xu hướng do khác biệt về quy mô, cấu trúc biến và phân bố nhóm nợ. Các thông số dữ liệu, cấu hình tiền xử lý và thiết kế thực nghiệm được trình bày chi tiết tại Chương 3.
 
 \section*{Động lực ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng}
-\addcontentsline{toc}{section}{Động lực ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng}
 
-Động lực thứ nhất xuất phát từ quy mô và mức độ đa dạng của dữ liệu tín dụng. Các thuật toán học máy có khả năng khai thác đồng thời nhiều đặc trưng, phát hiện tương tác và mô hình hóa quan hệ phi tuyến mà các mô hình tuyến tính có thể không thể hiện đầy đủ.
-
-Động lực thứ hai là nhu cầu chuẩn hóa và tự động hóa quy trình đánh giá rủi ro. Một mô hình được xây dựng và kiểm định phù hợp có thể hỗ trợ xử lý số lượng lớn hồ sơ, rút ngắn thời gian phân tích và giảm sự phụ thuộc vào đánh giá chủ quan.
-
-Động lực thứ ba là nhu cầu nhận diện sớm sự suy giảm chất lượng tín dụng. Thay vì chỉ dự báo khách hàng tốt hay xấu, mô hình có thể hỗ trợ phân loại mức độ rủi ro chi tiết hơn và phát hiện các khoản vay có khả năng chuyển sang nhóm nợ cao.
-
-Động lực thứ tư là yêu cầu kết hợp hiệu quả dự báo với khả năng giải thích. Trong lĩnh vực ngân hàng, mô hình không chỉ cần chính xác mà còn cần cung cấp thông tin về các yếu tố ảnh hưởng đến quyết định, phục vụ kiểm định, giám sát và giải trình.
+Việc ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng được thúc đẩy bởi ba yêu cầu chính: khai thác tốt hơn dữ liệu ngày càng đa dạng; nâng cao tính nhất quán và hiệu quả của quy trình đánh giá; và hỗ trợ nhận diện sớm các khoản vay có dấu hiệu suy giảm. Trong lĩnh vực ngân hàng, hiệu quả dự báo cần đi cùng khả năng giải thích, kiểm soát và giám sát để mô hình có thể được sử dụng như một công cụ hỗ trợ quyết định.

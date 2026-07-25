@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
 
 from config.config import (
     DATA_RAW, MODEL_DIR, TARGET_COL, DROP_COLS,
@@ -15,11 +16,12 @@ from config.config import (
     RANDOM_STATE, TEST_SIZE, CV_FOLDS,
 )
 from src.preprocessing import prepare
-from src.models import build_pipeline, available_models, IMBALANCE_OPTIONS
+from src.models import build_pipeline, available_models, IMBALANCE_OPTIONS, compute_sample_weights
 from src.evaluation import (
     compute_metrics, plot_confusion_matrix,
     plot_feature_importance, plot_model_comparison,
-    cross_val_scores,
+    cross_val_scores, repeated_stratified_recall,
+    predict_with_class_weights, tune_class_boost, NHOMNO_LABELS,
 )
 from src.data_loader import get_raw_bytes
 
@@ -65,6 +67,19 @@ with st.sidebar:
     imbalance_key = IMBALANCE_OPTIONS[imbalance_label]
 
     run_cv = st.checkbox("Chạy Cross-Validation (chậm hơn)", value=False)
+
+    run_repeated_cv = st.checkbox(
+        "Repeated Stratified K-Fold cho nhóm hiếm (chậm hơn nhiều)",
+        value=False,
+        help=("Với nhóm nợ có rất ít quan sát (VD nhóm 3, 4), Recall đo trên "
+              "1 lần train/test split có phương sai rất lớn — 1 hồ sơ sai đã "
+              "làm Recall nhảy vài chục %. Lặp lại Stratified K-Fold nhiều "
+              "lần và lấy trung bình cho ước lượng đáng tin cậy hơn."),
+    )
+    n_repeats = 3
+    if run_repeated_cv:
+        n_repeats = st.number_input("Số lần lặp (n_repeats)", min_value=1, max_value=20, value=3)
+
     st.markdown(f"**Train**: {len(X_train):,} | **Test**: {len(X_test):,}")
     st.caption(f"Imbalance ratio: 34.7x (N1=77.6% vs N3=2.2%)")
 
@@ -88,12 +103,31 @@ if train_btn:
             pipe = build_pipeline(key, cat_cols, num_cols, RANDOM_STATE,
                                   imbalance_strategy=imbalance_key)
 
+            # XGBoost không có tham số class_weight built-in (khác với
+            # LogisticRegression/DecisionTree/RandomForest/LightGBM) — phải
+            # tự tính sample_weight và truyền qua fit() để cost-sensitive
+            # thực sự có hiệu lực khi chọn chiến lược "class_weight".
+            use_sample_weight = key == "xgboost" and imbalance_key == "class_weight"
+            sample_weight_fn = compute_sample_weights if use_sample_weight else None
+
             cv_info = {}
             if run_cv:
                 with st.spinner(f"  Cross-validation {label}…"):
                     cv_info = cross_val_scores(pipe, X_all, y_0, CV_FOLDS, RANDOM_STATE)
 
-            pipe.fit(X_train, y_train)
+            repeated_cv_df, repeated_cv_summary = None, None
+            if run_repeated_cv:
+                with st.spinner(f"  Repeated Stratified K-Fold {label} ({n_repeats} lần)…"):
+                    repeated_cv_df, repeated_cv_summary = repeated_stratified_recall(
+                        pipe, X_all, y_0, n_splits=CV_FOLDS, n_repeats=n_repeats,
+                        random_state=RANDOM_STATE, sample_weight_fn=sample_weight_fn,
+                    )
+
+            if use_sample_weight:
+                pipe.fit(X_train, y_train,
+                        classifier__sample_weight=compute_sample_weights(y_train))
+            else:
+                pipe.fit(X_train, y_train)
             y_pred  = pipe.predict(X_test) + 1
             y_proba = pipe.predict_proba(X_test)
             y_true  = y_test + 1
@@ -106,6 +140,8 @@ if train_btn:
                 "model": label, "key": key,
                 **{k: v for k, v in metrics.items() if k not in ("report", "model", "key")},
                 "cv": cv_info,
+                "repeated_cv_df": repeated_cv_df,
+                "repeated_cv_summary": repeated_cv_summary,
                 "y_true": y_true, "y_pred": y_pred, "y_proba": y_proba,
             })
             st.session_state.trained_pipelines[key] = pipe
@@ -167,6 +203,22 @@ if results:
                     f"Weighted F1: {result['cv']['f1_weighted_mean']:.4f} ± {result['cv']['f1_weighted_std']:.4f}"
                 )
 
+            if result.get("repeated_cv_df") is not None:
+                s = result["repeated_cv_summary"]
+                st.markdown(
+                    f"**📊 Repeated Stratified K-Fold ({s['n_repeats']}×{s['n_splits']}-fold) "
+                    f"— Recall theo nhóm nợ**"
+                )
+                st.caption(
+                    "Đánh giá qua nhiều lần lặp thay vì 1 lần train/test split — ổn định hơn "
+                    "cho các nhóm có rất ít quan sát (VD nhóm 3, 4)."
+                )
+                st.dataframe(result["repeated_cv_df"], use_container_width=True, hide_index=True)
+                st.caption(
+                    f"Macro F1 trung bình qua các fold: "
+                    f"{s['macro_f1_mean']:.4f} ± {s['macro_f1_std']:.4f}"
+                )
+
             col_a, col_b = st.columns(2)
 
             with col_a:
@@ -188,6 +240,58 @@ if results:
                 if fig_fi:
                     st.markdown("**Feature Importance**")
                     st.plotly_chart(fig_fi, use_container_width=True)
+
+            # Hiệu chỉnh ngưỡng post-hoc cho nhóm hiếm (không cần huấn luyện lại)
+            with st.expander("🎯 Hiệu chỉnh ngưỡng cho nhóm hiếm (post-hoc class-boost)"):
+                st.caption(
+                    "Tăng Recall nhóm hiếm bằng argmax có trọng số (dịch ranh giới quyết "
+                    "định) — không cần huấn luyện lại mô hình. Boost tìm được ở đây tối ưu "
+                    "ngay trên tập test hiện dùng để báo cáo nên chỉ mang tính minh hoạ "
+                    "hướng cải thiện; áp dụng thực tế cần tìm boost trên tập validation "
+                    "tách riêng khỏi tập test cuối cùng."
+                )
+                support_counts = pd.Series(y_train).value_counts()
+                rarest_default = support_counts.sort_values().index[:2].tolist()
+                target_classes = st.multiselect(
+                    "Chọn nhóm (0-based: 0=Nhóm 1 … 4=Nhóm 5) cần tăng Recall",
+                    options=sorted(np.unique(y_test)),
+                    default=rarest_default,
+                    key=f"boost_target_{key}",
+                )
+                if st.button(f"Tìm boost tối ưu", key=f"boost_btn_{key}"):
+                    if not target_classes:
+                        st.warning("Chọn ít nhất 1 nhóm để boost.")
+                    else:
+                        best_boost, best_score = tune_class_boost(
+                            result["y_true"] - 1, result["y_proba"], target_classes,
+                        )
+                        y_pred_boosted = predict_with_class_weights(result["y_proba"], best_boost) + 1
+
+                        boost_display = {NHOMNO_LABELS.get(c + 1, str(c)): w
+                                         for c, w in best_boost.items()}
+                        st.success(
+                            f"Boost tối ưu {boost_display} → Macro F1 = {best_score:.4f} "
+                            f"(gốc chưa boost: {result['f1_macro']:.4f})"
+                        )
+
+                        c1b, c2b = st.columns(2)
+                        with c1b:
+                            st.markdown("**Confusion Matrix — sau boost**")
+                            st.plotly_chart(
+                                plot_confusion_matrix(result["y_true"], y_pred_boosted),
+                                use_container_width=True,
+                            )
+                        with c2b:
+                            st.markdown("**Classification Report — sau boost**")
+                            report_boosted = pd.DataFrame(classification_report(
+                                result["y_true"], y_pred_boosted,
+                                output_dict=True, zero_division=0,
+                            )).T
+                            num_cols_b = report_boosted.select_dtypes(include=float).columns
+                            st.dataframe(
+                                report_boosted.style.format({c: "{:.3f}" for c in num_cols_b}),
+                                use_container_width=True,
+                            )
 
 else:
     st.info("👈 Chọn mô hình trong sidebar và nhấn **Bắt đầu huấn luyện**.")

@@ -1,179 +1,157 @@
-```latex
 \chapter{KẾT LUẬN VÀ KIẾN NGHỊ}
 
-\section{Kết luận}
+\section{Kết luận chung}
 
-Trong bối cảnh chuyển đổi số đang diễn ra mạnh mẽ trong ngành ngân hàng, việc ứng dụng trí tuệ nhân tạo vào hoạt động quản trị rủi ro tín dụng ngày càng trở thành một xu hướng tất yếu. Xếp hạng tín dụng không chỉ đóng vai trò hỗ trợ quyết định cấp tín dụng mà còn là công cụ quan trọng giúp ngân hàng kiểm soát rủi ro, nâng cao chất lượng danh mục tín dụng và đảm bảo an toàn hoạt động.
+Luận văn giữ nguyên định hướng của đề tài \textit{``Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam''}. Trên hai bộ dữ liệu gốc và code hiện có, nghiên cứu đã xây dựng được pipeline phân loại năm nhóm nợ, kiểm soát một số nguồn rò rỉ, xử lý mất cân bằng, so sánh các mô hình cây và phân tích vai trò của đặc trưng. Khả năng chuyển nhóm nợ được xác định là hướng phát triển nhằm hỗ trợ phân loại nợ và cảnh báo sớm rủi ro tín dụng; kết quả hiện tại là nền tảng cho hướng này, chưa phải kiểm định hoàn chỉnh theo thời gian.
 
-Xuất phát từ yêu cầu thực tiễn đó, luận văn đã thực hiện nghiên cứu đề tài:
+Bộ dữ liệu A có 27.001 hồ sơ và 21 cột thô. Trang huấn luyện chính sử dụng 11 biến cấu hình, còn mô-đun phân tích đặc trưng dùng pool 13 biến gồm tám biến số và năm biến phân loại. Phép chia phân tầng tạo 21.600 mẫu huấn luyện và 5.401 mẫu kiểm định. Trên 11 biến, LightGBM đạt Macro-F1 cao nhất là 0,6484; XGBoost đạt 0,6442 và ROC-AUC macro 0,9201.
 
-\begin{center}
-\textit{"Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam"}
-\end{center}
+Bộ dữ liệu B có 5.400 dòng và 178 cột thô. Sau khi loại 19 dòng thiếu nhãn và các trường không phù hợp, mô hình sử dụng 5.381 quan sát với 98 đặc trưng, gồm 63 biến số thô, 26 biến phân loại và 9 biến tạo thêm. Phép chia phân tầng tạo 4.304 mẫu huấn luyện và 1.077 mẫu kiểm định.
 
-Mục tiêu của nghiên cứu là xây dựng và đánh giá các mô hình trí tuệ nhân tạo nhằm hỗ trợ bài toán xếp hạng tín dụng khách hàng dựa trên dữ liệu thực tế của ngân hàng thương mại.
+Trên bộ B, trong năm mô hình chạy lại thành công, XGBoost đạt Macro-F1 cao nhất là 0,4118, Accuracy 0,9814 và ROC-AUC macro 0,9781. Tuy nhiên, mô hình không nhận diện đúng nhóm 3 và 4 trong tập kiểm định; hai lớp này chỉ có 2 và 3 quan sát. Do đó, kết quả không cho phép khẳng định mô hình đã giải quyết tốt các lớp rủi ro hiếm. Việc báo cáo Macro-F1 và Recall theo lớp giúp tránh kết luận sai từ Accuracy vốn bị chi phối bởi 97,51\% quan sát nhóm 1 ở bộ B.
 
-Thông qua quá trình nghiên cứu, luận văn đã hoàn thành các nội dung chính bao gồm:
+\section{Trả lời các câu hỏi nghiên cứu}
+
+\subsection{Nhiều đặc trưng hơn có luôn giúp mô hình tốt hơn không?}
+
+Về lý thuyết, thêm đặc trưng không bảo đảm cải thiện ngoài mẫu vì biến mới có thể trùng lặp hoặc gây nhiễu. Bằng chứng trên hai bộ dữ liệu cũng cho kết quả phụ thuộc bối cảnh. Ở bộ A, XGBoost với đúng 11 biến cấu hình đạt Macro-F1 0,6442, nhỉnh hơn 0,6434 của pool 13 biến sau khi đưa lại \textit{SEX} và \textit{LOAIKH}; trong đường cong Top-$k$, Top-11 còn thấp hơn Top-9. Ở bộ B, tập 98 biến cho Macro-F1 cao nhất trong các mốc đã thử. Vì vậy, kết luận phù hợp là: thêm biến chỉ hữu ích khi biến đó cung cấp tín hiệu ngoài mẫu mới; số lượng biến tự thân không bảo đảm mô hình tốt hơn.
+
+\subsection{Nhóm đặc trưng nào đóng góp lớn nhất?}
+
+Theo feature importance của XGBoost, nhóm Kỳ hạn khoản vay đứng đầu bộ A với 40,1\%; nhóm Sản phẩm và mục đích vay đứng thứ hai với 21,9\%. Ở bộ B, nhóm Dư nợ và giải ngân đứng đầu với 46,4\%, cao hơn nhóm Lãi suất (15,0\%) và nhóm Sản phẩm, mục đích và kênh phân phối (9,7\%). Kết quả cho thấy nhóm nổi trội phụ thuộc không gian dữ liệu, nhưng các tín hiệu về thời hạn và mức độ phơi nhiễm tín dụng đều quan trọng. Đây là mức sử dụng của mô hình, chưa phải tác động nhân quả hoặc giá trị biên; cần group ablation để xác nhận.
+
+\subsection{Có thể giảm từ 178 xuống bao nhiêu đặc trưng?}
+
+Đối với bộ A, quy trình giảm 21 cột thô xuống pool 13 biến khả dụng. Top-9 là mốc nhỏ nhất đã thử giữ khoảng 99,20\% Macro-F1 của pool 13 biến; đồng thời bộ 11 biến cấu hình thực đạt kết quả nhỉnh hơn pool đầy đủ.
+
+Đối với câu hỏi đặt ra từ 178 cột của bộ B, quy tắc nghiệp vụ và chống rò rỉ trước hết giảm xuống 98 đặc trưng, tức giảm khoảng 44,94\%. Trong vòng chọn đặc trưng, Top-60 giữ khoảng 95,45\% Macro-F1 của tập 98 biến trong cùng quy trình, nhưng chưa đạt ngưỡng 99\%. Vì vậy:
 
 \begin{itemize}
-    \item Tổng quan cơ sở lý thuyết về tín dụng, rủi ro tín dụng, xếp hạng tín dụng và trí tuệ nhân tạo trong lĩnh vực tài chính ngân hàng.
-    
-    \item Tổng hợp và phân tích các nghiên cứu trong nước và quốc tế liên quan đến bài toán chấm điểm tín dụng và xếp hạng tín dụng.
-    
-    \item Xây dựng quy trình xử lý dữ liệu tín dụng bao gồm làm sạch dữ liệu, xử lý dữ liệu thiếu, phát hiện dữ liệu bất thường, xây dựng đặc trưng và xử lý mất cân bằng dữ liệu.
-    
-    \item Huấn luyện và đánh giá nhiều mô hình học máy khác nhau như Logistic Regression, Decision Tree, Random Forest, XGBoost, LightGBM và CatBoost.
-    
-    \item So sánh hiệu quả của các mô hình trên bộ dữ liệu thực tế và lựa chọn mô hình có hiệu năng tốt nhất.
-    
-    \item Ứng dụng phương pháp SHAP nhằm giải thích kết quả dự báo của mô hình, nâng cao tính minh bạch trong quá trình ra quyết định tín dụng.
+    \item nếu yêu cầu giữ ít nhất 99\% Macro-F1, chưa có bằng chứng để giảm dưới 98 đặc trưng;
+    \item nếu chấp nhận giữ khoảng 95\% Macro-F1, Top-60 là cấu hình ứng viên, giảm thêm khoảng 38,78\% số biến mô hình.
 \end{itemize}
 
-Kết quả nghiên cứu cho thấy các mô hình học máy hiện đại có khả năng hỗ trợ hiệu quả cho bài toán xếp hạng tín dụng. So với các phương pháp truyền thống, các mô hình Ensemble Learning như Random Forest, XGBoost, LightGBM và CatBoost đạt hiệu năng dự báo cao hơn, đồng thời có khả năng khai thác các quan hệ phi tuyến trong dữ liệu tín dụng.
+Không nên dùng mốc 62 biến đạt 95\% tổng importance như bằng chứng rằng 95\% hiệu năng được giữ lại, vì importance tích lũy và hiệu năng là hai đại lượng khác nhau. Các mốc trên cũng mới là mốc nhỏ nhất trong lưới đã thử, chưa phải nghiệm tối ưu tuyệt đối.
 
-Bên cạnh đó, việc sử dụng các kỹ thuật xử lý mất cân bằng dữ liệu như SMOTE giúp cải thiện khả năng nhận diện các nhóm khách hàng có mức độ rủi ro cao, vốn thường chiếm tỷ lệ nhỏ trong tập dữ liệu.
+\subsection{Ngân hàng nên ưu tiên thu thập nhóm thông tin nào?}
 
-Kết quả nghiên cứu cũng cho thấy các yếu tố như lịch sử tín dụng, số ngày quá hạn, dư nợ hiện tại, số lượng khoản vay đang hoạt động và thời gian quan hệ tín dụng là những yếu tố quan trọng ảnh hưởng đến kết quả xếp hạng tín dụng của khách hàng.
+Ở bộ B, chỉ số ưu tiên trong code xếp Dư nợ và giải ngân trước, sau đó đến Lãi suất và Sản phẩm--mục đích--kênh phân phối. Nhóm Dư nợ và giải ngân vừa có importance cao nhất (46,4\%) vừa có tỷ lệ thiếu trung bình 49,38\%. Ở bộ A, Kỳ hạn khoản vay đứng đầu theo heuristic, nhưng các trường của nhóm này không thiếu; thứ hạng do đó chủ yếu phản ánh importance, không phải khoảng trống chất lượng dữ liệu.
+
+Ngân hàng nên ưu tiên lưu snapshot theo thời gian, chuẩn hóa ngày giải ngân/đáo hạn, tăng độ đầy đủ và tần suất cập nhật dữ liệu dư nợ--giải ngân, sau đó chuẩn hóa lãi suất, sản phẩm, mục đích và kênh. Trước khi đầu tư quy mô lớn, cần chạy thí nghiệm loại bỏ/bổ sung từng nhóm và lượng hóa lợi ích theo chi phí nghiệp vụ.
 
 \section{Đóng góp của nghiên cứu}
 
-\subsection{Đóng góp về mặt khoa học}
+\subsection{Đóng góp phương pháp}
 
-Về mặt học thuật, luận văn đã hệ thống hóa các cơ sở lý thuyết liên quan đến:
+Nghiên cứu xây dựng hai pipeline độc lập nhưng cùng nguyên tắc, gồm lựa chọn cột theo taxonomy nghiệp vụ, tạo đặc trưng, điền khuyết, chuẩn hóa, mã hóa, xử lý mất cân bằng và huấn luyện mô hình. Việc loại \textit{NHOMNO} khỏi bộ A và loại các trường nhóm nợ/ngày quá hạn trực tiếp khỏi bộ B thể hiện chủ đích hạn chế mô hình học lại quy tắc tạo nhãn.
 
-\begin{itemize}
-    \item Rủi ro tín dụng;
-    \item Xếp hạng tín dụng;
-    \item Trí tuệ nhân tạo;
-    \item Học máy trong lĩnh vực tài chính ngân hàng.
-\end{itemize}
+Nghiên cứu cũng tách ba khái niệm thường bị đồng nhất: số cột thô, số đặc trưng hợp lệ và số đặc trưng rút gọn theo hiệu năng. Sự phân biệt này giúp câu hỏi ``178 biến có cần thiết không'' được trả lời chặt chẽ hơn. Việc chạy cùng bốn câu hỏi trên hai cấu trúc dữ liệu còn cho thấy kết luận về số lượng và nhóm đặc trưng không nên được khái quát từ một bộ dữ liệu duy nhất.
 
-Nghiên cứu đồng thời cung cấp thêm bằng chứng thực nghiệm về hiệu quả của các thuật toán học máy hiện đại trong bài toán xếp hạng tín dụng tại Việt Nam.
+\subsection{Đóng góp thực tiễn}
 
-Kết quả nghiên cứu góp phần bổ sung nguồn tài liệu tham khảo cho các nghiên cứu tiếp theo về:
+Kết quả cung cấp:
 
 \begin{itemize}
-    \item Credit Scoring;
-    \item Credit Rating;
-    \item Default Prediction;
-    \item Early Warning System;
-    \item Explainable Artificial Intelligence.
+    \item kết quả đối sánh năm mô hình chạy thành công trên từng bộ dữ liệu;
+    \item bảng hiệu năng theo lớp, cho thấy rõ điểm yếu ở lớp hiếm của bộ B;
+    \item hai đường cong hiệu năng theo số lượng đặc trưng;
+    \item xếp hạng nhóm thông tin nghiệp vụ riêng cho từng bộ;
+    \item khuyến nghị duy trì dữ liệu kỳ hạn, đồng thời ưu tiên cải thiện dữ liệu Dư nợ và giải ngân.
 \end{itemize}
 
-\subsection{Đóng góp về mặt thực tiễn}
-
-Về mặt thực tiễn, nghiên cứu đã xây dựng được quy trình hoàn chỉnh từ xử lý dữ liệu đến xây dựng mô hình xếp hạng tín dụng có thể áp dụng trong môi trường ngân hàng.
-
-Mô hình đề xuất có thể hỗ trợ:
-
-\begin{itemize}
-    \item Đánh giá mức độ tín nhiệm của khách hàng.
-    \item Cảnh báo sớm rủi ro tín dụng.
-    \item Hỗ trợ cán bộ tín dụng trong quá trình ra quyết định.
-    \item Nâng cao chất lượng danh mục tín dụng.
-    \item Giảm thiểu rủi ro phát sinh nợ xấu.
-\end{itemize}
-
-Ngoài ra, kết quả nghiên cứu có thể được tích hợp vào hệ thống xếp hạng tín dụng nội bộ hoặc hệ thống hỗ trợ quyết định của ngân hàng.
+Những kết quả này có thể hỗ trợ thiết kế thí nghiệm cảnh báo sớm tiếp theo, nhưng chưa nên tích hợp tự động vào quyết định tín dụng.
 
 \section{Hạn chế của nghiên cứu}
 
-Mặc dù đạt được các kết quả tích cực, nghiên cứu vẫn tồn tại một số hạn chế nhất định.
+\subsection{Chưa có nhãn chuyển nhóm theo thời gian}
 
-Thứ nhất, dữ liệu nghiên cứu chỉ được thu thập từ một ngân hàng thương mại. Do đó, kết quả nghiên cứu có thể chưa phản ánh đầy đủ đặc điểm của toàn bộ hệ thống ngân hàng tại Việt Nam.
+Hạn chế lớn nhất là chưa có chuỗi snapshot kèm ngày quan sát và cửa sổ dự báo thống nhất. Bộ A có \textit{NHOMNO} và \textit{NHOMNOMOI}, nhưng chưa xác lập rõ chân trời $h$ cho từng hồ sơ; bộ B chỉ có \textit{CLASSIFICATION} ở bản ghi đang xét. Vì vậy, luận văn chưa ước lượng trực tiếp xác suất chuyển nhóm ngoài thời gian.
 
-Thứ hai, bộ dữ liệu nghiên cứu chủ yếu bao gồm các thông tin tín dụng truyền thống. Các nguồn dữ liệu thay thế như dữ liệu giao dịch số, dữ liệu hành vi khách hàng, dữ liệu mạng xã hội hoặc dữ liệu viễn thông chưa được khai thác.
+\subsection{Mất cân bằng cực đoan và cỡ mẫu lớp hiếm}
 
-Thứ ba, nghiên cứu tập trung vào các thuật toán học máy truyền thống và các mô hình boosting. Các mô hình học sâu (Deep Learning) chưa được xem xét trong phạm vi nghiên cứu.
+Trong bộ B, nhóm 3 và 4 có tổng cộng 11 và 13 hồ sơ. Tập kiểm định chỉ có 2 và 3 hồ sơ, không đủ để ước lượng Recall ổn định. SMOTE tạo điểm tổng hợp nhưng không thay thế thông tin thật và không thể khắc phục hoàn toàn thiếu hụt mẫu gốc \cite{chawla2002smote,brown2012experimental}. Bộ A có nhiều mẫu lớp hiếm hơn, nhưng nhóm 1 vẫn chiếm 77,65\%.
 
-Thứ tư, mô hình được đánh giá chủ yếu trên dữ liệu lịch sử. Việc triển khai và đánh giá hiệu quả trong môi trường thực tế chưa được thực hiện.
+\subsection{Thiết kế kiểm định}
 
-Thứ năm, mặc dù đã sử dụng SHAP để giải thích mô hình, khả năng giải thích của các mô hình học máy phức tạp vẫn còn là một thách thức trong lĩnh vực tài chính ngân hàng.
+Code vẫn dùng một phép chia ngẫu nhiên phân tầng cho các bảng chính, nên kết quả có thể phụ thuộc seed và chưa phản ánh data drift. Phiên bản mới có \texttt{RepeatedStratifiedKFold}, mặc định ba lần lặp của 5-fold, và tổng hợp Precision, Recall, F1 theo từng nhóm. Chức năng này giảm độ nhạy với một holdout đơn nhưng không thay thế kiểm định ngoài thời gian.
 
-\section{Kiến nghị đối với ngân hàng thương mại}
+Các mốc Top-$k$ được xem xét trên cùng tập kiểm định rồi mới rút ra mốc tốt, gây thiên lệch lựa chọn. Do đó, Top-9 và Top-60 chỉ là ứng viên khám phá; cần chọn $k$ trên validation hoặc nested cross-validation và đánh giá lại một lần trên test độc lập.
 
-Từ kết quả nghiên cứu, tác giả đề xuất một số kiến nghị đối với ngân hàng thương mại như sau:
+\subsection{Sự không thống nhất trong pipeline}
 
-\subsection{Nâng cao chất lượng dữ liệu}
+Mô hình đầy đủ của bộ B sử dụng SMOTE tùy chỉnh, còn trang Top-$k$ dùng chiến lược SMOTE ở mức vừa. CatBoost dùng trọng số lớp thay cho SMOTE. Vì vậy, một phần chênh lệch có thể đến từ chiến lược mất cân bằng chứ không chỉ số lượng biến.
 
-Ngân hàng cần tiếp tục đầu tư vào hệ thống quản trị dữ liệu nhằm:
+Ngoài ra, màn hình hiện gắn nhãn ``bộ 11 biến'' và ``bộ 16 biến'' nhưng thực tế truyền Top-11 và Top-16 theo importance, không phải đúng hai danh sách cấu hình. Luận văn đã tránh dùng nhầm hai kết quả này, nhưng code cần được sửa để giao diện phản ánh đúng tập cột.
 
-\begin{itemize}
-    \item Chuẩn hóa dữ liệu tín dụng.
-    \item Nâng cao chất lượng dữ liệu đầu vào.
-    \item Giảm thiểu dữ liệu thiếu và dữ liệu sai lệch.
-    \item Xây dựng kho dữ liệu tập trung.
-\end{itemize}
+\subsection{Mã hóa biến phân loại}
 
-\subsection{Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng}
+Label Encoding có thể tạo thứ tự số giả cho các danh mục. SMOTE sau mã hóa còn có thể nội suy ra giá trị không tương ứng danh mục hợp lệ. Cần so sánh One-Hot Encoding, encoding theo xác suất hoặc mô hình xử lý danh mục nguyên bản.
 
-Ngân hàng nên từng bước tích hợp các mô hình trí tuệ nhân tạo vào hệ thống xếp hạng tín dụng hiện có nhằm:
+\subsection{Khả năng tái lập của biến thời gian}
 
-\begin{itemize}
-    \item Tăng độ chính xác trong đánh giá tín dụng.
-    \item Rút ngắn thời gian phê duyệt hồ sơ.
-    \item Tăng khả năng cảnh báo sớm rủi ro.
-    \item Hỗ trợ tự động hóa quy trình tín dụng.
-\end{itemize}
+Nhánh bộ A dùng ngày tham chiếu cố định 31/12/2021, nhưng hàm tạo đặc trưng FCT\_L dùng ngày chạy hiện tại làm mốc. Điều này làm giá trị biến thời gian của bộ B thay đổi theo ngày thực thi. Cần dùng ngày chốt dữ liệu cố định hoặc ngày quan sát của từng hồ sơ.
 
-\subsection{Phát triển hệ thống Explainable AI}
+\subsection{Tối ưu và hiệu chỉnh mô hình}
 
-Trong môi trường ngân hàng, khả năng giải thích quyết định là yếu tố đặc biệt quan trọng.
+Siêu tham số hiện được cấu hình cố định, chưa có nested cross-validation. Xác suất đầu ra chưa được đánh giá calibration. Logistic Regression chưa chạy lại được do tương thích phiên bản thư viện. Code mới cho phép boost xác suất lớp hiếm để dịch ranh giới quyết định, nhưng đang tìm hệ số trên chính tập hiển thị kết quả; vì vậy chỉ được xem là phân tích hậu nghiệm và có nguy cơ lạc quan. Cần chọn hệ số trên validation riêng, khóa cấu hình rồi mới đánh giá test. Vì vậy, bảng so sánh chưa phải benchmark cuối cùng như các nghiên cứu quy mô lớn \cite{lessmann2015benchmarking}.
 
-Do đó, ngân hàng cần:
+\subsection{Importance chưa phải bằng chứng nhân quả}
 
-\begin{itemize}
-    \item Xây dựng các mô hình có khả năng giải thích.
-    \item Kết hợp SHAP hoặc các công cụ Explainable AI.
-    \item Đảm bảo tính minh bạch trong quá trình ra quyết định.
-\end{itemize}
+Feature importance và SHAP giải thích hành vi của mô hình, không chứng minh quan hệ nhân quả \cite{lundberg2017unified}. Các biến tương quan có thể chia sẻ hoặc thay thế importance; chỉ số ưu tiên dữ liệu hiện là heuristic chưa gắn với chi phí kinh tế.
 
-\section{Hướng phát triển trong tương lai}
+\section{Kiến nghị đối với ngân hàng}
 
-Trong tương lai, nghiên cứu có thể được mở rộng theo một số hướng sau:
+\subsection{Xây dựng dữ liệu ảnh chụp theo thời gian}
 
-\subsection{Mở rộng quy mô dữ liệu}
+Ngân hàng cần lưu snapshot khoản vay ở các kỳ cố định, với khóa khoản vay/khách hàng nhất quán. Mỗi dòng phải có ngày quan sát, nhóm nợ tại ngày quan sát và nhóm nợ tại các cửa sổ 1, 3, 6 hoặc 12 tháng. Đây là điều kiện tiên quyết để chuyển từ phân loại hiện trạng sang dự báo chuyển nhóm.
 
-Thu thập dữ liệu từ nhiều ngân hàng khác nhau nhằm xây dựng mô hình có khả năng tổng quát hóa tốt hơn.
+\subsection{Ưu tiên chất lượng trước khi mở rộng số lượng biến}
 
-\subsection{Khai thác dữ liệu phi truyền thống}
+Thay vì bổ sung nhiều trường rời rạc, ngân hàng nên:
 
-Bổ sung các nguồn dữ liệu thay thế như:
+\begin{enumerate}
+    \item chuẩn hóa ngày giải ngân, ngày đáo hạn và lịch sử thay đổi kỳ hạn;
+    \item chuẩn hóa định nghĩa và tần suất cập nhật nhóm Dư nợ và giải ngân;
+    \item giảm tỷ lệ thiếu của biến lãi suất;
+    \item thống nhất danh mục sản phẩm, mục đích và kênh;
+    \item lập data lineage để biết biến tồn tại từ thời điểm nào;
+    \item giám sát drift và tỷ lệ thiếu theo kỳ.
+\end{enumerate}
 
-\begin{itemize}
-    \item Dữ liệu giao dịch số.
-    \item Dữ liệu thanh toán điện tử.
-    \item Dữ liệu hành vi khách hàng.
-    \item Dữ liệu từ ví điện tử.
-\end{itemize}
+\subsection{Thiết kế cảnh báo theo chi phí}
 
-\subsection{Ứng dụng Deep Learning}
+Ngưỡng cảnh báo phải dựa trên năng lực xử lý và chi phí sai lầm. Có thể tối ưu:
+\[
+\mathcal{C}(\tau)
+=c_{\mathrm{FN}}FN(\tau)+c_{\mathrm{FP}}FP(\tau),
+\]
+trong đó $\tau$ là ngưỡng cảnh báo; $FN(\tau)$ là số khoản vay chuyển nhóm nhưng bị bỏ sót; $FP(\tau)$ là số cảnh báo sai; $c_{\mathrm{FN}}$ là chi phí trung bình của bỏ sót; và $c_{\mathrm{FP}}$ là chi phí rà soát/cơ hội của cảnh báo sai. Ngưỡng tối ưu là giá trị làm $\mathcal{C}(\tau)$ nhỏ nhất dưới các ràng buộc nghiệp vụ.
 
-Nghiên cứu các mô hình học sâu như:
+\subsection{Quản trị mô hình}
 
-\begin{itemize}
-    \item Artificial Neural Network (ANN);
-    \item Deep Neural Network (DNN);
-    \item AutoEncoder;
-    \item Transformer;
-    \item TabNet.
-\end{itemize}
+Mô hình cần được triển khai theo chế độ hỗ trợ quyết định, có human-in-the-loop. Ngân hàng cần lưu phiên bản dữ liệu, code, mô hình, lý do cảnh báo và phản hồi xử lý; theo dõi Macro-F1, Recall lớp rủi ro, calibration và drift; đồng thời thiết lập lịch tái huấn luyện.
 
-để cải thiện hiệu quả xếp hạng tín dụng.
+\section{Hướng nghiên cứu tiếp theo}
 
-\subsection{Xây dựng hệ thống cảnh báo sớm}
+Hướng ưu tiên không phải là thêm ngay mô hình học sâu, mà là hoàn thiện nhãn chuyển nhóm và thiết kế kiểm định. Các bước tiếp theo gồm:
 
-Kết hợp mô hình xếp hạng tín dụng với hệ thống cảnh báo sớm nhằm dự báo khả năng chuyển nhóm nợ của khách hàng trong tương lai.
+\begin{enumerate}
+    \item xây nhãn $Y_{i,t}^{(h)}$ cho nhiều cửa sổ dự báo;
+    \item chia dữ liệu theo thời gian và theo khách hàng;
+    \item chuẩn hóa cùng một pipeline mất cân bằng cho mọi cấu hình;
+    \item chạy repeated cross-validation hoặc backtesting nhiều kỳ;
+    \item thực hiện group ablation và permutation importance trên tập kiểm định;
+    \item đánh giá PR-AUC, calibration, expected cost và độ ổn định;
+    \item thử nghiệm mô hình ordinal, survival hoặc multi-state vì năm nhóm nợ có thứ tự.
+\end{enumerate}
 
-\subsection{Triển khai thực tế}
-
-Nghiên cứu khả năng triển khai mô hình trên nền tảng Web hoặc Mobile Banking nhằm hỗ trợ cán bộ tín dụng trong môi trường thực tế.
+Mô hình đa trạng thái có thể mô tả xác suất:
+\[
+p_{ab}^{(h)}
+=P(G_{i,t+h}=b\mid G_{i,t}=a,\mathbf{X}_{i,t}),
+\]
+trong đó $a$ là nhóm nợ tại thời điểm quan sát; $b$ là nhóm đích sau $h$ kỳ; $\mathbf{X}_{i,t}$ là véc-tơ thông tin sẵn có tại $t$; và $p_{ab}^{(h)}$ là xác suất chuyển từ $a$ sang $b$. Cách tiếp cận này phù hợp hơn phân loại độc lập nếu mục tiêu cuối cùng là ma trận chuyển nhóm.
 
 \section{Kết luận chương}
 
-Chương này đã tổng kết toàn bộ nội dung nghiên cứu của luận văn, làm rõ những kết quả đạt được, các đóng góp khoa học và thực tiễn của đề tài.
-
-Kết quả nghiên cứu cho thấy trí tuệ nhân tạo có tiềm năng lớn trong việc nâng cao hiệu quả xếp hạng tín dụng tại các ngân hàng thương mại Việt Nam. Các mô hình học máy hiện đại không chỉ giúp cải thiện độ chính xác dự báo mà còn hỗ trợ ngân hàng trong công tác quản trị rủi ro tín dụng và chuyển đổi số.
-
-Mặc dù vẫn còn một số hạn chế, nghiên cứu đã tạo nền tảng cho các hướng phát triển tiếp theo trong lĩnh vực ứng dụng trí tuệ nhân tạo vào quản trị rủi ro tín dụng tại Việt Nam.
-```
+Nghiên cứu đã tạo được hai pipeline và bằng chứng thực nghiệm cho bài toán phân loại năm nhóm nợ. Trên bộ A, LightGBM đạt Macro-F1 cao nhất với 11 biến; XGBoost cho thấy 11 biến cấu hình nhỉnh hơn pool 13 biến, và nhóm Kỳ hạn khoản vay có importance lớn nhất. Trên bộ B, XGBoost đạt Macro-F1 cao nhất; nhóm Dư nợ và giải ngân đứng đầu; Top-60 là ứng viên nếu chấp nhận giữ khoảng 95\% hiệu năng, còn chưa có bằng chứng giảm dưới 98 biến nếu yêu cầu 99\%. Hạn chế về dữ liệu theo thời gian, cỡ mẫu lớp hiếm, lựa chọn $k$ trên cùng holdout và sự khác nhau của pipeline khiến kết quả chưa thể được diễn giải là mô hình cảnh báo chuyển nhóm hoàn chỉnh.

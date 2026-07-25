@@ -1,338 +1,386 @@
 \chapter{DỮ LIỆU VÀ PHƯƠNG PHÁP NGHIÊN CỨU}
 
-\section{Quy trình nghiên cứu}
+\section{Định hướng và phạm vi thực nghiệm}
 
-Nghiên cứu được thực hiện theo quy trình gồm các bước chính như Hình \ref{fig:research-process}.
+Chương này mô tả quy trình được cài đặt trong mã nguồn Python trên đúng hai tệp dữ liệu gốc trong thư mục \texttt{code/data/raw}. Bộ dữ liệu A, \texttt{Data\_credit\_rating\_VN.xlsx}, gồm 27.001 dòng và 21 cột thô; biến đích \textit{NHOMNOMOI} nhận giá trị từ 1 đến 5. Bộ dữ liệu B, \texttt{fct\_l.xlsx}, gồm 5.400 dòng và 178 cột thô; sau khi loại 19 dòng không có nhãn \textit{CLASSIFICATION}, còn 5.381 quan sát hợp lệ.
 
-\begin{figure}[H]
-\centering
-% \includegraphics[width=0.9\textwidth]{figures/research_process.png}
-\caption{Quy trình nghiên cứu đề xuất}
-\label{fig:research-process}
-\end{figure}
+Cần phân biệt mục tiêu dài hạn của đề tài với phạm vi mà hai tệp hiện tại cho phép kiểm định. Mục tiêu dài hạn là dự báo khả năng chuyển nhóm nợ để hỗ trợ cảnh báo sớm. Bộ A có đồng thời \textit{NHOMNO} và \textit{NHOMNOMOI}, nhưng mã nguồn loại \textit{NHOMNO} do tương quan rất cao với biến đích và chưa xác lập rõ ngày quan sát, chân trời dự báo cho từng hồ sơ. Bộ B chỉ có nhãn \textit{CLASSIFICATION} tại bản ghi đang xét. Do đó, thực nghiệm được diễn giải thận trọng là \textbf{phân loại năm nhóm nợ}, đóng vai trò mô hình nền và kiểm chứng quy trình dữ liệu; chưa được coi là phép kiểm định ngoài thời gian của một mô hình chuyển nhóm.
 
-Quy trình nghiên cứu bao gồm các bước:
-
-\begin{enumerate}
-    \item Thu thập dữ liệu tín dụng.
-    \item Tiền xử lý dữ liệu.
-    \item Phân tích khám phá dữ liệu (EDA).
-    \item Xây dựng đặc trưng.
-    \item Xử lý mất cân bằng dữ liệu.
-    \item Huấn luyện mô hình.
-    \item Đánh giá mô hình.
-    \item Lựa chọn mô hình tối ưu.
-\end{enumerate}
-
-Quy trình này được xây dựng dựa trên phương pháp khai phá dữ liệu CRISP-DM và các nghiên cứu ứng dụng Machine Learning trong xếp hạng tín dụng \cite{lessmann2015benchmarking,baesens2003benchmarking}.
-
-\section{Mô tả dữ liệu nghiên cứu}
-
-\subsection{Nguồn dữ liệu}
-
-Dữ liệu sử dụng trong nghiên cứu được trích xuất từ hệ thống tín dụng của một ngân hàng thương mại tại Việt Nam.
-
-Tập dữ liệu phản ánh lịch sử tín dụng của khách hàng cá nhân trong một khoảng thời gian xác định, bao gồm các thông tin:
-
-\begin{itemize}
-    \item Thông tin nhân khẩu học.
-    \item Thông tin hợp đồng tín dụng.
-    \item Thông tin dư nợ.
-    \item Thông tin lịch sử thanh toán.
-    \item Thông tin CIC.
-    \item Nhóm nợ thực tế.
-\end{itemize}
-
-Sau quá trình làm sạch dữ liệu, bộ dữ liệu nghiên cứu bao gồm khoảng 30.012 quan sát.
-
-\subsection{Biến mục tiêu}
-
-Biến mục tiêu của nghiên cứu là:
-
-\begin{center}
-\texttt{classification}
-\end{center}
-
-Biến này phản ánh mức độ rủi ro tín dụng của khách hàng.
-
-\begin{table}[H]
-\centering
-\caption{Ý nghĩa các nhóm nhãn}
-\begin{tabular}{|c|c|}
-\hline
-Nhãn & Ý nghĩa \\
-\hline
-1 & Nợ đủ tiêu chuẩn \\
-2 & Nợ cần chú ý \\
-3 & Nợ dưới tiêu chuẩn \\
-4 & Nợ nghi ngờ \\
-5 & Nợ có khả năng mất vốn \\
-\hline
-\end{tabular}
-\end{table}
-
-Bài toán nghiên cứu được xác định là bài toán phân loại đa lớp (Multi-class Classification).
-
-\subsection{Mô tả các nhóm biến}
-
-Các biến đầu vào được chia thành các nhóm chính:
-
-\begin{enumerate}
-    \item Thông tin khách hàng.
-    \item Thông tin hợp đồng tín dụng.
-    \item Thông tin dư nợ.
-    \item Thông tin lịch sử thanh toán.
-    \item Thông tin CIC.
-\end{enumerate}
-
-Ví dụ:
-
-\begin{table}[H]
-\centering
-\caption{Một số biến quan trọng trong nghiên cứu}
-\begin{tabular}{|c|c|c|}
-\hline
-Biến & Kiểu dữ liệu & Ý nghĩa \\
-\hline
-OPEN\_DATE & Date & Ngày mở khoản vay \\
-NGAYDENHAN & Date & Ngày đến hạn \\
-DU\_NO & Numeric & Dư nợ hiện tại \\
-SO\_NGAY\_QUA\_HAN & Numeric & Số ngày quá hạn \\
-SO\_HD\_TIN\_DUNG & Numeric & Số hợp đồng tín dụng \\
-classification & Target & Nhóm nợ \\
-\hline
-\end{tabular}
-\end{table}
-
-\section{Tiền xử lý dữ liệu}
-
-\subsection{Làm sạch dữ liệu}
-
-Các bước làm sạch dữ liệu bao gồm:
-
-\begin{itemize}
-    \item Loại bỏ bản ghi trùng lặp.
-    \item Chuẩn hóa tên biến.
-    \item Chuẩn hóa định dạng ngày tháng.
-    \item Kiểm tra tính hợp lệ của dữ liệu.
-\end{itemize}
-
-Ví dụ:
-
+Nếu có dữ liệu bảng theo thời gian, nhãn chuyển nhóm cần được định nghĩa:
 \[
-OPEN\_DATE \le NGAYDENHAN
-\]
-
-Các bản ghi vi phạm điều kiện trên được xem là bất thường và bị loại bỏ khỏi tập dữ liệu.
-
-\subsection{Xử lý giá trị thiếu}
-
-Giá trị thiếu (Missing Values) là vấn đề phổ biến trong dữ liệu tín dụng \cite{bishop2006pattern}.
-
-Trong nghiên cứu này:
-
-\begin{itemize}
-    \item Biến số được thay thế bằng trung vị.
-    \item Biến phân loại được thay thế bằng giá trị xuất hiện nhiều nhất.
-    \item Một số biến ngày tháng được thay thế bằng ngày mặc định 01/01/3000.
-\end{itemize}
-
-\subsection{Xử lý ngoại lệ}
-
-Các giá trị bất thường được phát hiện bằng:
-
-\begin{itemize}
-    \item Boxplot.
-    \item IQR Method.
-    \item Z-score.
-\end{itemize}
-
-Các quan sát ngoại lệ cực đoan được Winsorize hoặc loại bỏ khỏi dữ liệu huấn luyện.
-
-\section{Phân tích khám phá dữ liệu}
-
-\subsection{Phân bố biến mục tiêu}
-
-Biểu đồ phân bố của biến \texttt{classification} được trình bày tại Hình \ref{fig:target-distribution}.
-
-\begin{figure}[H]
-\centering
-% \includegraphics[width=0.8\textwidth]{figures/target_distribution.png}
-\caption{Phân bố biến mục tiêu}
-\label{fig:target-distribution}
-\end{figure}
-
-Kết quả cho thấy dữ liệu bị mất cân bằng mạnh giữa các nhóm nợ.
-
-\subsection{Phân tích tương quan}
-
-Hệ số tương quan Pearson được sử dụng để đánh giá mối quan hệ giữa các biến số \cite{hosmer2013applied}.
-
-\[
-r=
-\frac{\sum (x_i-\bar{x})(y_i-\bar{y})}
-{\sqrt{\sum(x_i-\bar{x})^2\sum(y_i-\bar{y})^2}}
-\]
-
-Ma trận tương quan được trực quan hóa bằng Heatmap.
-
-\section{Xây dựng đặc trưng}
-
-Feature Engineering là bước quan trọng nhằm cải thiện hiệu quả dự báo của mô hình \cite{bishop2006pattern}.
-
-\subsection{Biến thời gian}
-
-Từ các trường ngày tháng:
-
-\begin{itemize}
-    \item OPEN\_DATE
-    \item NGAYDENHAN
-\end{itemize}
-
-tạo thêm:
-
-\begin{itemize}
-    \item Tuổi khoản vay.
-    \item Số ngày còn lại đến hạn.
-    \item Thời gian tín dụng.
-\end{itemize}
-
-Ví dụ:
-
-\[
-LoanAge =
-CurrentDate - OPEN\_DATE
-\]
-
-\subsection{Biến hành vi tín dụng}
-
-Các đặc trưng được xây dựng:
-
-\begin{itemize}
-    \item Tỷ lệ quá hạn.
-    \item Tỷ lệ sử dụng tín dụng.
-    \item Tổng số khoản vay.
-    \item Tần suất phát sinh nợ quá hạn.
-\end{itemize}
-
-\subsection{Mã hóa biến phân loại}
-
-Các biến phân loại được xử lý bằng:
-
-\begin{itemize}
-    \item Label Encoding.
-    \item One-Hot Encoding.
-\end{itemize}
-
-\section{Xử lý mất cân bằng dữ liệu}
-
-Dữ liệu tín dụng thường có hiện tượng mất cân bằng lớp nghiêm trọng \cite{lessmann2015benchmarking}.
-
-Trong nghiên cứu này áp dụng phương pháp SMOTE (Synthetic Minority Over-sampling Technique) \cite{chawla2002smote}.
-
-Nguyên lý của SMOTE là tạo thêm các mẫu tổng hợp cho lớp thiểu số:
-
-\[
-x_{new}
+Y_{i,t}^{(h)}
 =
-x_i
-+
-\lambda(x_{nn}-x_i)
+\begin{cases}
+1, & G_{i,t+h}>G_{i,t},\\
+0, & G_{i,t+h}\leq G_{i,t},
+\end{cases}
 \]
+trong đó $i$ là khoản vay hoặc khách hàng; $t$ là ngày quan sát; $h$ là cửa sổ dự báo; $G_{i,t}\in\{1,2,3,4,5\}$ là nhóm nợ tại thời điểm $t$; và $Y_{i,t}^{(h)}=1$ biểu thị chuyển sang nhóm có mức rủi ro cao hơn trong $h$ kỳ. Công thức này là thiết kế đề xuất cho giai đoạn triển khai tiếp theo, không phải nhãn đã có trong thực nghiệm hiện tại.
 
-Trong đó:
+\section{Quy trình nghiên cứu và khả năng tái lập}
 
+Quy trình gồm: (i) đọc và kiểm tra dữ liệu; (ii) loại trường định danh và trường có nguy cơ rò rỉ; (iii) tạo đặc trưng nghiệp vụ; (iv) chia tập huấn luyện--kiểm định; (v) học toàn bộ bước điền khuyết, mã hóa và chuẩn hóa chỉ trên tập huấn luyện; (vi) xử lý mất cân bằng; (vii) huấn luyện mô hình; và (viii) đánh giá đa chỉ tiêu. Cách tổ chức pipeline nhằm hạn chế dữ liệu kiểm định ảnh hưởng ngược tới quá trình huấn luyện, phù hợp nguyên tắc đánh giá ngoài mẫu trong học máy \cite{bishop2006pattern,lessmann2015benchmarking}.
+
+\begin{figure}[H]
+\centering
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{c@{\hspace{1mm}$\longrightarrow$\hspace{1mm}}c@{\hspace{1mm}$\longrightarrow$\hspace{1mm}}c@{\hspace{1mm}$\longrightarrow$\hspace{1mm}}c}
+\fbox{\parbox[c][1.4cm][c]{2.6cm}{\centering Hai dữ liệu gốc\\và kiểm tra nhãn}} &
+\fbox{\parbox[c][1.4cm][c]{2.6cm}{\centering Loại ID, leakage\\và tạo đặc trưng}} &
+\fbox{\parbox[c][1.4cm][c]{2.6cm}{\centering Chia dữ liệu\\phân tầng}} &
+\fbox{\parbox[c][1.4cm][c]{2.6cm}{\centering Tiền xử lý\\trong pipeline}}
+\\[8mm]
+\multicolumn{1}{c}{\fbox{\parbox[c][1.4cm][c]{2.6cm}{\centering Báo cáo và\\giải thích mô hình}}} &
+\multicolumn{1}{c@{\hspace{1mm}$\longleftarrow$\hspace{1mm}}}{\fbox{\parbox[c][1.4cm][c]{2.6cm}{\centering Đánh giá đa chỉ tiêu\\và theo từng lớp}}} &
+\multicolumn{1}{c@{\hspace{1mm}$\longleftarrow$\hspace{1mm}}}{\fbox{\parbox[c][1.4cm][c]{2.6cm}{\centering Huấn luyện và\\so sánh mô hình}}} &
+\multicolumn{1}{c@{\hspace{1mm}$\longleftarrow$\hspace{1mm}}}{\fbox{\parbox[c][1.4cm][c]{2.6cm}{\centering Xử lý mất\\cân bằng lớp}}}
+\end{tabular}
+\caption{Quy trình thực nghiệm được triển khai trong mã nguồn}
+\label{fig:experimental-pipeline}
+\end{figure}
+
+Mã nguồn đặt tham số \texttt{RANDOM\_STATE=42}, tỷ lệ kiểm định bằng 0,2 và thực hiện phép chia ngẫu nhiên có phân tầng theo nhãn. Bộ A được chia thành 21.600 quan sát huấn luyện và 5.401 quan sát kiểm định. Bộ B được chia thành 4.304 quan sát huấn luyện và 1.077 quan sát kiểm định.
+
+Phiên bản ứng dụng hiện tại cung cấp hai tầng đánh giá. Tầng thứ nhất là phép chia 80/20 nêu trên để so sánh trực tiếp với các kết quả đã tái lập. Tầng thứ hai, tùy chọn \texttt{RepeatedStratifiedKFold}, lặp phép kiểm định phân tầng 5-fold mặc định ba lần. Với $R=3$ lần lặp và $F=5$ fold, mô hình được ước lượng $R\times F=15$ lần; mỗi quan sát xuất hiện trong tập kiểm định đúng một lần ở mỗi lượt lặp. Thiết kế này không tạo thêm dữ liệu, nhưng giảm mức phụ thuộc của Recall lớp hiếm vào một phép chia duy nhất.
+
+\section{Nguồn và cấu trúc dữ liệu}
+
+\subsection{Bộ dữ liệu A: Data\_credit\_rating\_VN}
+
+Bộ A có 27.001 hồ sơ và không thiếu biến đích \textit{NHOMNOMOI}. Bảng \ref{tab:dataset-a-distribution} cho thấy nhóm 1 chiếm 77,65\%, trong khi nhóm 3 chỉ chiếm 2,24\%. Mức mất cân bằng vẫn đáng kể nhưng nhẹ hơn nhiều so với bộ B.
+
+\begin{table}[H]
+\centering
+\caption{Phân bố năm nhóm nợ trong bộ dữ liệu A}
+\label{tab:dataset-a-distribution}
+\begin{tabular}{|c|r|r|r|r|}
+\hline
+Nhóm & Toàn bộ & Tỷ lệ (\%) & Huấn luyện & Kiểm định\\
+\hline
+1 & 20.965 & 77,65 & 16.771 & 4.194\\
+2 & 1.287 & 4,77 & 1.030 & 257\\
+3 & 604 & 2,24 & 483 & 121\\
+4 & 784 & 2,90 & 627 & 157\\
+5 & 3.361 & 12,45 & 2.689 & 672\\
+\hline
+Tổng & 27.001 & 100,00 & 21.600 & 5.401\\
+\hline
+\end{tabular}
+\end{table}
+
+Trang huấn luyện chính sử dụng 11 đặc trưng đã sàng lọc: ba biến phân loại và tám biến số. Trang phân tích đặc trưng mở rộng pool lên 13 biến bằng cách đưa lại \textit{SEX} và \textit{LOAIKH}, là hai biến từng bị loại do Information Value thấp. Cách thiết kế này cho phép kiểm tra trực tiếp liệu bổ sung các biến yếu có cải thiện hiệu năng hay không.
+
+Sau khi phân tích ngày và tạo biến, bộ A có tám biến số:
 \begin{itemize}
-    \item $x_i$ là điểm dữ liệu gốc.
-    \item $x_{nn}$ là láng giềng gần nhất.
-    \item $\lambda \in [0,1]$.
+    \item năm biến từ tệp nguồn: \textit{BASE\_BAL}, \textit{CURR\_BAL}, \textit{LAISUAT}, \textit{ORGNBR} và \textit{PARENTORGNBR};
+    \item ba biến tạo thêm: \textit{LOAN\_TENURE\_DAYS}, \textit{DAYS\_TO\_MATURITY} và \textit{UTIL\_RATE}.
+\end{itemize}
+Năm biến phân loại trong pool đầy đủ được chia thành:
+\begin{itemize}
+    \item ba biến cấu hình chính: \textit{MJACCTTYPCD}, \textit{CURRMIACCTTYPCD} và \textit{MUCDICHVAY};
+    \item hai biến IV thấp đưa lại để kiểm chứng: \textit{SEX} và \textit{LOAIKH}.
 \end{itemize}
 
-\section{Thiết kế thực nghiệm}
-
-\subsection{Chia tập dữ liệu}
-
-Dữ liệu được chia theo tỷ lệ:
-
-\begin{itemize}
-    \item Training set: 80\%
-    \item Test set: 20\%
-\end{itemize}
-
-Kỹ thuật Stratified Split được sử dụng để đảm bảo phân bố nhãn tương tự giữa hai tập dữ liệu.
-
-\subsection{Cross Validation}
-
-Để giảm sai lệch trong đánh giá mô hình, nghiên cứu sử dụng kỹ thuật K-Fold Cross Validation với:
-
+Đối với bộ 11 biến chính, phép đếm từ tệp nguồn là:
 \[
-K = 5
+21-1-10-2+3=11,
 \]
+trong đó 21 là số cột thô; 1 là biến đích; 10 là số trường trong danh sách loại; 2 là hai trường ngày chỉ dùng để tạo biến; và 3 là số biến kỹ thuật được bổ sung. Pool phân tích có 13 biến vì đưa lại hai biến \textit{SEX} và \textit{LOAIKH}.
 
-\section{Xây dựng mô hình}
+\subsection{Bộ dữ liệu B: fct\_l và phân bố nhãn}
 
-Các mô hình được huấn luyện bao gồm:
+Bảng \ref{tab:split-distribution} trình bày phân bố quan sát được đọc trực tiếp từ dữ liệu và phép chia của code.
+
+\begin{table}[H]
+\centering
+\caption{Phân bố năm nhóm nợ trong dữ liệu}
+\label{tab:split-distribution}
+\begin{tabular}{|c|r|r|r|r|}
+\hline
+Nhóm & Toàn bộ có nhãn & Tỷ lệ (\%) & Huấn luyện & Kiểm định\\
+\hline
+1 & 5.247 & 97,51 & 4.197 & 1.050\\
+2 & 87 & 1,62 & 70 & 17\\
+3 & 11 & 0,20 & 9 & 2\\
+4 & 13 & 0,24 & 10 & 3\\
+5 & 23 & 0,43 & 18 & 5\\
+\hline
+Tổng & 5.381 & 100,00 & 4.304 & 1.077\\
+\hline
+\end{tabular}
+\end{table}
+
+Tỷ lệ nhóm 1 rất cao, trong khi nhóm 3 và 4 chỉ có 11 và 13 quan sát trong toàn bộ dữ liệu. Đây là hạn chế quyết định của thực nghiệm. Với hai quan sát nhóm 3 trong tập kiểm định, một dự báo đúng hoặc sai làm Recall thay đổi 0,5; vì vậy kết quả theo lớp có phương sai rất lớn và không đủ để khẳng định khả năng tổng quát hóa.
+
+\subsection{Bộ dữ liệu B: từ 178 cột thô tới 98 đặc trưng mô hình}
+
+Con số 178 là số cột của tệp thô, không phải số biến thực tế đưa vào bộ phân loại. Bước xây dựng bể đặc trưng thô thực hiện ba lớp lọc:
 
 \begin{enumerate}
-    \item Logistic Regression \cite{hosmer2013applied}
-    \item Decision Tree \cite{quinlan1986induction}
-    \item Random Forest \cite{breiman2001random}
-    \item XGBoost \cite{chen2016xgboost}
-    \item LightGBM \cite{ke2017lightgbm}
-    \item CatBoost \cite{prokhorenkova2018catboost}
+    \item loại biến đích;
+    \item loại trường định danh, khóa thay thế, văn bản tự do và trường gây rò rỉ, gồm \textit{CLASS\_CUR}, \textit{CLASSIFICATION\_SK}, \textit{NO\_OVD\_DAYS} và \textit{NO\_DAYS\_OVERDUE};
+    \item không đưa trực tiếp trường ngày vào mô hình; các trường này chỉ dùng để tạo biến thời lượng; đồng thời loại cột chỉ có một giá trị quan sát.
 \end{enumerate}
 
-Mỗi mô hình được tối ưu tham số bằng Grid Search.
+Sau lọc, code giữ 63 biến số và 26 biến phân loại. Bước tạo đặc trưng nghiệp vụ bổ sung 9 biến số, đưa tổng số đầu vào lên:
+\[
+p=63+26+9=98.
+\]
+Tương đương, phép đếm từ tệp nguồn có thể viết:
+\[
+178-1-38-19-31+9=98.
+\]
+Trong đó 1 là biến đích; 38 là số trường định danh, khóa thay thế hoặc leakage có mặt trong tệp; 19 là số trường ngày không đưa trực tiếp vào mô hình; 31 là số trường còn lại có không quá một giá trị quan sát; và 9 là số biến tạo thêm. Vì vậy, câu hỏi ``giảm từ 178 xuống bao nhiêu'' được triển khai chính xác hơn thành hai bước: giảm 178 cột thô xuống tập 98 đặc trưng hợp lệ theo quy tắc nghiệp vụ, sau đó đánh giá khả năng rút gọn tiếp từ 98 đặc trưng.
 
-\section{Đánh giá mô hình}
+\begin{figure}[H]
+\centering
+\begin{tabular}{c@{\hspace{4mm}$\longrightarrow$\hspace{4mm}}c@{\hspace{4mm}$\longrightarrow$\hspace{4mm}}c}
+\fbox{\parbox[c][1.5cm][c]{3.4cm}{\centering 178 cột thô\\trong tệp nguồn}} &
+\fbox{\parbox[c][1.5cm][c]{4.0cm}{\centering 98 đặc trưng hợp lệ\\63 số + 26 phân loại + 9 tạo thêm}} &
+\fbox{\parbox[c][1.5cm][c]{4.1cm}{\centering Cấu hình rút gọn\\Top-60 hoặc bộ vận hành 16 biến}}
+\end{tabular}
+\caption{Các tầng số lượng biến trong nghiên cứu}
+\label{fig:feature-reduction-levels}
+\end{figure}
 
-Các chỉ tiêu đánh giá bao gồm:
+Bên cạnh bể đầy đủ, tệp cấu hình còn khai báo trước một bộ rút gọn gồm 16 biến:
+\begin{itemize}
+    \item Nhóm biến số gồm:
+    \begin{itemize}
+        \item \textit{INTEREST\_RATE}, \textit{INTEREST\_SPREAD};
+        \item \textit{BALANCE}, \textit{BALANCE\_PE}, \textit{BALANCE\_PS};
+        \item \textit{AGG\_DISBURSEMENT\_AMT};
+        \item \textit{CONTRACT\_CHANGE\_CNT}, \textit{NUM\_GRACE\_PERIOD};
+        \item \textit{MIS\_DAO}, \textit{CURR\_MIS\_DAO};
+        \item \textit{FIXED\_RATE}, \textit{LN\_APPR\_AMT}.
+    \end{itemize}
+    \item Nhóm biến phân loại gồm \textit{CATEGORY}, \textit{SEAB\_PRODUCTS}, \textit{TERM\_SBV} và \textit{DATASOURCE}.
+\end{itemize}
+Bộ 16 biến là cấu hình vận hành gọn được định trước trong code; mã nguồn hiện tại không lưu bảng IV chứng minh quá trình lựa chọn này. Do đó, luận văn gọi đúng đây là ``bộ 16 biến định trước'', không đồng nhất nó với Top-16 của mô hình đầy đủ và không dùng nó thay cho thí nghiệm Top-$k$ trên bể 98 biến.
 
-\subsection{Accuracy}
+\subsection{Nhóm đặc trưng nghiệp vụ}
+
+Đối với bộ A, code ánh xạ 13 biến vào sáu nhóm: Dư nợ và hạn mức sử dụng; Lãi suất; Kỳ hạn khoản vay; Đơn vị/chi nhánh; Sản phẩm và mục đích vay; Nhân khẩu học có IV thấp. Đối với bộ B, code ánh xạ 98 biến vào chín nhóm: (1) Dư nợ và giải ngân; (2) Lãi suất; (3) Trả nợ và thu hồi; (4) Kỳ hạn và gia hạn; (5) Sản phẩm, mục đích và kênh phân phối; (6) Khách hàng và đối tác; (7) Thay đổi và trạng thái hợp đồng; (8) Bối cảnh và nguồn dữ liệu; và (9) Đặc trưng kỹ thuật.
+
+Việc nhóm biến phục vụ hai mục đích: giải thích mô hình ở cấp nghiệp vụ và xây dựng khuyến nghị đầu tư dữ liệu. Tuy nhiên, tổng importance của nhóm chỉ phản ánh cách mô hình đã sử dụng dữ liệu hiện có; nó không chứng minh quan hệ nhân quả.
+
+\section{Kiểm soát rò rỉ dữ liệu}
+
+Rò rỉ xảy ra khi đầu vào chứa thông tin chỉ có sau thời điểm cần dự báo hoặc là biến đổi trực tiếp của nhãn. Ở bộ A, code loại \textit{NHOMNO\_TCBS} và \textit{NHOMNO}; riêng \textit{NHOMNO} có tương quan rất cao với \textit{NHOMNOMOI}, nên nếu giữ lại mô hình có thể học gần trực tiếp trạng thái tạo nhãn. Code cũng loại cột trùng \textit{DUNO\_QD}, mô tả văn bản trùng với mã sản phẩm và các trường hằng số hoặc gần như không có thông tin.
+
+Ở bộ B, các biến số ngày quá hạn \textit{NO\_OVD\_DAYS} và \textit{NO\_DAYS\_OVERDUE} bị loại. Hai trường \textit{CLASS\_CUR} và \textit{CLASSIFICATION\_SK} cũng bị loại vì có quan hệ trực tiếp với quy tắc phân loại hoặc biến đích. Nếu giữ chúng, mô hình có thể học lại quy tắc tạo nhãn thay vì phát hiện tín hiệu sớm.
+
+Đối với bài toán chuyển nhóm tương lai, kiểm soát cần chặt hơn: mọi đặc trưng $X_{i,t}$ phải tồn tại tại hoặc trước $t$, còn nhãn được xác định từ $t+1$ tới $t+h$. Phép chia ngẫu nhiên đang dùng trong code phù hợp cho kiểm chứng mô hình phân loại hiện trạng, nhưng chưa phải thiết kế tối ưu cho cảnh báo sớm. Khi có dữ liệu thời gian, cần dùng chia theo thời gian để ngăn thông tin tương lai đi vào huấn luyện.
+
+\section{Tạo đặc trưng nghiệp vụ}
+
+Hai nhánh dữ liệu sử dụng công thức tạo biến khác nhau. Bộ A tạo ba biến từ ngày mở, ngày đáo hạn, dư nợ hiện tại và dư nợ gốc. Bộ B tạo chín biến kỹ thuật từ dữ liệu dư nợ, thu hồi, lãi suất, ngày giải ngân, ngày đáo hạn, gia hạn và thay đổi hợp đồng.
+
+\subsection{Đặc trưng của bộ dữ liệu A}
+
+Với ngày tham chiếu cố định $d_0=$ 31/12/2021, code tính:
+\[
+\begin{aligned}
+\mathit{LOAN\_TENURE\_DAYS}_i
+&=\max\{0,d_i^{\mathrm{maturity}}-d_i^{\mathrm{open}}\},\\
+\mathit{DAYS\_TO\_MATURITY}_i
+&=d_i^{\mathrm{maturity}}-d_0.
+\end{aligned}
+\]
+Trong đó $d_i^{\mathrm{open}}$ là ngày mở khoản vay; $d_i^{\mathrm{maturity}}$ là ngày đến hạn; chênh lệch ngày được biểu diễn bằng số ngày dương hoặc âm. Việc cố định $d_0$ giúp cùng một hồ sơ nhận cùng giá trị khi tái chạy.
+
+Tỷ lệ sử dụng dư nợ của bộ A được cài đặt:
+\[
+\mathit{UTIL\_RATE}_i
+=
+\begin{cases}
+\operatorname{clip}\!\left(
+\dfrac{\mathit{CURR\_BAL}_i}{\mathit{BASE\_BAL}_i},0,10
+\right),&\mathit{BASE\_BAL}_i>0,\\
+0,&\mathit{BASE\_BAL}_i\leq0.
+\end{cases}
+\]
+Trong đó \textit{CURR\_BAL} là dư nợ hiện tại; \textit{BASE\_BAL} là dư nợ gốc hoặc cơ sở; và toán tử $\operatorname{clip}(x,0,10)$ giới hạn giá trị trong đoạn $[0,10]$ để giảm ảnh hưởng của tỷ số ngoại lệ.
+
+\subsection{Tỷ lệ sử dụng hạn mức của bộ dữ liệu B}
+\[
+\mathit{ENG\_UTIL\_RATE}_i
+=
+\begin{cases}
+\dfrac{\mathit{BALANCE}_i}{\mathit{LN\_APPR\_AMT}_i},&
+\mathit{LN\_APPR\_AMT}_i>0,\\
+\mathrm{NaN},&\text{ngược lại}.
+\end{cases}
+\]
+Trong đó \textit{BALANCE} là dư nợ hiện tại của quan sát $i$; \textit{LN\_APPR\_AMT} là hạn mức được phê duyệt; tỷ số lớn biểu thị mức sử dụng hạn mức cao. Khác với bộ A, trường hợp mẫu số không dương ở bộ B được giữ thiếu để bước imputer xử lý, thay vì gán 0.
+
+\subsection{Tỷ lệ thu hồi lãi}
+\[
+\mathit{ENG\_COLLECTION\_RATIO}_i
+=
+\frac{R_i}{Q_i+R_i+\varepsilon},
+\]
+Trong công thức:
+\[
+\begin{aligned}
+R_i &= \mathit{ACC\_RECEIVED\_INTEREST}_i,\\
+Q_i &= \mathit{ACC\_RECEIVABLE\_INTEREST}_i,
+\end{aligned}
+\]
+với $R_i$ là lãi đã thu lũy kế; $Q_i$ là lãi phải thu lũy kế; và $\varepsilon=10^{-6}$ là hằng số nhỏ nhằm tránh chia cho 0. Công thức đo tỷ trọng phần lãi đã thu trong tổng lãi đã thu và còn phải thu.
+
+\subsection{Đặc trưng thời gian và thay đổi hợp đồng của bộ dữ liệu B}
+
+Ba biến thời gian được tính bằng chênh lệch ngày, gồm:
+\begin{itemize}
+    \item \textit{ENG\_DAYS\_SINCE\_FIRST\_DISBURSEMENT};
+    \item \textit{ENG\_DAYS\_SINCE\_LAST\_DISBURSEMENT};
+    \item \textit{ENG\_DAYS\_TO\_MATURITY}.
+\end{itemize}
+Ngoài ra, code tạo cờ có gia hạn, số lần gia hạn và cờ từng thay đổi hợp đồng. Nhánh bộ B hiện dùng ngày chạy chương trình làm ngày tham chiếu, trong khi bộ A đã cố định ngày 31/12/2021. Để tái lập khoa học, nhánh bộ B cần được sửa theo cùng nguyên tắc: dùng ngày chốt dữ liệu cố định hoặc ngày quan sát của từng hồ sơ; nếu không, cùng một hồ sơ có thể nhận giá trị khác khi chạy ở ngày khác.
+
+\section{Tiền xử lý trong pipeline}
+
+\subsection{Giá trị thiếu và chuẩn hóa}
+
+Đối với biến số, \texttt{SimpleImputer(strategy="median")} thay giá trị thiếu bằng trung vị học trên tập huấn luyện:
+\[
+\tilde{x}_{ij}=
+\begin{cases}
+x_{ij},&x_{ij}\ \text{quan sát được},\\
+\operatorname{median}\{x_{\ell j}:\ell\in\mathcal{T}\},&x_{ij}\ \text{thiếu},
+\end{cases}
+\]
+trong đó $x_{ij}$ là giá trị biến $j$ của quan sát $i$; $\mathcal{T}$ là tập chỉ số huấn luyện; và $\tilde{x}_{ij}$ là giá trị sau điền khuyết.
+
+Đối với Logistic Regression, Decision Tree, Random Forest, XGBoost và LightGBM, biến số sau điền khuyết được chuẩn hóa:
+\[
+z_{ij}=\frac{\tilde{x}_{ij}-\mu_j}{\sigma_j},
+\]
+trong đó $\mu_j$ và $\sigma_j$ lần lượt là trung bình và độ lệch chuẩn của biến $j$ sau điền khuyết trên tập huấn luyện; $z_{ij}$ là giá trị chuẩn hóa. Việc chuẩn hóa đặc biệt cần cho hồi quy logistic, còn mô hình cây ít nhạy hơn với thang đo \cite{bishop2006pattern,hosmer2013applied}.
+
+\subsection{Biến phân loại}
+
+Đối với Logistic Regression, Decision Tree, Random Forest, XGBoost và LightGBM, code dùng \texttt{LabelEncoder} riêng cho từng cột. Nếu giá trị mới không xuất hiện trong huấn luyện, code ánh xạ nó về lớp đầu tiên trong encoder. Đây là cách xử lý kỹ thuật nhưng có thể tạo thứ tự giả cho biến định danh; kết quả cần được xem là hạn chế của pipeline.
+
+CatBoost sử dụng preprocessor riêng: biến số chỉ được điền trung vị, không chuẩn hóa; biến phân loại thiếu được thay bằng \texttt{UNKNOWN} và giữ dạng chuỗi để thuật toán xử lý trực tiếp, phù hợp cơ chế của CatBoost \cite{prokhorenkova2018catboost}.
+
+\section{Xử lý mất cân bằng}
+
+SMOTE tạo một điểm tổng hợp:
+\[
+\mathbf{x}_{\mathrm{new}}
+=
+\mathbf{x}_i+\lambda\left(\mathbf{x}_{nn}-\mathbf{x}_i\right),
+\qquad \lambda\sim U(0,1),
+\]
+trong đó $\mathbf{x}_i$ là véc-tơ của một quan sát lớp thiểu số; $\mathbf{x}_{nn}$ là một trong các láng giềng gần của nó; $\lambda$ là số ngẫu nhiên phân bố đều trên $[0,1]$; và $\mathbf{x}_{\mathrm{new}}$ là điểm nội suy \cite{chawla2002smote}.
+
+Đối với bộ A, chiến lược \texttt{smote\_moderate} nâng số mẫu huấn luyện của các lớp 2, 3, 4 và 5 lần lượt tới 3.000, 2.000, 2.000 và 5.000. Các giá trị gốc tương ứng là 1.030, 483, 627 và 2.689. Đối với bộ B, bảng so sánh mô hình đầy đủ dùng chiến lược tùy chỉnh, nâng bốn lớp này lần lượt tới 300, 100, 100 và 200 từ các mức 70, 9, 10 và 18. SMOTE được đặt sau preprocessor và trước classifier trong pipeline, nên chỉ tác động tới tập huấn luyện.
+
+Code mới còn cho phép học theo chi phí bằng trọng số lớp:
+\[
+w_c=\frac{N}{K\,n_c},
+\]
+trong đó $N$ là số quan sát huấn luyện, $K$ là số lớp hiện diện và $n_c$ là số quan sát lớp $c$. Mỗi quan sát $i$ nhận trọng số $w_{y_i}$. Riêng XGBoost nhận trọng số do \texttt{compute\_sample\_weights()} tính lại trên từng fold thông qua \texttt{classifier\_\_sample\_weight}; nhờ đó nhánh \texttt{class\_weight} có hiệu lực mà không dùng tần suất của phần kiểm định. Với CatBoost, mọi lựa chọn xử lý mất cân bằng khác \texttt{none} được code chuyển thành \texttt{auto\_class\_weights=Balanced}, không chạy SMOTE trên chuỗi phân loại.
+
+Hai lưu ý cần nêu rõ. Thứ nhất, biến phân loại đã label-encode được SMOTE nội suy như biến số, có thể sinh giá trị không tương ứng danh mục thực. Thứ hai, trang phân tích Top-$k$ của bộ B gọi chiến lược \texttt{smote\_moderate}, khác với chiến lược tùy chỉnh của bảng mô hình đầy đủ. Do đó, so sánh số tuyệt đối giữa hai bảng còn chịu ảnh hưởng của chiến lược lấy mẫu. Tài liệu cho thấy xử lý mất cân bằng có thể làm thay đổi thứ hạng mô hình và không có một kỹ thuật luôn tốt nhất \cite{brown2012experimental}.
+
+\section{Các mô hình được cài đặt}
+
+Mã nguồn cài đặt Logistic Regression, Decision Tree, Random Forest, XGBoost, LightGBM và CatBoost. Các tham số chính gồm:
+
+\begin{itemize}
+    \item Decision Tree: độ sâu tối đa 10, tối thiểu 10 mẫu ở lá;
+    \item Random Forest: 300 cây, độ sâu tối đa 15, tối thiểu 5 mẫu ở lá \cite{breiman2001random};
+    \item XGBoost: 400 cây, độ sâu 6, learning rate 0,05, subsample và colsample bằng 0,8 \cite{chen2016xgboost};
+    \item LightGBM: 400 cây, độ sâu 8, learning rate 0,05, subsample và colsample bằng 0,8 \cite{ke2017lightgbm};
+    \item CatBoost: 400 vòng lặp, độ sâu 6, learning rate 0,05 và hàm mất mát đa lớp \cite{prokhorenkova2018catboost}.
+\end{itemize}
+
+Các giá trị này được cấu hình cố định trong code, không phải kết quả Grid Search. Vì vậy, luận văn không tuyên bố đã tối ưu siêu tham số. Logistic Regression trong môi trường tái chạy hiện tại phát sinh lỗi tương thích API do tham số \texttt{multi\_class}; mô hình này chưa được đưa vào bảng kết quả xác nhận ở Chương 4.
+
+\section{Thước đo đánh giá}
+
+\subsection{Ma trận nhầm lẫn đa lớp}
+
+Với $K=5$ lớp, phần tử $C_{ab}$ của ma trận nhầm lẫn là số quan sát có lớp thực $a$ nhưng được dự báo thành lớp $b$. Đường chéo $C_{aa}$ là số dự báo đúng của lớp $a$. Trong bài toán này, ma trận đa lớp phù hợp hơn cách ký hiệu TP--TN của bài toán nhị phân.
+
+\subsection{Precision, Recall và F1 theo lớp}
+
+Với lớp $k$:
+\[
+P_k=\frac{TP_k}{TP_k+FP_k},\qquad
+R_k=\frac{TP_k}{TP_k+FN_k},
+\]
+\[
+F1_k=\frac{2P_kR_k}{P_k+R_k}.
+\]
+Trong đó $TP_k$ là số quan sát lớp $k$ được dự báo đúng; $FP_k$ là số quan sát thuộc lớp khác nhưng bị dự báo thành $k$; $FN_k$ là số quan sát lớp $k$ bị dự báo sang lớp khác; $P_k$ là Precision; $R_k$ là Recall.
+
+Macro-F1 cho trọng số bằng nhau cho năm lớp:
+\[
+F1_{\mathrm{macro}}=\frac{1}{K}\sum_{k=1}^{K}F1_k,
+\]
+trong đó $K=5$. Weighted-F1 dùng tỷ trọng hỗ trợ:
+\[
+F1_{\mathrm{weighted}}=\sum_{k=1}^{K}\frac{n_k}{N}F1_k,
+\]
+trong đó $n_k$ là số quan sát thực của lớp $k$ và $N=\sum_k n_k$. Ở bộ B, nhóm 1 chiếm 97,51\%, nên Weighted-F1 có thể cao dù mô hình không nhận diện được nhóm 3 và 4; vì vậy Macro-F1 là tiêu chí chính. Bộ A cân bằng hơn nhưng nhóm 1 vẫn chiếm 77,65\%, nên cùng nguyên tắc báo cáo được áp dụng.
+
+\subsection{Accuracy và ROC-AUC đa lớp}
 
 \[
-Accuracy=
-\frac{TP+TN}
-{TP+TN+FP+FN}
+\mathrm{Accuracy}=\frac{\sum_{k=1}^{K}C_{kk}}{N}.
 \]
+Accuracy là tỷ lệ tổng dự báo đúng nhưng bị chi phối bởi lớp 1.
 
-\subsection{Precision}
-
+Code tính ROC-AUC theo One-vs-Rest và lấy trung bình macro:
 \[
-Precision=
-\frac{TP}
-{TP+FP}
+\mathrm{AUC}_{\mathrm{macro,OvR}}
+=\frac{1}{K}\sum_{k=1}^{K}\mathrm{AUC}\bigl(y^{(k)},\hat{p}^{(k)}\bigr),
 \]
+trong đó $y^{(k)}$ là nhãn nhị phân ``thuộc/không thuộc lớp $k$''; $\hat{p}^{(k)}$ là xác suất dự báo cho lớp $k$; và $\mathrm{AUC}$ đo khả năng xếp hạng giữa mẫu dương và âm \cite{fawcett2006roc}.
 
-\subsection{Recall}
+\subsection{Kiểm định phân tầng lặp và hiệu chỉnh quyết định}
 
+Gọi $m_{rf}$ là Macro-F1 ở lần lặp $r$ và fold $f$. Code báo cáo:
 \[
-Recall=
-\frac{TP}
-{TP+FN}
+\bar m=\frac{1}{RF}\sum_{r=1}^{R}\sum_{f=1}^{F}m_{rf},
+\qquad
+s_m=\sqrt{\frac{1}{RF}\sum_{r=1}^{R}\sum_{f=1}^{F}(m_{rf}-\bar m)^2}.
 \]
+Trong đó $\bar m$ là Macro-F1 trung bình và $s_m$ là độ lệch chuẩn theo cách cài đặt \texttt{numpy.std} với mẫu số $RF$. Precision, Recall và F1 từng nhóm được tổng hợp tương tự. \texttt{total\_support} bằng $R n_c$, tức tổng số lần quan sát lớp $c$ xuất hiện trong các tập kiểm định, không phải số khách hàng độc lập mới.
 
-\subsection{F1-Score}
-
+Từ xác suất $\hat p_{ic}$, code cho phép nhân hệ số ưu tiên $b_c\geq1$ cho lớp hiếm:
 \[
-F1=
-2
-\times
-\frac{Precision\times Recall}
-{Precision+Recall}
+\hat y_i=\arg\max_c\left(b_c\hat p_{ic}\right).
 \]
+Trong đó $\hat p_{ic}$ là xác suất quan sát $i$ thuộc lớp $c$; $b_c$ là hệ số boost, mặc định bằng 1; và $\hat y_i$ là nhãn sau hiệu chỉnh. Lưới thử $b_c\in\{1,2,3,5,8,12,20\}$ nhằm tối đa Macro-F1. Tuy nhiên, giao diện hiện tìm hệ số trên chính tập đang hiển thị kết quả, nên điểm sau boost là hậu nghiệm lạc quan và không được dùng làm kết quả kiểm định chính. Khi triển khai phải chọn $b_c$ trên validation riêng, rồi khóa hệ số trước khi đánh giá test.
 
-\subsection{Confusion Matrix}
+\section{Phân tích số lượng và nhóm đặc trưng}
 
-Confusion Matrix cho phép đánh giá khả năng phân loại của mô hình trên từng nhóm nợ.
+Trong cấu hình báo cáo, mô hình XGBoost đầy đủ tạo thứ hạng importance riêng cho từng bộ dữ liệu. Với các đặc trưng được sắp $I_{(1)}\geq\cdots\geq I_{(p)}$, tỷ lệ importance tích lũy tại $k$ là:
+\[
+Q(k)=\frac{\sum_{j=1}^{k}I_{(j)}}{\sum_{j=1}^{p}I_{(j)}}\times100\%.
+\]
+Trong đó $I_{(j)}$ là importance của đặc trưng xếp hạng $j$; $p=13$ đối với pool đầy đủ của bộ A và $p=98$ đối với bộ B; $Q(k)$ không phải tỷ lệ hiệu năng được giữ lại. Do đó, số biến đạt 95\% importance chỉ là ứng viên, phải được huấn luyện lại và đánh giá ngoài mẫu. Code kiểm tra các mốc $k\in\{3,5,7,9,11,13\}$ cho bộ A và $k\in\{5,10,15,20,30,45,60,98\}$ cho bộ B.
 
-\subsection{ROC-AUC}
+Đóng góp nhóm $g$ được code tính:
+\[
+I_g=\sum_{j:\,g(j)=g}I_j,\qquad
+S_g=\frac{I_g}{\sum_{r}I_r}\times100\%,
+\]
+trong đó $g(j)$ ánh xạ đặc trưng $j$ sang nhóm nghiệp vụ; $I_g$ là tổng importance và $S_g$ là tỷ trọng của nhóm.
 
-ROC-AUC được sử dụng để đánh giá khả năng phân biệt giữa các lớp \cite{fawcett2006roc}.
+Điểm ưu tiên dữ liệu trong code là:
+\[
+\mathrm{Priority}_g=S_g\left(\frac{M_g}{100}+0,1\right),
+\]
+trong đó $M_g$ là tỷ lệ thiếu trung bình của nhóm $g$ và 0,1 là hệ số nền do tác giả quy ước. Đây là chỉ số heuristic để sắp xếp thảo luận, chưa phải hàm lợi ích kinh tế đã được hiệu chỉnh.
+
+Ba giới hạn của mô-đun lựa chọn biến cần được giữ trong cách diễn giải. Thứ nhất, nhãn ``bộ 11 biến đã chọn'' và ``bộ 16 biến rút gọn'' trong màn hình so sánh hiện lấy Top-11 hoặc Top-16 theo importance, không lấy đúng danh sách cấu hình tương ứng; luận văn vì vậy tính riêng kết quả của bộ 11 biến thực và không sử dụng nhãn Top-16 như bằng chứng cho bộ 16 định trước. Thứ hai, nhiều giá trị $k$ được xem xét trên cùng tập kiểm định, nên lựa chọn $k$ tốt nhất có thiên lệch lựa chọn; các đường cong này chỉ là phân tích khám phá. Thứ ba, tổng importance theo nhóm không thay thế thí nghiệm loại bỏ từng nhóm.
 
 \section{Tóm tắt chương}
 
-Chương này đã trình bày nguồn dữ liệu nghiên cứu, quy trình tiền xử lý dữ liệu, kỹ thuật xây dựng đặc trưng, phương pháp xử lý mất cân bằng dữ liệu, thiết kế thực nghiệm và các tiêu chí đánh giá mô hình.
-
-Các nội dung này là cơ sở để xây dựng, huấn luyện và đánh giá các mô hình trí tuệ nhân tạo phục vụ bài toán xếp hạng tín dụng trong Chương 4.
-```
+Chương 3 đã mô tả hai nhánh dữ liệu đúng theo code. Bộ A có 27.001 hồ sơ, 21 cột thô, 11 biến cấu hình chính và pool kiểm chứng 13 biến. Bộ B có 5.400 dòng, 178 cột thô, 5.381 quan sát có nhãn và 98 đặc trưng mô hình. Chương cũng làm rõ thực nghiệm hiện tại là phân loại năm nhóm nợ, chưa phải kiểm định dự báo chuyển nhóm theo thời gian. Các công thức, ký hiệu, chiến lược SMOTE, tham số mô hình, thước đo và giới hạn của mô-đun Top-$k$ đã được giải thích để làm cơ sở đọc kết quả Chương 4.

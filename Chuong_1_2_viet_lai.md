@@ -1,3 +1,15 @@
+# LỜI MỞ ĐẦU
+
+Trong hoạt động ngân hàng, phân loại nợ không chỉ là yêu cầu ghi nhận chất lượng tài sản tại một thời điểm mà còn là cơ sở để trích lập dự phòng, quản lý danh mục và tổ chức các biện pháp xử lý tín dụng. Tuy nhiên, nếu ngân hàng chỉ nhận diện rủi ro sau khi khoản vay đã chuyển sang nhóm nợ có mức độ rủi ro cao hơn thì khả năng can thiệp thường bị thu hẹp và chi phí xử lý có thể gia tăng. Vì vậy, vấn đề có ý nghĩa quản trị không chỉ là xác định khách hàng đang thuộc nhóm nợ nào, mà còn là dự báo khách hàng có khả năng chuyển nhóm nợ trong một khoảng thời gian sắp tới.
+
+Sự phát triển của dữ liệu và học máy tạo điều kiện để ngân hàng khai thác đồng thời nhiều nguồn thông tin về khách hàng, khoản vay, tài sản bảo đảm, lịch sử tín dụng, hành vi thanh toán và quan hệ tín dụng. Bộ dữ liệu sử dụng trong nghiên cứu ban đầu có 178 đặc trưng. Quy mô đặc trưng lớn mang lại khả năng mô tả khách hàng chi tiết hơn, nhưng không đồng nghĩa rằng toàn bộ đặc trưng đều tạo thêm giá trị dự báo. Những biến trùng lặp, ít biến động, có mức độ thiếu cao hoặc cùng phản ánh một tín hiệu có thể làm mô hình phức tạp hơn, tăng chi phí dữ liệu và nguy cơ quá khớp mà không cải thiện đáng kể hiệu năng ngoài mẫu.
+
+Từ vấn đề trên, luận văn được định hướng theo đề tài **“Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam”**. Nghiên cứu không chỉ tìm mô hình có khả năng dự báo phù hợp, mà còn xem xét giá trị gia tăng của từng đặc trưng và từng nhóm thông tin nghiệp vụ. Trọng tâm là xác định liệu nhiều đặc trưng hơn có luôn làm mô hình tốt hơn; nhóm đặc trưng nào đóng góp nhiều nhất; có thể rút gọn 178 đặc trưng xuống mức nào mà vẫn duy trì gần như toàn bộ hiệu năng; và nếu ngân hàng tiếp tục đầu tư dữ liệu thì nên ưu tiên nhóm thông tin nào.
+
+Để trả lời các vấn đề này, nghiên cứu xây dựng các tập đặc trưng lồng nhau theo thứ tự đóng góp, huấn luyện và đánh giá mô hình trên cùng một sơ đồ kiểm định. Hiệu năng của tập đầy đủ 178 đặc trưng được dùng làm mốc tham chiếu. Một tập rút gọn chỉ được chấp nhận khi mức suy giảm hiệu năng nằm trong ngưỡng xác định trước và kết quả ổn định trên dữ liệu ngoài mẫu. Đồng thời, SHAP, permutation importance và thí nghiệm loại bỏ/bổ sung từng nhóm đặc trưng được sử dụng để lượng hóa đóng góp ở cả cấp độ biến và cấp độ nhóm nghiệp vụ.
+
+Kết quả kỳ vọng của nghiên cứu gồm hai phần có quan hệ chặt chẽ. Thứ nhất là một mô hình dự báo khả năng chuyển nhóm nợ, cung cấp tín hiệu hỗ trợ cán bộ quản trị rà soát các khoản vay có nguy cơ suy giảm chất lượng trước khi trạng thái xấu được ghi nhận. Thứ hai là bằng chứng định lượng phục vụ chiến lược dữ liệu: ngân hàng biết nhóm thông tin nào thực sự tạo giá trị, mức độ rút gọn hợp lý và phần dữ liệu nào cần được ưu tiên chuẩn hóa hoặc mở rộng. Theo cách tiếp cận này, luận văn hướng tới một giải pháp có hiệu năng dự báo, có khả năng giải thích và có tính khả thi khi triển khai, thay vì chỉ lựa chọn thuật toán đạt điểm số cao nhất.
+
 # CHƯƠNG 1. GIỚI THIỆU NGHIÊN CỨU
 
 ## 1.1. Bối cảnh nghiên cứu
@@ -10,13 +22,13 @@ Tại Việt Nam, khuôn khổ phân loại tài sản có đối với ngân h�
 
 Bên cạnh dữ liệu nội bộ, hoạt động thông tin tín dụng do Trung tâm Thông tin tín dụng Quốc gia Việt Nam (CIC) làm đầu mối theo Thông tư số 15/2023/TT-NHNN tạo ra nguồn thông tin quan trọng về lịch sử quan hệ tín dụng và nghĩa vụ của khách hàng. Tuy nhiên, dữ liệu nhiều nguồn cũng kéo theo các vấn đề về độ đầy đủ, tính nhất quán, sai lệch thời điểm, giá trị thiếu và rò rỉ thông tin. Do đó, chất lượng dữ liệu và cách xác định thời điểm dự báo là điều kiện nền tảng để một mô hình có giá trị sử dụng thực tế.
 
-Các phương pháp chấm điểm tín dụng truyền thống chủ yếu dựa trên phân tích chuyên gia, phân tích biệt thức và hồi quy logistic. Công trình của Altman (1968) cho thấy các tỷ số tài chính có thể được kết hợp để dự báo nguy cơ phá sản doanh nghiệp. Ohlson (1980) tiếp tục phát triển cách tiếp cận xác suất bằng mô hình logit. Trong lĩnh vực tín dụng tiêu dùng, Hand và Henley (1997) và Thomas (2000) hệ thống hóa nền tảng thống kê của credit scoring và behavioural scoring. Ưu điểm của hồi quy logistic là cấu trúc rõ ràng, dễ kiểm tra dấu của hệ số và thuận lợi khi giải thích quyết định. Tuy nhiên, quan hệ giữa đặc điểm khách hàng với xác suất vỡ nợ có thể phi tuyến, có tương tác và thay đổi theo thời gian; đây là những khía cạnh mà mô hình tuyến tính khó nắm bắt nếu không thiết kế biến thủ công.
+Các phương pháp chấm điểm tín dụng truyền thống chủ yếu dựa trên phân tích chuyên gia, phân tích biệt thức và hồi quy logistic. Công trình gốc của Altman (1968) sử dụng mẫu ghép cặp 66 doanh nghiệp sản xuất, gồm 33 doanh nghiệp phá sản và 33 doanh nghiệp không phá sản. Từ 22 tỷ số tài chính ban đầu, tác giả lựa chọn 5 tỷ số để xây dựng hàm phân biệt Z-score. Trên mẫu ước lượng và tại thời điểm một năm trước phá sản, mô hình phân loại đúng khoảng 95% số doanh nghiệp. Đây là một kết quả có ảnh hưởng lớn, nhưng cần nhấn mạnh rằng nó được tính trên mẫu nhỏ, cân bằng và thuộc doanh nghiệp sản xuất Hoa Kỳ; con số 95% không thể được xem là mức chính xác kỳ vọng khi áp dụng trực tiếp cho khách hàng ngân hàng Việt Nam. Ohlson (1980) khắc phục một phần hạn chế của thiết kế ghép cặp khi ước lượng mô hình logit trên 105 doanh nghiệp phá sản và 2.058 doanh nghiệp không phá sản, qua đó chuyển trọng tâm từ một điểm phân biệt sang xác suất phá sản. Trong lĩnh vực tín dụng tiêu dùng, Hand và Henley (1997) và Thomas (2000) hệ thống hóa nền tảng thống kê của credit scoring và behavioural scoring. Ưu điểm của hồi quy logistic là cấu trúc rõ ràng, dễ kiểm tra dấu của hệ số và thuận lợi khi giải thích quyết định. Tuy nhiên, quan hệ giữa đặc điểm khách hàng với xác suất vỡ nợ có thể phi tuyến, có tương tác và thay đổi theo thời gian; đây là những khía cạnh mà mô hình tuyến tính khó nắm bắt nếu không thiết kế biến thủ công.
 
-Sự phát triển của học máy mở rộng đáng kể tập phương pháp dùng cho chấm điểm tín dụng. Random Forest kết hợp lấy mẫu bootstrap và lựa chọn ngẫu nhiên biến tại từng nút để giảm phương sai của cây quyết định (Breiman, 2001). Gradient Boosting xây dựng tuần tự các mô hình yếu nhằm hiệu chỉnh sai số của mô hình trước (Friedman, 2001). XGBoost bổ sung cơ chế chính quy hóa và triển khai có khả năng mở rộng (Chen & Guestrin, 2016), trong khi LightGBM sử dụng các kỹ thuật lấy mẫu và gom đặc trưng để tăng hiệu quả tính toán trên dữ liệu lớn (Ke et al., 2017). Các nghiên cứu đối sánh cho thấy không có một thuật toán luôn tốt nhất trên mọi bộ dữ liệu, nhưng các phương pháp ensemble thường tạo ra kết quả cạnh tranh và cần được đánh giá thực nghiệm thay vì lựa chọn theo cảm tính (Baesens et al., 2003; Lessmann et al., 2015; Dastile et al., 2020).
+Sự phát triển của học máy mở rộng đáng kể tập phương pháp dùng cho chấm điểm tín dụng. Random Forest kết hợp lấy mẫu bootstrap và lựa chọn ngẫu nhiên biến tại từng nút để giảm phương sai của cây quyết định (Breiman, 2001). Gradient Boosting xây dựng tuần tự các mô hình yếu nhằm hiệu chỉnh sai số của mô hình trước (Friedman, 2001). XGBoost bổ sung cơ chế chính quy hóa và triển khai có khả năng mở rộng; bài báo gốc cho thấy kiến trúc này có thể xử lý quy mô hàng tỷ quan sát trong các bài toán benchmark, nhưng đây là minh chứng về khả năng tính toán chứ không phải bằng chứng riêng về hiệu năng tín dụng (Chen & Guestrin, 2016). LightGBM sử dụng các kỹ thuật lấy mẫu và gom đặc trưng để tăng hiệu quả tính toán trên dữ liệu lớn; trong thử nghiệm của Ke et al. (2017), thời gian huấn luyện nhanh hơn GBDT truyền thống tới trên 20 lần trong khi độ chính xác gần tương đương. Kết quả tốc độ này phụ thuộc phần cứng, dữ liệu và cấu hình thử nghiệm, nên không được hiểu là LightGBM luôn nhanh hơn XGBoost đúng 20 lần trong mọi ứng dụng.
 
 Việc ứng dụng học máy trong tín dụng cũng đặt ra ba thách thức. Thứ nhất, dữ liệu nợ xấu thường mất cân bằng: số khách hàng tốt lớn hơn nhiều số khách hàng xấu. Nếu chỉ tối đa hóa độ chính xác, mô hình có thể dự đoán tốt lớp đa số nhưng bỏ sót nhiều trường hợp rủi ro. Thứ hai, chi phí của hai loại sai lầm không giống nhau. Dự báo một khách hàng xấu thành tốt có thể gây tổn thất tín dụng, còn dự báo một khách hàng tốt thành xấu làm mất cơ hội kinh doanh và ảnh hưởng trải nghiệm khách hàng. Thứ ba, mô hình có hiệu năng cao nhưng không giải thích được sẽ khó kiểm định, khó giám sát và khó sử dụng trong quy trình ra quyết định có trách nhiệm. SHAP, dựa trên giá trị Shapley, là một hướng tiếp cận nhằm giải thích đóng góp của từng biến cho dự báo ở cấp độ toàn cục và từng hồ sơ (Lundberg & Lee, 2017).
 
-Từ các vấn đề trên, nghiên cứu lựa chọn cách tiếp cận so sánh mô hình thống kê với các mô hình học máy trên cùng một quy trình dữ liệu, đồng thời xem xét mất cân bằng lớp, lựa chọn thước đo phù hợp và khả năng giải thích. Cách tiếp cận này giúp tránh kết luận đơn giản rằng mô hình phức tạp đương nhiên tốt hơn mô hình truyền thống.
+Từ các vấn đề trên, nghiên cứu lựa chọn cách tiếp cận so sánh mô hình thống kê với các mô hình học máy trên cùng một quy trình dữ liệu, đồng thời xem xét mất cân bằng lớp, lựa chọn thước đo phù hợp và khả năng giải thích. Điểm khác biệt là hiệu năng được phân tích theo quy mô và nhóm đặc trưng, thay vì chỉ so sánh tên thuật toán. Tập đầy đủ 178 đặc trưng được dùng làm mốc tham chiếu; các tập rút gọn được đánh giá để tìm số lượng đặc trưng nhỏ nhất vẫn duy trì gần như toàn bộ hiệu năng ngoài mẫu.
 
 ## 1.2. Lý do lựa chọn đề tài
 
@@ -26,13 +38,15 @@ Thứ nhất, nợ xấu có tác động trực tiếp đến chất lượng t
 
 Thứ hai, dữ liệu tín dụng ngày càng có quy mô và mức độ đa dạng cao. Ngoài thông tin hồ sơ tại thời điểm cấp tín dụng, ngân hàng có thể khai thác lịch sử thanh toán, dư nợ, tần suất quá hạn, biến động dòng tiền và thông tin quan hệ tín dụng. Cấu trúc dữ liệu này tạo điều kiện cho học máy phát hiện quan hệ phi tuyến và tương tác biến mà phương pháp truyền thống có thể bỏ sót.
 
-Thứ ba, bằng chứng trong tài liệu chưa cho phép khẳng định một mô hình duy nhất luôn tối ưu. Lessmann et al. (2015) nhấn mạnh vai trò của đánh giá đối sánh trên nhiều bộ dữ liệu và nhiều chỉ tiêu. Brown và Mues (2012) cho thấy mất cân bằng dữ liệu ảnh hưởng đáng kể đến so sánh thuật toán chấm điểm tín dụng. Vì vậy, một đánh giá phù hợp với dữ liệu và bối cảnh sử dụng tại Việt Nam vẫn cần thiết.
+Thứ ba, bằng chứng trong tài liệu chưa cho phép khẳng định một mô hình duy nhất luôn tối ưu. Lessmann et al. (2015) thực hiện một trong những đối sánh quy mô lớn trong credit scoring: 41 bộ phân loại được đánh giá trên 8 bộ dữ liệu tín dụng bán lẻ thực bằng 6 thước đo. Các tác giả tìm thấy nhiều mô hình dự báo chính xác hơn hồi quy logistic và nhóm ensemble không đồng nhất có kết quả nổi bật, nhưng thứ hạng thay đổi theo dữ liệu và thước đo. Brown và Mues (2012) sử dụng 5 bộ dữ liệu tín dụng thực, chia hai phần ba cho huấn luyện và một phần ba cho kiểm định, sau đó giảm dần tỷ lệ khách hàng xấu từ cấu hình ban đầu 70/30 tới mức cực đoan 99/1. Ở mức 99% tốt–1% xấu, Random Forest đạt thứ hạng AUC trung bình tốt nhất; C4.5, phân tích biệt thức bậc hai và k-láng giềng suy giảm đáng kể so với nhóm tốt nhất. Những kết quả này là bằng chứng rõ về ảnh hưởng của mất cân bằng, nhưng không thay thế việc kiểm định trên dữ liệu Việt Nam.
 
 Thứ tư, hiệu năng dự báo chỉ là một điều kiện của mô hình ứng dụng trong ngân hàng. Mô hình còn phải có khả năng kiểm tra, giải thích, tái lập và giám sát. Việc kết hợp mô hình học máy với SHAP cho phép nghiên cứu xem xét đồng thời hai khía cạnh: khả năng phân biệt rủi ro và khả năng lý giải dự báo.
 
 ## 1.3. Vấn đề nghiên cứu
 
-Vấn đề trung tâm của nghiên cứu là xây dựng và đánh giá một quy trình dự báo khách hàng hoặc khoản vay có khả năng chuyển thành nợ xấu trên dữ liệu tín dụng, trong điều kiện dữ liệu có thể mất cân bằng và chứa quan hệ phi tuyến.
+Vấn đề trung tâm của nghiên cứu là xây dựng và đánh giá quy trình dự báo khách hàng hoặc khoản vay có khả năng chuyển từ nhóm nợ hiện tại sang nhóm nợ có mức độ rủi ro cao hơn trong một cửa sổ dự báo xác định. Mô hình hướng tới hỗ trợ phân loại nợ và tạo tín hiệu cảnh báo sớm, không chỉ nhận diện nợ xấu đã phát sinh.
+
+Bên cạnh hiệu năng dự báo, nghiên cứu giải quyết bài toán hiệu quả đặc trưng. Bộ dữ liệu có 178 đặc trưng thuộc nhiều nhóm nghiệp vụ, nhưng chi phí thu thập, làm sạch, liên kết và duy trì dữ liệu không giống nhau. Nếu một tập nhỏ hơn giữ gần như toàn bộ hiệu năng, mô hình rút gọn có thể giảm độ phức tạp, hạn chế thiếu dữ liệu và thuận lợi hơn cho triển khai. Ngược lại, nếu một số nhóm đặc trưng tạo mức tăng hiệu năng rõ rệt, đó là căn cứ để ngân hàng ưu tiên đầu tư dữ liệu.
 
 Nghiên cứu không đồng nhất “mô hình tốt” với mô hình có Accuracy cao nhất. Một mô hình được xem là phù hợp khi đáp ứng đồng thời các yêu cầu:
 
@@ -41,13 +55,14 @@ Nghiên cứu không đồng nhất “mô hình tốt” với mô hình có Ac
 3. Duy trì độ ổn định qua các tập kiểm định hoặc qua thời gian;
 4. Có thể giải thích các biến thúc đẩy rủi ro ở cấp danh mục và cấp khách hàng;
 5. Không sử dụng thông tin phát sinh sau thời điểm dự báo, qua đó tránh rò rỉ dữ liệu;
-6. Có khả năng tích hợp vào quy trình nghiệp vụ và giám sát mô hình.
+6. Có khả năng tích hợp vào quy trình nghiệp vụ và giám sát mô hình;
+7. Xác định được tập đặc trưng rút gọn có hiệu quả và đóng góp của từng nhóm đặc trưng nghiệp vụ.
 
 ## 1.4. Mục tiêu nghiên cứu
 
 ### 1.4.1. Mục tiêu tổng quát
 
-Mục tiêu tổng quát của nghiên cứu là xây dựng và đánh giá mô hình học máy hỗ trợ dự báo sớm nợ xấu, đồng thời bảo đảm kết quả có thể giải thích và có ý nghĩa đối với quản trị rủi ro tín dụng tại ngân hàng.
+Mục tiêu tổng quát của nghiên cứu là đề xuất mô hình dự báo khả năng chuyển nhóm nợ nhằm hỗ trợ công tác phân loại nợ và cảnh báo sớm rủi ro tín dụng; đồng thời xác định tập đặc trưng và nhóm thông tin nghiệp vụ tạo ra giá trị dự báo lớn nhất để hỗ trợ ngân hàng tối ưu hóa mô hình và định hướng đầu tư dữ liệu.
 
 ### 1.4.2. Mục tiêu cụ thể
 
@@ -57,24 +72,31 @@ Nghiên cứu hướng tới các mục tiêu cụ thể sau:
 2. Làm rõ căn cứ pháp lý dùng để xác định nhãn nợ xấu và nguyên tắc sử dụng thông tin tín dụng;
 3. Xây dựng quy trình chuẩn bị dữ liệu, bao gồm kiểm tra chất lượng, xử lý giá trị thiếu, mã hóa biến, kiểm soát ngoại lệ và ngăn ngừa rò rỉ dữ liệu;
 4. Xây dựng mô hình hồi quy logistic làm mô hình cơ sở và so sánh với các mô hình cây/ensemble như Decision Tree, Random Forest, XGBoost và LightGBM;
-5. Đánh giá tác động của biện pháp xử lý mất cân bằng, trong đó SMOTE chỉ được áp dụng trên tập huấn luyện;
-6. So sánh mô hình bằng các chỉ tiêu phù hợp như ROC-AUC, PR-AUC, Recall, Precision, F1-score và ma trận nhầm lẫn; đồng thời xem xét hiệu chỉnh xác suất nếu mô hình được dùng để ước lượng xác suất vỡ nợ;
-7. Sử dụng SHAP để giải thích các yếu tố ảnh hưởng đến dự báo và minh họa giải thích cho từng hồ sơ;
-8. Đề xuất khuyến nghị triển khai và giám sát mô hình trong hoạt động quản trị rủi ro.
+5. Đánh giá liệu việc sử dụng đầy đủ 178 đặc trưng có tạo ra hiệu năng tốt hơn một cách ổn định so với các tập đặc trưng rút gọn;
+6. Xác định nhóm đặc trưng nghiệp vụ đóng góp lớn nhất cho dự báo chuyển nhóm nợ bằng SHAP, permutation importance và thí nghiệm loại bỏ/bổ sung theo nhóm;
+7. Xác định số lượng đặc trưng tối thiểu có thể giữ gần như toàn bộ hiệu năng của mô hình 178 đặc trưng theo một ngưỡng chấp nhận được xác định trước;
+8. Đánh giá tác động của biện pháp xử lý mất cân bằng, trong đó SMOTE chỉ được áp dụng trên tập huấn luyện;
+9. So sánh mô hình bằng ROC-AUC, PR-AUC, Recall, Precision, F1-score và ma trận nhầm lẫn; đồng thời xem xét hiệu chỉnh xác suất chuyển nhóm;
+10. Đề xuất thứ tự ưu tiên thu thập, chuẩn hóa và mở rộng các nhóm thông tin nghiệp vụ dựa trên mức đóng góp dự báo và chi phí dữ liệu;
+11. Đề xuất cách triển khai, giải thích và giám sát mô hình trong hoạt động quản trị rủi ro.
 
 ## 1.5. Câu hỏi nghiên cứu
 
 Nghiên cứu trả lời các câu hỏi sau:
 
-**Câu hỏi 1:** Những nhóm biến nào có liên hệ đáng kể với khả năng khách hàng hoặc khoản vay chuyển thành nợ xấu?
+**Câu hỏi 1:** Nhiều đặc trưng hơn có luôn giúp mô hình dự báo khả năng chuyển nhóm nợ tốt hơn không?
 
-**Câu hỏi 2:** Trên cùng một tập dữ liệu và cùng một quy trình kiểm định, mô hình học máy có cải thiện khả năng dự báo so với hồi quy logistic hay không?
+**Câu hỏi 2:** Nhóm đặc trưng nghiệp vụ nào đóng góp lớn nhất cho việc phân loại và dự báo chuyển nhóm nợ?
 
-**Câu hỏi 3:** Việc xử lý mất cân bằng lớp ảnh hưởng như thế nào đến khả năng nhận diện nợ xấu và sự đánh đổi giữa Recall với Precision?
+**Câu hỏi 3:** Có thể giảm từ 178 xuống bao nhiêu đặc trưng mà vẫn giữ gần như toàn bộ hiệu năng của mô hình?
 
-**Câu hỏi 4:** Mô hình nào tạo ra sự cân bằng phù hợp nhất giữa hiệu năng, khả năng giải thích và khả năng triển khai?
+**Câu hỏi 4:** Nếu ngân hàng muốn đầu tư mở rộng dữ liệu, nên ưu tiên thu thập và chuẩn hóa những nhóm thông tin nào để đạt hiệu quả dự báo cao nhất?
 
-**Câu hỏi 5:** SHAP có thể cung cấp những thông tin nào về yếu tố rủi ro ở cấp độ toàn danh mục và cấp độ từng khách hàng?
+Để hỗ trợ trả lời bốn câu hỏi chính, nghiên cứu đồng thời xem xét hai câu hỏi phương pháp bổ trợ:
+
+**Câu hỏi 5:** Trên cùng dữ liệu và sơ đồ kiểm định, mô hình học máy có cải thiện khả năng dự báo chuyển nhóm nợ so với hồi quy logistic hay không?
+
+**Câu hỏi 6:** Việc xử lý mất cân bằng ảnh hưởng như thế nào đến khả năng phát hiện trường hợp chuyển nhóm và sự đánh đổi giữa Recall với Precision?
 
 ## 1.6. Đối tượng và phạm vi nghiên cứu
 
@@ -86,7 +108,9 @@ Nghiên cứu trả lời các câu hỏi sau:
 
 ### 1.6.2. Phạm vi nội dung
 
-Nghiên cứu tập trung vào bài toán phân loại nhị phân: nợ tốt và nợ xấu. Nhóm 3, 4 và 5 được gộp thành lớp nợ xấu theo khuôn khổ pháp lý hiện hành; nhóm 1 và 2 được gộp thành lớp chưa phải nợ xấu. Nếu mục tiêu nghiệp vụ là cảnh báo sớm trước khi chuyển nhóm, nhãn phải được xác định tại một khoảng thời gian tương lai cụ thể, ví dụ phát sinh nợ xấu trong vòng 3, 6 hoặc 12 tháng sau ngày quan sát.
+Nghiên cứu tập trung vào dự báo sự dịch chuyển trạng thái nợ trong một cửa sổ tương lai. Ở cấu hình nhị phân, biến mục tiêu nhận giá trị 1 nếu khoản vay chuyển từ nhóm hiện tại sang nhóm có mức độ rủi ro cao hơn trong cửa sổ dự báo và nhận giá trị 0 nếu không chuyển nhóm. Tùy khả năng của dữ liệu, nghiên cứu có thể báo cáo bổ sung bài toán đa lớp dự báo nhóm nợ đích, nhưng bài toán chuyển/không chuyển là cấu hình chính để phục vụ cảnh báo sớm.
+
+Để bảo đảm ý nghĩa nghiệp vụ, luận văn cần xác định rõ nhóm nợ tại ngày quan sát, nhóm nợ trong cửa sổ tương lai và cách xử lý trường hợp khoản vay tất toán hoặc quay về nhóm tốt hơn. Việc gộp nhóm 3, 4 và 5 thành nợ xấu chỉ là một phân tích bổ sung; mục tiêu chính không giới hạn ở thời điểm đã phát sinh nợ xấu.
 
 Nghiên cứu không thay thế quy trình phê duyệt tín dụng hoặc quyết định của cán bộ có thẩm quyền. Kết quả mô hình là thông tin hỗ trợ và phải được sử dụng cùng các quy định nghiệp vụ, kiểm soát tuân thủ và đánh giá chuyên gia.
 
@@ -106,17 +130,19 @@ Nghiên cứu kết hợp tổng quan tài liệu, phân tích định lượng 
 
 Các mô hình được huấn luyện gồm hồi quy logistic, cây quyết định, Random Forest, XGBoost và LightGBM. Siêu tham số được lựa chọn bằng cross-validation trên tập huấn luyện. Tập kiểm định cuối cùng chỉ được sử dụng để báo cáo hiệu năng ngoài mẫu.
 
+Để trả lời nhóm câu hỏi về đặc trưng, nghiên cứu tiến hành bốn lớp thực nghiệm. Thứ nhất, mô hình được huấn luyện với toàn bộ 178 đặc trưng để tạo mốc hiệu năng. Thứ hai, các đặc trưng được xếp hạng bằng phương pháp chỉ sử dụng dữ liệu huấn luyện. Thứ ba, các tập Top-k lồng nhau, chẳng hạn Top-10, 20, 30, 50, 75, 100, 125, 150 và 178, được đánh giá trên cùng sơ đồ kiểm định. Thứ tư, nghiên cứu thực hiện thí nghiệm theo nhóm nghiệp vụ bằng cách chỉ sử dụng từng nhóm, bổ sung tuần tự từng nhóm và loại bỏ từng nhóm khỏi tập đầy đủ. Số lượng đặc trưng tối ưu là giá trị nhỏ nhất thỏa ngưỡng “gần như toàn bộ hiệu năng”, dự kiến không thấp hơn 99% hiệu năng của mô hình đầy đủ hoặc mức suy giảm tuyệt đối không quá 0,005 ROC-AUC/PR-AUC. Ngưỡng cuối cùng phải được công bố trước khi xem kết quả tập kiểm định.
+
 Nghiên cứu sử dụng ma trận nhầm lẫn để xác định đúng/sai theo từng lớp; ROC-AUC để đo khả năng xếp hạng tổng quát; PR-AUC, Recall và F1-score để nhấn mạnh lớp nợ xấu. Ngưỡng phân loại không mặc định là 0,5 mà được xác định theo mục tiêu nghiệp vụ hoặc chi phí sai lầm. Nếu mô hình được sử dụng như một ước lượng xác suất, cần đánh giá thêm calibration bằng Brier score và biểu đồ hiệu chỉnh.
 
 Cuối cùng, SHAP được dùng để phân tích mức độ đóng góp của biến. Giải thích SHAP được hiểu là giải thích dự báo của mô hình, không được diễn giải tự động thành quan hệ nhân quả.
 
 ## 1.8. Đóng góp dự kiến của nghiên cứu
 
-Về học thuật, nghiên cứu cung cấp một đối sánh nhất quán giữa mô hình thống kê và học máy trong bối cảnh dữ liệu tín dụng. Giá trị của đối sánh nằm ở việc sử dụng cùng tập dữ liệu, cùng sơ đồ kiểm định và cùng bộ thước đo, qua đó giảm nguy cơ kết luận do khác biệt quy trình.
+Về học thuật, nghiên cứu cung cấp một đối sánh nhất quán giữa mô hình thống kê và học máy trong bài toán dự báo chuyển nhóm nợ. Giá trị của đối sánh nằm ở việc sử dụng cùng tập dữ liệu, cùng sơ đồ kiểm định và cùng bộ thước đo, qua đó giảm nguy cơ kết luận do khác biệt quy trình.
 
-Về phương pháp, nghiên cứu tích hợp bốn thành phần thường bị tách rời: kiểm soát rò rỉ dữ liệu, xử lý mất cân bằng, đánh giá đa chỉ tiêu và giải thích mô hình.
+Về phương pháp, nghiên cứu tích hợp năm thành phần thường bị tách rời: kiểm soát rò rỉ dữ liệu, xử lý mất cân bằng, đánh giá đa chỉ tiêu, giải thích mô hình và phân tích hiệu năng theo số lượng/nhóm đặc trưng. Thiết kế Top-k và loại bỏ nhóm cho phép phân biệt “đặc trưng quan trọng đối với một dự báo” với “nhóm dữ liệu tạo ra giá trị gia tăng ngoài mẫu”.
 
-Về thực tiễn, nghiên cứu đề xuất cách lựa chọn ngưỡng và mô hình theo mục tiêu quản trị, thay vì chỉ dựa trên Accuracy. Kết quả SHAP có thể hỗ trợ cán bộ quản trị nhận diện yếu tố rủi ro nổi bật và kiểm tra tính hợp lý của dự báo.
+Về thực tiễn, nghiên cứu đề xuất mô hình cảnh báo khả năng chuyển nhóm nợ và cách lựa chọn ngưỡng theo mục tiêu quản trị, thay vì chỉ dựa trên Accuracy. Kết quả còn cung cấp đường cong hiệu năng–số lượng đặc trưng, tập đặc trưng rút gọn và thứ tự ưu tiên đầu tư dữ liệu. SHAP hỗ trợ nhận diện yếu tố rủi ro ở từng hồ sơ, còn kết quả loại bỏ nhóm hỗ trợ quyết định nên duy trì hoặc mở rộng nguồn dữ liệu nào.
 
 ## 1.9. Kết cấu luận văn
 
@@ -127,6 +153,14 @@ Ngoài phần mở đầu, kết luận, tài liệu tham khảo và phụ lục
 - Chương 3 trình bày dữ liệu, thiết kế nghiên cứu, quy trình tiền xử lý, mô hình và tiêu chí đánh giá.
 - Chương 4 trình bày kết quả thực nghiệm, so sánh mô hình, giải thích SHAP và thảo luận.
 - Chương 5 kết luận, đề xuất hàm ý quản trị, nêu hạn chế và hướng nghiên cứu tiếp theo.
+
+## 1.10. Tóm tắt nội dung Chương 1
+
+Chương 1 xác lập định hướng của luận văn là đề xuất mô hình dự báo khả năng chuyển nhóm nợ để hỗ trợ phân loại nợ và cảnh báo sớm rủi ro tín dụng. Khác với cách tiếp cận chỉ phân loại nợ tốt–nợ xấu tại thời điểm hiện tại, nghiên cứu đặt biến mục tiêu trong một cửa sổ tương lai và xem xét liệu khoản vay có chuyển sang nhóm rủi ro cao hơn hay không.
+
+Trên cơ sở bộ dữ liệu gồm 178 đặc trưng, Chương 1 đặt ra bốn câu hỏi trọng tâm: nhiều đặc trưng hơn có luôn tốt hơn; nhóm đặc trưng nghiệp vụ nào đóng góp lớn nhất; có thể rút gọn còn bao nhiêu đặc trưng mà vẫn giữ gần như toàn bộ hiệu năng; và ngân hàng nên ưu tiên đầu tư nguồn dữ liệu nào. Để trả lời, nghiên cứu kết hợp so sánh thuật toán với thí nghiệm Top-k, bổ sung/loại bỏ nhóm đặc trưng và giải thích SHAP trên một quy trình kiểm định thống nhất.
+
+Đóng góp dự kiến không chỉ là một mô hình dự báo, mà còn là bằng chứng phục vụ quản trị dữ liệu. Kết quả phải chỉ ra mức hiệu năng ngoài mẫu, tập đặc trưng tối thiểu, đóng góp của từng nhóm nghiệp vụ và cách chuyển dự báo thành tín hiệu cảnh báo có thể sử dụng trong quy trình ngân hàng.
 
 # CHƯƠNG 2. CƠ SỞ LÝ THUYẾT VÀ TỔNG QUAN NGHIÊN CỨU
 
@@ -184,7 +218,7 @@ Về phương pháp, dữ liệu thu thập từ nhiều hệ thống cần đư
 
 ### 2.3.1. Phân tích biệt thức và Z-score
 
-Altman (1968) sử dụng phân tích biệt thức đa biến để kết hợp các tỷ số tài chính thành Z-score dự báo phá sản doanh nghiệp. Công trình có ý nghĩa nền tảng vì chuyển đánh giá tài chính từ phân tích từng tỷ số riêng lẻ sang một chỉ số tổng hợp có căn cứ thống kê.
+Altman (1968) sử dụng phân tích biệt thức đa biến trên 66 doanh nghiệp sản xuất được ghép thành 33 cặp phá sản–không phá sản. Từ 22 tỷ số ứng viên, tác giả giữ lại 5 tỷ số trong Z-score và báo cáo tỷ lệ phân loại đúng khoảng 95% ở thời điểm một năm trước phá sản trên mẫu ban đầu. Công trình có ý nghĩa nền tảng vì chuyển đánh giá tài chính từ phân tích từng tỷ số riêng lẻ sang một chỉ số tổng hợp có căn cứ thống kê. Tuy nhiên, thiết kế mẫu cân bằng 50/50 khác xa tỷ lệ vỡ nợ tự nhiên trong danh mục tín dụng; do đó Accuracy của nghiên cứu gốc không nên được dùng làm chuẩn hiệu năng trực tiếp cho luận văn.
 
 Tuy nhiên, Z-score được xây dựng cho một bối cảnh, mẫu và thời kỳ cụ thể. Khi áp dụng sang quốc gia, ngành, quy mô doanh nghiệp hoặc giai đoạn khác, hệ số và điểm cắt có thể không còn phù hợp. Do đó, Z-score nên được xem là nền tảng lịch sử và mô hình tham chiếu, không phải bằng chứng rằng một công thức cố định có giá trị phổ quát.
 
@@ -217,7 +251,7 @@ Random Forest có khả năng xử lý phi tuyến và tương tác mà không c
 
 ### 2.3.5. Gradient Boosting, XGBoost và LightGBM
 
-Gradient Boosting xây dựng các mô hình yếu theo trình tự, mỗi mô hình mới tập trung giảm phần sai số còn lại (Friedman, 2001). XGBoost phát triển khung boosting có chính quy hóa, xử lý thưa và tối ưu tính toán (Chen & Guestrin, 2016). LightGBM sử dụng Gradient-based One-Side Sampling và Exclusive Feature Bundling để giảm chi phí tính toán trên dữ liệu lớn, nhiều chiều (Ke et al., 2017).
+Gradient Boosting xây dựng các mô hình yếu theo trình tự, mỗi mô hình mới tập trung giảm phần sai số còn lại (Friedman, 2001). XGBoost phát triển khung boosting có chính quy hóa, xử lý thưa và tối ưu tính toán; hệ thống trong bài gốc được thiết kế để mở rộng vượt quy mô hàng tỷ quan sát (Chen & Guestrin, 2016). LightGBM sử dụng Gradient-based One-Side Sampling và Exclusive Feature Bundling để giảm chi phí tính toán trên dữ liệu lớn, nhiều chiều. Trên các bộ dữ liệu công khai được Ke et al. (2017) sử dụng, LightGBM tăng tốc quá trình huấn luyện so với GBDT thông thường tới trên 20 lần trong khi duy trì độ chính xác gần tương đương. Con số này chứng minh hiệu quả kiến trúc trong điều kiện benchmark của tác giả, không phải một hệ số tốc độ cố định cho mọi bộ dữ liệu tín dụng.
 
 Các thuật toán boosting thường đạt hiệu năng tốt trên dữ liệu bảng, nhưng kết quả phụ thuộc vào siêu tham số và quy trình kiểm định. Cây quá sâu, learning rate không phù hợp hoặc tối ưu quá nhiều lần trên một tập kiểm định có thể dẫn đến quá khớp. Bởi vậy, tên thuật toán không phải là bằng chứng đủ cho chất lượng mô hình.
 
@@ -236,17 +270,38 @@ Dựa trên lý thuyết và tổng hợp tài liệu, biến đầu vào có th
 
 Việc đưa biến vào mô hình cần dựa trên tính sẵn có tại thời điểm dự báo. Một biến có tương quan rất cao với nợ xấu nhưng chỉ xuất hiện sau khi nợ xấu xảy ra không có giá trị dự báo hợp lệ.
 
-### 2.4.2. Chất lượng dữ liệu
+### 2.4.2. Số lượng đặc trưng và giá trị thông tin
+
+Việc tăng số lượng đặc trưng có thể giúp mô hình tiếp cận thêm tín hiệu, nhưng không bảo đảm hiệu năng ngoài mẫu luôn tăng. Khi số đặc trưng lớn, mô hình có thể gặp biến nhiễu, đa cộng tuyến, dữ liệu thiếu, đặc trưng trùng lặp và nguy cơ học những quan hệ không ổn định. Chi phí vận hành cũng tăng vì mỗi đặc trưng cần có nguồn dữ liệu, định nghĩa, kiểm soát chất lượng và cơ chế cập nhật.
+
+Với 178 đặc trưng ban đầu, nghiên cứu không lựa chọn biến chỉ từ một bảng xếp hạng importance duy nhất. SHAP hoặc gain importance cho biết mô hình đang sử dụng biến nào, nhưng chưa đủ để chứng minh biến đó tạo ra giá trị tăng thêm ngoài mẫu. Hai biến tương quan có thể thay thế nhau; khi một biến bị loại, biến còn lại có thể đảm nhận tín hiệu tương tự. Vì vậy, luận văn kết hợp:
+
+1. **Xếp hạng đặc trưng:** dùng SHAP, permutation importance hoặc phương pháp phù hợp trong từng fold huấn luyện;
+2. **Đường cong Top-k:** huấn luyện lại mô hình với các tập đặc trưng lồng nhau để quan sát quan hệ giữa số biến và hiệu năng;
+3. **Đánh giá từng nhóm:** xây mô hình chỉ với một nhóm đặc trưng để đo năng lực độc lập;
+4. **Bổ sung theo nhóm:** thêm từng nhóm vào mô hình cơ sở để đo giá trị gia tăng;
+5. **Loại bỏ theo nhóm:** loại một nhóm khỏi tập đầy đủ để đo mức suy giảm hiệu năng;
+6. **Kiểm tra ổn định:** so sánh thứ hạng biến và kết quả Top-k giữa các fold hoặc các giai đoạn thời gian.
+
+Một nhóm đặc trưng được xem là có đóng góp lớn khi việc bổ sung nhóm đó làm tăng hiệu năng ngoài mẫu một cách ổn định và việc loại bỏ làm giảm hiệu năng đáng kể. Quy mô đặc trưng tối ưu không được xác định bằng cảm tính. Nghiên cứu chọn giá trị \(k^*\) nhỏ nhất thỏa:
+
+\[
+M(k^*) \geq \tau \times M(178)
+\]
+
+trong đó \(M(k)\) là thước đo hiệu năng ngoài mẫu của mô hình dùng \(k\) đặc trưng; \(M(178)\) là hiệu năng với tập đầy đủ; và \(\tau\) là tỷ lệ duy trì hiệu năng, dự kiến bằng 0,99. Có thể sử dụng tiêu chí bổ sung là chênh lệch tuyệt đối không vượt 0,005 đối với ROC-AUC hoặc PR-AUC. Kết luận cuối cùng cần kèm khoảng tin cậy hoặc độ phân tán qua các fold; không nên khẳng định tập rút gọn tương đương nếu chênh lệch nằm trong nhiễu đánh giá.
+
+### 2.4.3. Chất lượng dữ liệu
 
 Giá trị thiếu có thể phản ánh lỗi nhập liệu, khác biệt quy trình hoặc đặc điểm của khách hàng. Vì vậy, trước khi điền khuyết cần phân tích cơ chế thiếu và tỷ lệ thiếu theo thời gian, phân khúc và nhãn. Ngoại lệ cũng không nên bị loại tự động, vì một giá trị cực đoan có thể chính là tín hiệu rủi ro.
 
 Các bước tiền xử lý phải đặt trong pipeline. Thống kê dùng để điền khuyết, chuẩn hóa hoặc chọn biến chỉ được học từ dữ liệu huấn luyện. Nếu tính trên toàn bộ dữ liệu trước khi chia tập, kết quả kiểm định sẽ bị lạc quan.
 
-### 2.4.3. Mất cân bằng lớp
+### 2.4.4. Mất cân bằng lớp
 
 Trong dữ liệu tín dụng, lớp nợ xấu thường chiếm tỷ lệ nhỏ. Accuracy vì vậy có thể gây hiểu lầm. Ví dụ, nếu nợ xấu chiếm 5%, mô hình dự đoán tất cả là nợ tốt vẫn đạt Accuracy 95% nhưng Recall của nợ xấu bằng 0.
 
-SMOTE tạo quan sát tổng hợp của lớp thiểu số dựa trên các điểm lân cận (Chawla et al., 2002). Brown và Mues (2012) cho thấy lựa chọn thuật toán và thước đo trong dữ liệu chấm điểm mất cân bằng cần được xem xét cẩn trọng. SMOTE không mặc nhiên cải thiện dữ liệu; nó có thể làm chồng lấn lớp hoặc khuếch đại nhiễu. Vì vậy, nghiên cứu so sánh ít nhất ba cấu hình: dữ liệu gốc, trọng số lớp và SMOTE. SMOTE chỉ được thực hiện trong tập huấn luyện/từng fold, tuyệt đối không thực hiện trước khi chia tập.
+SMOTE tạo quan sát tổng hợp của lớp thiểu số dựa trên các điểm lân cận (Chawla et al., 2002). Brown và Mues (2012) lượng hóa ảnh hưởng mất cân bằng bằng 5 bộ dữ liệu tín dụng thực và nhiều cấu hình tỷ lệ lớp, từ 70/30 tới 99/1. AUC được dùng làm tiêu chí chính; khác biệt thứ hạng được kiểm định bằng thống kê Friedman và hậu kiểm Nemenyi. Gradient Boosting đứng đầu về thứ hạng trung bình ở 2 trong 5 cấu hình tỷ lệ lớp, còn Random Forest đứng đầu ở cấu hình 10% khách hàng xấu và cấu hình cực đoan chỉ 1% khách hàng xấu. Kết quả cho thấy thuật toán ensemble chống chịu mất cân bằng tương đối tốt, nhưng không chứng minh SMOTE luôn làm tăng hiệu năng. SMOTE có thể làm chồng lấn lớp hoặc khuếch đại nhiễu. Vì vậy, nghiên cứu so sánh ít nhất ba cấu hình: dữ liệu gốc, trọng số lớp và SMOTE. SMOTE chỉ được thực hiện trong tập huấn luyện/từng fold, tuyệt đối không thực hiện trước khi chia tập.
 
 ## 2.5. Đánh giá mô hình
 
@@ -287,6 +342,12 @@ Discrimination và calibration là hai thuộc tính khác nhau. Mô hình có A
 
 K-fold cross-validation phù hợp khi dữ liệu không có cấu trúc thời gian rõ rệt. Với dữ liệu nhiều kỳ, kiểm định theo thời gian phù hợp hơn với mục tiêu dự báo tương lai. Nếu cùng một khách hàng xuất hiện nhiều dòng, cần chia theo nhóm khách hàng để tránh hồ sơ của cùng người xuất hiện ở cả tập huấn luyện và kiểm định.
 
+### 2.5.5. Đánh giá hiệu quả rút gọn đặc trưng
+
+Đường cong hiệu năng–số lượng đặc trưng là công cụ chính để trả lời liệu nhiều đặc trưng hơn có luôn tốt hơn. Trục hoành thể hiện số đặc trưng \(k\); trục tung thể hiện ROC-AUC, PR-AUC hoặc Recall tại một mức Precision/chi phí cảnh báo xác định. Điểm “gối” của đường cong cho biết vùng mà việc thêm biến chỉ tạo cải thiện rất nhỏ.
+
+Ngoài chênh lệch thước đo, nghiên cứu báo cáo mức giảm số biến, thời gian huấn luyện, thời gian suy luận, tỷ lệ hồ sơ có đủ dữ liệu và độ ổn định theo thời gian. Nhờ đó, quyết định rút gọn không chỉ dựa trên hiệu năng thống kê mà còn phản ánh tính khả thi vận hành.
+
 ## 2.6. Khả năng giải thích và SHAP
 
 Lundberg và Lee (2017) đề xuất SHAP như một khung thống nhất để gán đóng góp của từng biến vào chênh lệch giữa dự báo của một quan sát và giá trị nền. SHAP có thể hỗ trợ:
@@ -295,22 +356,39 @@ Lundberg và Lee (2017) đề xuất SHAP như một khung thống nhất để 
 2. Nhận diện chiều tác động mà mô hình đã học;
 3. Giải thích cục bộ cho từng hồ sơ;
 4. Phát hiện dấu hiệu bất hợp lý, rò rỉ dữ liệu hoặc phụ thuộc quá mức vào một biến.
+5. Tổng hợp giá trị tuyệt đối theo nhóm nghiệp vụ để mô tả nhóm tín hiệu mà mô hình sử dụng.
 
-Tuy nhiên, SHAP giải thích hành vi của mô hình chứ không chứng minh quan hệ nhân quả. Giá trị SHAP của các biến tương quan cũng có thể được phân bổ theo cách khó diễn giải. Vì vậy, kết quả cần được đối chiếu với nghiệp vụ, thống kê mô tả và kiểm tra độ ổn định.
+Tuy nhiên, SHAP giải thích hành vi của mô hình chứ không chứng minh quan hệ nhân quả. Tổng SHAP lớn cũng không tự động chứng minh rằng ngân hàng nên đầu tư thêm vào nhóm dữ liệu đó. Giá trị đầu tư phải được xác nhận bằng thí nghiệm bổ sung/loại bỏ nhóm trên dữ liệu ngoài mẫu và cân đối với chi phí thu thập. Giá trị SHAP của các biến tương quan cũng có thể được phân bổ theo cách khó diễn giải. Vì vậy, kết quả cần được đối chiếu với nghiệp vụ, thống kê mô tả và kiểm tra độ ổn định.
 
 ## 2.7. Tổng quan bằng chứng thực nghiệm
 
-Các nghiên cứu ban đầu đặt nền móng cho mô hình định lượng. Altman (1968) chứng minh khả năng kết hợp tỷ số tài chính để dự báo phá sản; Ohlson (1980) sử dụng mô hình xác suất logit. Hand và Henley (1997) tổng quan các phương pháp phân loại thống kê trong chấm điểm tín dụng, còn Thomas (2000) mở rộng thảo luận sang chấm điểm hành vi.
+Các nghiên cứu ban đầu đặt nền móng cho mô hình định lượng. Altman (1968) xây dựng Z-score từ mẫu 66 doanh nghiệp, với 33 doanh nghiệp phá sản và 33 doanh nghiệp đối chứng, và đạt khoảng 95% phân loại đúng trên mẫu tại thời điểm một năm trước phá sản. Ohlson (1980) sử dụng mẫu lớn và tự nhiên hơn gồm 105 doanh nghiệp phá sản cùng 2.058 doanh nghiệp không phá sản để ước lượng xác suất bằng logit. Hai nghiên cứu minh họa tiến trình từ hàm điểm phân biệt sang mô hình xác suất, đồng thời cho thấy kết quả phụ thuộc mạnh vào thiết kế mẫu. Hand và Henley (1997) tổng quan các phương pháp phân loại thống kê trong chấm điểm tín dụng, còn Thomas (2000) mở rộng thảo luận sang chấm điểm hành vi.
 
-Baesens et al. (2003) so sánh nhiều thuật toán chấm điểm tín dụng, cho thấy giá trị của đánh giá đối sánh có hệ thống. Lessmann et al. (2015) cập nhật nghiên cứu với tập thuật toán và dữ liệu rộng hơn. Kết quả củng cố tiềm năng của các phương pháp phi tuyến và ensemble, đồng thời cho thấy thứ hạng mô hình phụ thuộc dữ liệu và tiêu chí đánh giá.
+Baesens et al. (2003) so sánh nhiều thuật toán chấm điểm tín dụng, cho thấy giá trị của đánh giá đối sánh có hệ thống. Lessmann et al. (2015) mở rộng đối sánh lên 41 bộ phân loại, 8 bộ dữ liệu tín dụng bán lẻ thực và 6 thước đo hiệu năng. Các bộ dữ liệu bao gồm Australian Credit, German Credit và dữ liệu từ các tổ chức tài chính tại Benelux và Vương quốc Anh. Kết quả cho thấy một số mô hình có độ chính xác cao hơn đáng kể so với chuẩn ngành là hồi quy logistic, đặc biệt là ensemble không đồng nhất. Tuy nhiên, việc tác giả dùng đồng thời 6 thước đo cũng cho thấy một mô hình có thể thay đổi thứ hạng khi tiêu chí đánh giá thay đổi.
 
-Brown và Mues (2012) tập trung vào dữ liệu chấm điểm mất cân bằng và chỉ ra rằng đánh giá mô hình cần quan tâm đến lớp thiểu số. Xia et al. (2017) kết hợp boosted decision tree với tối ưu siêu tham số Bayes, minh họa vai trò của tuning có kiểm soát. Barboza, Kimura và Altman (2017) so sánh mô hình học máy trong dự báo phá sản và cho thấy học máy có thể cải thiện khả năng dự báo so với một số phương pháp truyền thống. Dastile et al. (2020) tổng quan có hệ thống các mô hình thống kê và học máy trong credit scoring, đồng thời nhấn mạnh những vấn đề như dữ liệu, thước đo và khả năng giải thích.
+Brown và Mues (2012) tập trung vào 5 bộ dữ liệu chấm điểm thực và chủ động thay đổi tỷ lệ lớp tới 99% khách hàng tốt–1% khách hàng xấu. Kết quả AUC cho thấy Random Forest và Gradient Boosting chống chịu tương đối tốt khi lớp xấu ngày càng hiếm, trong khi C4.5, phân tích biệt thức bậc hai và k-láng giềng suy giảm mạnh hơn. Xia et al. (2017) kết hợp boosted decision tree với tối ưu siêu tham số Bayes, minh họa vai trò của tuning có kiểm soát.
+
+Barboza, Kimura và Altman (2017) dùng dữ liệu doanh nghiệp Bắc Mỹ giai đoạn 1985–2013, với hơn 10.000 quan sát doanh nghiệp–năm trong tập kiểm định, để dự báo phá sản trước một năm. Nghiên cứu so sánh SVM, bagging, boosting và Random Forest với phân tích biệt thức, hồi quy logistic và mạng nơ-ron; bagging, boosting và Random Forest là nhóm cho kết quả tốt hơn trong thiết kế của tác giả. Quy mô và khoảng thời gian dài làm tăng giá trị bằng chứng, nhưng đối tượng là doanh nghiệp niêm yết Bắc Mỹ nên không thể suy rộng trực tiếp cho tín dụng cá nhân Việt Nam.
+
+Dastile et al. (2020) tổng hợp có hệ thống 74 nghiên cứu chính về credit scoring. Tổng quan ghi nhận hồi quy logistic vẫn được sử dụng phổ biến nhờ tính đơn giản và minh bạch, trong khi các mô hình học máy phức tạp được nghiên cứu để cải thiện hiệu năng. Con số 74 cho thấy cơ sở bằng chứng tương đối rộng, song tổng quan cũng hàm ý rằng khác biệt về bộ dữ liệu, xử lý dữ liệu và thước đo khiến các kết quả riêng lẻ khó so sánh trực tiếp.
+
+### 2.7.1. Bảng tổng hợp các dẫn chứng định lượng
+
+| Nghiên cứu | Quy mô/phạm vi | Thiết kế hoặc thước đo | Kết quả có thể sử dụng làm dẫn chứng | Giới hạn khi vận dụng |
+|---|---:|---|---|---|
+| Altman (1968) | 66 doanh nghiệp: 33 phá sản, 33 không phá sản; 22 tỷ số ứng viên, giữ 5 | Phân tích biệt thức; dự báo trước 1 năm | Khoảng 95% phân loại đúng trên mẫu ban đầu | Mẫu nhỏ, cân bằng và chỉ gồm doanh nghiệp sản xuất Hoa Kỳ |
+| Ohlson (1980) | 105 doanh nghiệp phá sản và 2.058 doanh nghiệp không phá sản | Mô hình logit | Chứng minh khả năng ước lượng xác suất phá sản trên mẫu không ghép cặp lớn hơn | Dự báo phá sản doanh nghiệp, không phải nợ xấu bán lẻ |
+| Brown & Mues (2012) | 5 bộ dữ liệu tín dụng thực; tỷ lệ lớp từ 70/30 tới 99/1 | AUC; kiểm định Friedman và Nemenyi | Random Forest đứng đầu thứ hạng trung bình ở cấu hình 99/1; ensemble chịu mất cân bằng tốt hơn tương đối | Kết quả phụ thuộc dữ liệu và cách giảm mẫu lớp xấu |
+| Lessmann et al. (2015) | 41 bộ phân loại, 8 bộ dữ liệu tín dụng thực | 6 thước đo hiệu năng | Nhiều mô hình vượt logistic; ensemble không đồng nhất nổi bật | Không có mô hình tốt nhất tuyệt đối trên mọi dữ liệu/thước đo |
+| Barboza et al. (2017) | Dữ liệu 1985–2013; hơn 10.000 quan sát doanh nghiệp–năm ở tập kiểm định | Dự báo phá sản trước 1 năm | Bagging, boosting và Random Forest tốt hơn nhóm phương pháp truyền thống trong thiết kế nghiên cứu | Doanh nghiệp Bắc Mỹ; khác bối cảnh tín dụng Việt Nam |
+| Dastile et al. (2020) | 74 nghiên cứu chính | Tổng quan tài liệu có hệ thống | Logistic phổ biến vì minh bạch; học máy được dùng để cải thiện hiệu năng | Nghiên cứu nguồn không đồng nhất |
+| Ke et al. (2017) | Nhiều bộ dữ liệu công khai | Benchmark hiệu quả tính toán | LightGBM nhanh hơn GBDT truyền thống tới trên 20 lần, độ chính xác gần tương đương | Benchmark thuật toán, không phải kết quả riêng của credit scoring |
 
 Nhìn chung, tài liệu ủng hộ việc thử nghiệm ensemble nhưng không ủng hộ kết luận rằng ensemble luôn vượt trội. Hiệu năng được báo cáo ở các nghiên cứu không thể so sánh trực tiếp nếu khác bộ dữ liệu, tỷ lệ nợ xấu, cửa sổ dự báo, cách chia tập và thước đo.
 
 ## 2.8. Khoảng trống nghiên cứu
 
-Từ tổng quan có thể xác định năm khoảng trống mà luận văn hướng tới.
+Từ tổng quan có thể xác định bảy khoảng trống mà luận văn hướng tới.
 
 Thứ nhất, nhiều nghiên cứu nhấn mạnh hiệu năng nhưng chưa trình bày đồng thời calibration, chi phí sai lầm và lựa chọn ngưỡng. Điều này hạn chế khả năng chuyển kết quả kỹ thuật thành quyết định nghiệp vụ.
 
@@ -322,6 +400,10 @@ Thứ tư, mô hình có hiệu năng cao thường khó giải thích. Luận v
 
 Thứ năm, bằng chứng trên dữ liệu quốc tế không thể tự động khái quát cho Việt Nam do khác biệt về hành vi khách hàng, chính sách tín dụng, dữ liệu CIC và khuôn khổ phân loại nợ. Vì vậy, nghiên cứu thực nghiệm trong bối cảnh Việt Nam có giá trị bổ sung.
 
+Thứ sáu, nhiều nghiên cứu tập trung tìm thuật toán tốt nhất nhưng ít lượng hóa quan hệ giữa số lượng đặc trưng và hiệu năng. Vì vậy, chưa có câu trả lời thực nghiệm cho việc tập đầy đủ 178 đặc trưng có thực sự cần thiết hay một tập nhỏ hơn đã đủ.
+
+Thứ bảy, feature importance thường được báo cáo ở cấp biến riêng lẻ mà chưa chuyển thành bằng chứng phục vụ chiến lược dữ liệu. Luận văn khắc phục bằng cách kết hợp SHAP theo nhóm với thí nghiệm chỉ dùng nhóm, bổ sung nhóm và loại bỏ nhóm, từ đó xác định nhóm thông tin có giá trị gia tăng thực sự.
+
 ## 2.9. Khung nghiên cứu đề xuất
 
 Khung nghiên cứu gồm chuỗi bước:
@@ -332,21 +414,25 @@ Khung nghiên cứu gồm chuỗi bước:
 \rightarrow \text{Kiểm tra chất lượng}
 \rightarrow \text{Chia dữ liệu}
 \rightarrow \text{Tiền xử lý trong pipeline}
-\rightarrow \text{Huấn luyện/tuning}
+\rightarrow \text{Mô hình với 178 đặc trưng}
+\rightarrow \text{Xếp hạng và tạo các tập Top-k}
+\rightarrow \text{Thí nghiệm theo nhóm nghiệp vụ}
 \rightarrow \text{Đánh giá ngoài mẫu}
 \rightarrow \text{SHAP}
-\rightarrow \text{Khuyến nghị triển khai}
+\rightarrow \text{Tập đặc trưng tối ưu và ưu tiên đầu tư dữ liệu}
 \]
 
-Biến phụ thuộc là trạng thái nợ xấu trong cửa sổ dự báo. Biến độc lập gồm đặc điểm khách hàng, khoản vay, năng lực tài chính, lịch sử tín dụng và hành vi, tùy theo dữ liệu sẵn có tại ngày quan sát.
+Biến phụ thuộc là trạng thái chuyển nhóm nợ trong cửa sổ dự báo. Biến độc lập gồm 178 đặc trưng ban đầu, được phân thành các nhóm như đặc điểm khách hàng, khoản vay, năng lực tài chính, tài sản bảo đảm, lịch sử tín dụng, quan hệ tín dụng và hành vi, tùy theo cấu trúc dữ liệu thực tế tại ngày quan sát.
 
-Hồi quy logistic là baseline. Decision Tree giúp tạo chuẩn diễn giải bằng quy tắc. Random Forest đại diện cho bagging; XGBoost và LightGBM đại diện cho boosting. Mỗi mô hình được thử trên dữ liệu gốc và cấu hình xử lý mất cân bằng phù hợp. Mô hình cuối cùng được lựa chọn dựa trên hiệu năng ngoài mẫu, độ ổn định, calibration, khả năng giải thích và chi phí triển khai.
+Hồi quy logistic là baseline. Decision Tree giúp tạo chuẩn diễn giải bằng quy tắc. Random Forest đại diện cho bagging; XGBoost và LightGBM đại diện cho boosting. Mỗi mô hình được thử trên dữ liệu gốc và cấu hình xử lý mất cân bằng phù hợp. Sau khi chọn họ mô hình phù hợp, nghiên cứu giữ cố định quy trình tuning để so sánh các tập Top-k và nhóm nghiệp vụ. Mô hình cuối cùng được lựa chọn dựa trên hiệu năng ngoài mẫu, độ ổn định, calibration, khả năng giải thích, số lượng đặc trưng và chi phí triển khai.
 
 ## 2.10. Kết luận chương
 
-Chương 2 đã trình bày nền tảng về rủi ro tín dụng, nợ xấu, chấm điểm tín dụng và cảnh báo sớm; làm rõ căn cứ pháp lý hiện hành; phân tích các mô hình từ logistic đến ensemble; và thảo luận các vấn đề về dữ liệu mất cân bằng, đánh giá và giải thích.
+Chương 2 đã trình bày nền tảng về rủi ro tín dụng, phân loại và chuyển nhóm nợ, chấm điểm tín dụng và cảnh báo sớm; làm rõ căn cứ pháp lý hiện hành; phân tích các mô hình từ logistic đến ensemble; và thảo luận các vấn đề về dữ liệu mất cân bằng, đánh giá và giải thích.
 
-Tổng quan cho thấy học máy có tiềm năng cải thiện khả năng phân biệt rủi ro, nhưng không có thuật toán tốt nhất cho mọi dữ liệu. Giá trị của nghiên cứu nằm ở thiết kế thực nghiệm chặt chẽ, kiểm soát rò rỉ, lựa chọn thước đo phù hợp và liên kết kết quả với yêu cầu quản trị. Đây là cơ sở để Chương 3 xây dựng dữ liệu, pipeline và phương pháp thực nghiệm cụ thể.
+Trọng tâm được bổ sung của Chương 2 là cơ sở phương pháp cho bốn câu hỏi về đặc trưng. Nhiều đặc trưng hơn không mặc nhiên tạo hiệu năng tốt hơn; đóng góp của một nhóm dữ liệu phải được xác nhận bằng kết quả ngoài mẫu; số lượng đặc trưng rút gọn phải được xác định theo một ngưỡng duy trì hiệu năng công bố trước; và khuyến nghị đầu tư dữ liệu phải cân đối giữa giá trị gia tăng dự báo với chi phí thu thập, chất lượng và khả năng vận hành.
+
+Từ đó, Chương 2 đề xuất khung thực nghiệm gồm mô hình đầy đủ 178 đặc trưng, các tập Top-k lồng nhau, thí nghiệm chỉ dùng/bổ sung/loại bỏ nhóm và giải thích SHAP. Khung này là cơ sở để Chương 3 quy định cụ thể cửa sổ chuyển nhóm, cách phân nhóm 178 đặc trưng, pipeline chống rò rỉ và tiêu chí lựa chọn tập đặc trưng tối ưu.
 
 # TÀI LIỆU THAM KHẢO SỬ DỤNG TRONG CHƯƠNG 1–2
 

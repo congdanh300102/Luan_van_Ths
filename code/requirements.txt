@@ -5,5 +5,7 @@ scikit-learn>=1.2.0
 imbalanced-learn>=0.10.0
 xgboost>=1.7.0
 lightgbm>=3.3.0
+catboost>=1.2
+shap>=0.44
 plotly>=5.18.0
 openpyxl>=3.0.0

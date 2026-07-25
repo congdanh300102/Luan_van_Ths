@@ -111,6 +111,10 @@ with st.expander("🔬 Dành cho chuyên viên phân tích / Data Scientist (EDA
     with col4:
         st.page_link("pages/6_⚖️_So_Sánh_Model.py", label="Trang 6 — So sánh Model: metrics, phân phối điểm, confusion matrix", icon="⚖️")
 
+    st.page_link("pages/7_🧬_Phân_Tích_Đặc_Trưng.py",
+                 label="Trang 7 — Phân tích & Lựa chọn Đặc trưng: nhóm nào quan trọng nhất, giảm còn bao nhiêu biến, nên đầu tư thu thập gì",
+                 icon="🧬")
+
     st.markdown("---")
     st.markdown("""
     **So sánh hai bộ dữ liệu:**

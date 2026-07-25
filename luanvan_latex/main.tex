@@ -43,6 +43,7 @@ amssymb,latexsym,amscd,amsfonts,enumerate}
 \usepackage{soul} 
 \usepackage{longtable,array}
 \usepackage{multirow}
+\setlength{\emergencystretch}{3em}
 \usepackage{wrapfig}
 \usepackage{lipsum}
 \usepackage{tikz}
@@ -130,7 +131,7 @@ amssymb,latexsym,amscd,amsfonts,enumerate}
 \begin{center}
 \fontsize{16pt}{16.5pt}\selectfont
 
-\bf ỨNG DỤNG TRÍ TUỆ NHÂN TẠO TRONG \\ XẾP HẠNG TÍN DỤNG: NGHIÊN CỨU TỪ MỘT NGÂN HÀNG THƯƠNG MẠI Ở VIỆT NAM
+\bf ỨNG DỤNG TRÍ TUỆ NHÂN TẠO TRONG XẾP HẠNG TÍN DỤNG: NGHIÊN CỨU TỪ MỘT NGÂN HÀNG THƯƠNG MẠI Ở VIỆT NAM
 
 \end{center}
 \vspace{1cm}
@@ -154,7 +155,7 @@ amssymb,latexsym,amscd,amsfonts,enumerate}
 \end{tabular}
 
 \end{center}
-\vspace{3cm}
+\vspace{2cm}
 \begin{center}
 \LARGE \bf HÀ NỘI - 2026
 \end{center}
@@ -173,7 +174,7 @@ amssymb,latexsym,amscd,amsfonts,enumerate}
 \end{center}
 \vspace{0.5 cm} 
  \textbf{Họ và tên tác giả luận văn:} Đàm Công Danh.\\ 
-\textbf{Đề tài luận văn:}  Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam.\\
+\textbf{Đề tài luận văn:} Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam.\\
 \textbf{Chuyên ngành:} Toán Tin.\\
 \textbf{Mã học viên:} 20251317M
 \vspace{0.5 cm}
@@ -197,7 +198,10 @@ Tác giả, Người hướng dẫn khoa học và Hội đồng chấm luận v
 \fontsize{15pt}{18pt}\selectfont 
  \bf{ĐỀ TÀI LUẬN VĂN}   
 \end{center}
-ỨNG DỤNG TRÍ TUỆ NHÂN TẠO TRONG XẾP HẠNG TÍN DỤNG: NGHIÊN CỨU TỪ MỘT NGÂN HÀNG THƯƠNG MẠI Ở VIỆT NAM.\\
+\begin{center}
+\bf ỨNG DỤNG TRÍ TUỆ NHÂN TẠO TRONG XẾP HẠNG TÍN DỤNG: \\
+NGHIÊN CỨU TỪ MỘT NGÂN HÀNG THƯƠNG MẠI Ở VIỆT NAM
+\end{center}
 \vspace{10 cm}
 \begin{flushright}
     Hà Nội, ngày tháng năm \text{2026 }
@@ -219,37 +223,52 @@ Tác giả, Người hướng dẫn khoa học và Hội đồng chấm luận v
 \input{sections/Tomtatnoidung}
 
 \newpage
+\setcounter{tocdepth}{1}
 \tableofcontents
+\clearpage
 \chapter*{Một số thuật ngữ viết tắt}
 \addcontentsline{toc}{chapter}{{\bf  Một số thuật ngữ viết tắt}\rm} 
-% \begin{tabular}{l l }
-% \textbf{Np }&Proper noun\\
-% \textbf{Nc} &Classifier noun\\
-% \textbf{Nu} & Unit noun\\
-% \textbf{N} & Noun\\
-% \textbf{Ny} & Abbreviated noun\\
-% \textbf{Nb }& (Foreign) borrowed noun\\
-% \textbf{V} & Verb\\
-% \textbf{Vb} & (Foreign) borrowed verb\\
-% \textbf{A} & Adjective\\
-% \textbf{P} & Pronoun\\
-% \textbf{R} & Adverb\\
-% \textbf{L} & Determiner\\
-% \textbf{M} & Numeral/Quantity\\
-% \textbf{E }& Preposition\\
-% \textbf{C} & Subordinating conjunction\\
-% \textbf{Cc} & Coordinating conjunction\\
-% \textbf{I} & Interjection/Exclamation\\
-% \textbf{T} & Particle/Auxiliary, modal words\\
-% \textbf{Y} & Abbreviation\\
-% \textbf{Z} & Bound morpheme\\
-% \textbf{X} & Un-definition/Other\\
-% \textbf{CH} & Punctuation and symbols\\
-% \end{tabular}
+{\small
+\begin{longtable}{|p{2.0cm}|p{4.6cm}|p{6.8cm}|}
+\hline
+\textbf{Viết tắt} & \textbf{Thuật ngữ tiếng Anh} & \textbf{Diễn giải tiếng Việt}\\
+\hline
+\endfirsthead
+\hline
+\textbf{Viết tắt} & \textbf{Thuật ngữ tiếng Anh} & \textbf{Diễn giải tiếng Việt}\\
+\hline
+\endhead
+AI & Artificial Intelligence & Trí tuệ nhân tạo\\ \hline
+ML & Machine Learning & Học máy\\ \hline
+NHTM & Commercial Bank & Ngân hàng thương mại\\ \hline
+NHNN & State Bank of Vietnam & Ngân hàng Nhà nước Việt Nam\\ \hline
+XHTD & Credit Rating & Xếp hạng tín dụng\\ \hline
+PD & Probability of Default & Xác suất khách hàng không thực hiện nghĩa vụ trả nợ\\ \hline
+LGD & Loss Given Default & Tỷ lệ tổn thất khi xảy ra vỡ nợ\\ \hline
+EAD & Exposure at Default & Giá trị dư nợ tại thời điểm vỡ nợ\\ \hline
+IV & Information Value & Giá trị thông tin, dùng đánh giá sức phân biệt của đặc trưng\\ \hline
+SMOTE & Synthetic Minority Over-sampling Technique & Kỹ thuật sinh mẫu tổng hợp cho lớp thiểu số\\ \hline
+SHAP & SHapley Additive exPlanations & Phương pháp giải thích đóng góp của đặc trưng dựa trên giá trị Shapley\\ \hline
+ROC & Receiver Operating Characteristic & Đường cong biểu diễn quan hệ giữa tỷ lệ dương tính thật và dương tính giả\\ \hline
+AUC & Area Under the Curve & Diện tích dưới đường cong đánh giá khả năng phân biệt\\ \hline
+PR-AUC & Precision--Recall Area Under the Curve & Diện tích dưới đường cong Precision--Recall\\ \hline
+F1 & F1-score & Trung bình điều hòa của Precision và Recall\\ \hline
+CV & Cross-validation & Kiểm định chéo\\ \hline
+API & Application Programming Interface & Giao diện lập trình ứng dụng\\ \hline
+RF & Random Forest & Thuật toán rừng ngẫu nhiên\\ \hline
+XGBoost & Extreme Gradient Boosting & Thuật toán tăng cường gradient tối ưu\\ \hline
+\textit{LightGBM} & Light Gradient Boosting Machine & Thuật toán tăng cường gradient dạng cây tối ưu cho hiệu năng\\ \hline
+\end{longtable}
+}
+
+\clearpage
+\renewcommand{\listfigurename}{Danh mục hình vẽ}
 \listoffigures
-\addcontentsline{toc}{chapter}{{\bf  Danh sách hình vẽ}\rm} 
+\addcontentsline{toc}{chapter}{{\bf  Danh mục hình vẽ}\rm}
+\clearpage
+\renewcommand{\listtablename}{Danh mục bảng}
 \listoftables
-\addcontentsline{toc}{chapter}{{\bf  Danh sách bảng}\rm} 
+\addcontentsline{toc}{chapter}{{\bf  Danh mục bảng}\rm} 
 % \chapter{Đồ thị tri thức và đồ thị tri thức theo miền}        
 
 \newpage
@@ -267,8 +286,6 @@ Tác giả, Người hướng dẫn khoa học và Hội đồng chấm luận v
 \newpage
 \phantomsection
 \addcontentsline{toc}{chapter}{Tài liệu tham khảo}
-
-\nocite{*} % tạm thời dùng để hiện tất cả tài liệu trong references.bib
 
 \bibliographystyle{plain}
 \bibliography{references}  
