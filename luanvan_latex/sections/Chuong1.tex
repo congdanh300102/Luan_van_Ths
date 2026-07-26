@@ -10,14 +10,6 @@ Rủi ro tín dụng phát sinh khi khách hàng hoặc đối tác không thự
 
 Trong quản trị hiện đại, đánh giá tín dụng không nên chỉ được thực hiện một lần tại thời điểm phê duyệt. Ngân hàng cần cập nhật thông tin trong toàn bộ vòng đời khoản vay, theo dõi sự thay đổi của dư nợ, hành vi thanh toán, thời hạn, tình trạng cơ cấu lại và nhóm nợ. Điều này tạo ra nhu cầu xây dựng các mô hình có khả năng học từ dữ liệu lịch sử và hỗ trợ dự báo rủi ro theo thời gian.
 
-\subsection{Chấm điểm và xếp hạng tín dụng}
-
-Chấm điểm tín dụng là quá trình sử dụng dữ liệu để tính toán một điểm số, một xác suất hoặc một giá trị định lượng phản ánh mức độ rủi ro của khách hàng. Xếp hạng tín dụng là quá trình chuyển kết quả đánh giá thành các nhóm hoặc hạng rủi ro có ý nghĩa quản trị. Hai khái niệm có liên hệ chặt chẽ nhưng không hoàn toàn đồng nhất.
-
-Trong hoạt động ngân hàng, kết quả chấm điểm và xếp hạng có thể được sử dụng để hỗ trợ quyết định cấp tín dụng, xác định hạn mức, xây dựng chính sách lãi suất, giám sát khoản vay, phân loại khách hàng, hỗ trợ trích lập dự phòng và xây dựng hệ thống cảnh báo sớm.
-
-Đối với nghiên cứu này, đầu ra cần dự báo là nhóm nợ từ 1 đến 5. Vì vậy, thuật ngữ ``phân loại nhóm nợ'' được sử dụng để mô tả trực tiếp bài toán, trong khi ``chấm điểm tín dụng'' và ``xếp hạng tín dụng'' được sử dụng trong phần cơ sở lý thuyết và tổng quan nghiên cứu.
-
 \subsection{Chuyển đổi số trong ngân hàng và vai trò của dữ liệu}
 
 Chuyển đổi số trong ngân hàng không chỉ là số hóa kênh giao dịch mà còn bao gồm tái cấu trúc quy trình nghiệp vụ, tự động hóa vận hành, xây dựng nền tảng dữ liệu và ứng dụng các mô hình phân tích trong quản trị.
@@ -41,7 +33,7 @@ Mô hình 5C là khung thẩm định tín dụng truyền thống, trong đó c
     \item \textit{Conditions} (điều kiện): mục đích và điều kiện khoản vay, đồng thời bao gồm bối cảnh ngành, thị trường và kinh tế có thể ảnh hưởng đến khả năng trả nợ.
 \end{enumerate}
 
-5C không phải là một thuật toán thống kê tự động tạo ra xác suất vỡ nợ. Đây là khung tổ chức thông tin để chuyên gia tổng hợp nhận định hoặc chấm điểm theo quy định nội bộ. Vì vậy, chất lượng kết quả phụ thuộc đáng kể vào dữ liệu được cung cấp, tiêu chí chấm điểm và kinh nghiệm của người thẩm định.
+5C không phải là một thuật toán thống kê tự động tạo ra xác suất vỡ nợ. Đây là khung tổ chức thông tin để chuyên gia tổng hợp nhận định hoặc xếp loại theo quy định nội bộ. Vì vậy, chất lượng kết quả phụ thuộc đáng kể vào dữ liệu được cung cấp, bộ tiêu chí đánh giá và kinh nghiệm của người thẩm định.
 
 Thành tựu của phương pháp này là hệ thống hóa các yếu tố định tính và định lượng cần xem xét, cho phép sử dụng thông tin về uy tín, năng lực quản trị, triển vọng ngành và tài sản bảo đảm \cite{hand1997statistical,thomas2000survey}.
 
@@ -67,25 +59,25 @@ Ohlson \cite{ohlson1980financial} sử dụng hồi quy logistic để ước l�
 
 Hạn chế là quan hệ giữa log-odds và biến đầu vào được giả định tuyến tính, còn các tương tác và quan hệ phi tuyến phải được thiết kế thủ công.
 
-\subsection{Chấm điểm hành vi và nghiên cứu đối sánh mô hình}
+\subsection{Các nghiên cứu về đánh giá và dự báo rủi ro tín dụng}
 
 \noindent\textbf{Hand và Henley.}
 
-Hand và Henley \cite{hand1997statistical} hệ thống hóa các phương pháp phân loại thống kê trong consumer credit scoring. Hai tác giả làm rõ rằng không tồn tại một thuật toán duy nhất luôn tốt nhất trên mọi bộ dữ liệu; kết quả phụ thuộc vào chất lượng dữ liệu, lựa chọn biến, cách chia mẫu và tiêu chí đánh giá.
+Hand và Henley \cite{hand1997statistical} hệ thống hóa các phương pháp phân loại thống kê trong đánh giá rủi ro tín dụng người vay. Hai tác giả làm rõ rằng không tồn tại một thuật toán duy nhất luôn tốt nhất trên mọi bộ dữ liệu; kết quả phụ thuộc vào chất lượng dữ liệu, lựa chọn biến, cách chia mẫu và tiêu chí đánh giá.
 
 Hạn chế chủ yếu xuất phát từ bối cảnh thời điểm nghiên cứu: boosting, explainable AI, fairness và dữ liệu quy mô lớn chưa phát triển như hiện nay; phần lớn nội dung tập trung vào phân loại nhị phân.
 
 \medskip
 \noindent\textbf{Lyn C. Thomas.}
 
-Thomas \cite{thomas2000survey} có đóng góp nổi bật trong việc hệ thống hóa application scoring và behavioural scoring. Ông mở rộng credit scoring từ quyết định phê duyệt ban đầu sang quản lý khách hàng trong suốt vòng đời khoản vay.
+Thomas \cite{thomas2000survey} có đóng góp nổi bật trong việc hệ thống hóa các mô hình đánh giá hồ sơ tại thời điểm phê duyệt và các mô hình theo dõi hành vi sau giải ngân. Cách tiếp cận này mở rộng phạm vi đánh giá từ quyết định ban đầu sang quản lý khách hàng trong suốt vòng đời khoản vay.
 
 Hạn chế của nhiều mô hình truyền thống được Thomas tổng hợp là tập trung vào dữ liệu có cấu trúc, phân loại tốt--xấu và giả định quan hệ tương đối ổn định theo thời gian.
 
 \medskip
 \noindent\textbf{Jonathan N. Crook.}
 
-Crook có nhiều đóng góp trong reject inference, behavioural scoring, survival analysis và mô hình rủi ro động. Các nghiên cứu của ông làm rõ selection bias do dữ liệu huấn luyện thường chỉ gồm khách hàng đã được duyệt và mở rộng bài toán từ ``có vỡ nợ hay không'' sang ``khi nào vỡ nợ'' \cite{crook2007recent}.
+Crook có nhiều đóng góp trong suy luận đối với hồ sơ bị từ chối, phân tích hành vi, phân tích sống còn và mô hình rủi ro động. Các nghiên cứu của ông làm rõ sai lệch chọn mẫu do dữ liệu huấn luyện thường chỉ gồm khách hàng đã được duyệt và mở rộng bài toán từ ``có vỡ nợ hay không'' sang ``khi nào vỡ nợ'' \cite{crook2007recent}.
 
 Hạn chế của reject inference là không thể quan sát chắc chắn nhãn thật của hồ sơ bị từ chối; survival model cũng phụ thuộc vào các giả định có thể không phù hợp với mọi dữ liệu.
 
@@ -98,7 +90,7 @@ Hạn chế của nhiều benchmark là sử dụng dữ liệu công khai nhỏ
 
 \medskip
 \noindent\textbf{Nhận xét tổng hợp.}
-Các công trình nền tảng đã chuyển đánh giá tín dụng từ chủ quan sang định lượng, tạo ra điểm số và xác suất rủi ro, hình thành application scoring, behavioural scoring và quy trình kiểm định mô hình. Tuy nhiên, các hạn chế chung còn lại gồm tập trung vào nhị phân, khó mô hình hóa phi tuyến, phụ thuộc vào xây dựng biến thủ công, chưa xử lý đầy đủ mất cân bằng, thứ tự, drift và explainability.
+Các công trình nền tảng đã chuyển đánh giá tín dụng từ chủ quan sang định lượng, cho phép ước lượng xác suất rủi ro và xây dựng quy trình kiểm định mô hình trong nhiều giai đoạn của vòng đời khoản vay. Tuy nhiên, các hạn chế chung còn lại gồm tập trung vào phân loại nhị phân, khó mô hình hóa quan hệ phi tuyến, phụ thuộc vào xây dựng biến thủ công, chưa xử lý đầy đủ mất cân bằng lớp, thứ tự nhóm nợ, sự thay đổi phân bố dữ liệu và khả năng giải thích.
 
 \section{Phát biểu bài toán và phạm vi nghiên cứu}
 

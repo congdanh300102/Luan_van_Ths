@@ -3,15 +3,14 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Credit Rating VN",
-    page_icon="💳",
+    page_icon="📊",
     layout="wide",
 )
 
-st.title("💳 Hệ thống Dự báo Nhóm Nợ & Chấm điểm Tín dụng")
+st.title("📊 Hệ thống Dự báo Nhóm Nợ")
 st.markdown(
     "Ứng dụng trí tuệ nhân tạo (Machine Learning) giúp ngân hàng "
-    "**tự động dự báo khả năng chuyển nhóm nợ** và quy đổi thành "
-    "**điểm tín dụng chuẩn hoá [300–850]** cho từng khách hàng vay — "
+    "**tự động dự báo khả năng chuyển nhóm nợ** của từng khách hàng vay — "
     "hỗ trợ cán bộ tín dụng ra quyết định nhanh, nhất quán và kiểm soát "
     "rủi ro danh mục cho vay tốt hơn."
 )
@@ -44,43 +43,30 @@ with i3:
     st.markdown(
         "1. Tải **file mẫu** đúng định dạng.\n"
         "2. **Upload** dữ liệu khách hàng ở trang *Dự báo*.\n"
-        "3. Nhận **kết quả** nhóm nợ + điểm tín dụng, tải về Excel/CSV."
+        "3. Nhận **kết quả** dự báo nhóm nợ, tải về Excel/CSV."
     )
 
 st.markdown("---")
 
 # ── CTA — dành cho người nhập liệu / cán bộ nghiệp vụ ────────────────────────
-st.markdown("## 📥 Import dữ liệu & chấm điểm ngay")
+st.markdown("## 📥 Import dữ liệu & dự báo ngay")
 
-cta1, cta2 = st.columns(2)
-with cta1:
-    with st.container(border=True):
-        st.markdown("### 📤 Import hàng loạt (khuyến nghị)")
-        st.markdown(
-            "Upload 1 file Excel/CSV chứa **nhiều khách hàng** → hệ thống "
-            "tự động dự báo nhóm nợ và chấm điểm tín dụng cho toàn bộ danh "
-            "sách, kèm file mẫu để nhập đúng định dạng."
-        )
-        st.page_link("pages/4_📤_Dự_Báo.py", label="➡️  Đi tới trang Dự báo", icon="📤")
-
-with cta2:
-    with st.container(border=True):
-        st.markdown("### 💳 Tra cứu nhanh 1 khách hàng")
-        st.markdown(
-            "Nhập tay thông tin **một khách hàng** (hoặc upload file nhỏ) "
-            "để xem ngay nhóm nợ dự báo và điểm tín dụng."
-        )
-        st.page_link("pages/3_💳_Chấm_Điểm.py", label="➡️  Đi tới trang Chấm điểm", icon="💳")
+with st.container(border=True):
+    st.markdown("### 📤 Import hàng loạt (khuyến nghị)")
+    st.markdown(
+        "Upload 1 file Excel/CSV chứa **nhiều khách hàng** → hệ thống "
+        "tự động dự báo nhóm nợ cho toàn bộ danh sách, kèm file mẫu để "
+        "nhập đúng định dạng."
+    )
+    st.page_link("pages/4_📤_Dự_Báo.py", label="➡️  Đi tới trang Dự báo", icon="📤")
 
 st.markdown("---")
 
-# ── Tham chiếu nhanh: ý nghĩa nhóm nợ & thang điểm ───────────────────────────
+# ── Tham chiếu nhanh: ý nghĩa nhóm nợ ─────────────────────────────────────────
 st.markdown("## 📌 Ý nghĩa kết quả trả về")
 
-r1, r2 = st.columns([3, 2])
-with r1:
-    st.markdown("**Nhóm nợ (theo quy định SBV):**")
-    st.markdown("""
+st.markdown("**Nhóm nợ (theo quy định SBV):**")
+st.markdown("""
 | Nhóm | Tên | Đặc điểm |
 |------|-----|-----------|
 | 1 | Nợ đủ tiêu chuẩn | Không quá hạn |
@@ -89,9 +75,6 @@ with r1:
 | 4 | Nợ nghi ngờ | Quá hạn 91–180 ngày |
 | 5 | Nợ có khả năng mất vốn | Quá hạn > 180 ngày |
 """)
-with r2:
-    st.markdown("**Thang điểm tín dụng:** 300 (rủi ro cao) → 850 (rủi ro thấp), "
-                 "quy đổi thành hạng **A+ → E** để dễ tra cứu và ra quyết định.")
 
 st.markdown("---")
 
@@ -107,9 +90,9 @@ with st.expander("🔬 Dành cho chuyên viên phân tích / Data Scientist (EDA
     st.markdown("#### 📁 Bộ dữ liệu 2 — fct_l.xlsx (mới, 178 biến)")
     col3, col4 = st.columns(2)
     with col3:
-        st.page_link("pages/5_📊_Mô_Hình_FCT_L.py", label="Trang 5 — Mô hình FCT_L: xây dựng & huấn luyện, chấm điểm", icon="📊")
+        st.page_link("pages/5_📊_Mô_Hình_FCT_L.py", label="Trang 5 — Mô hình FCT_L: xây dựng & huấn luyện", icon="📊")
     with col4:
-        st.page_link("pages/6_⚖️_So_Sánh_Model.py", label="Trang 6 — So sánh Model: metrics, phân phối điểm, confusion matrix", icon="⚖️")
+        st.page_link("pages/6_⚖️_So_Sánh_Model.py", label="Trang 6 — So sánh Model: metrics, confusion matrix", icon="⚖️")
 
     st.page_link("pages/7_🧬_Phân_Tích_Đặc_Trưng.py",
                  label="Trang 7 — Phân tích & Lựa chọn Đặc trưng: nhóm nào quan trọng nhất, giảm còn bao nhiêu biến, nên đầu tư thu thập gì",
