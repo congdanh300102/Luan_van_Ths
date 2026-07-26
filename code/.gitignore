@@ -15,6 +15,7 @@ reports/
 __pycache__/
 *.pyc
 *.pyo
+*.log
 .pytest_cache/
 
 # Môi trường ảo

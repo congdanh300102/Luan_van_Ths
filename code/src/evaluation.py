@@ -8,8 +8,8 @@ from sklearn.metrics import (
     classification_report, confusion_matrix,
     roc_auc_score, f1_score,
 )
-from sklearn.model_selection import StratifiedKFold, RepeatedStratifiedKFold, cross_validate
-from sklearn.base import clone
+from sklearn.model_selection import StratifiedKFold, RepeatedStratifiedKFold
+from copy import deepcopy
 from itertools import product
 
 NHOMNO_LABELS = {
@@ -111,17 +111,36 @@ def plot_model_comparison(results: list) -> go.Figure:
 
 def cross_val_scores(pipeline, X, y,
                      cv_folds: int = 5, random_state: int = 42) -> dict:
+    """
+    Vòng lặp CV thủ công (deepcopy mỗi fold) thay vì sklearn.model_selection
+    .cross_validate(): hàm đó luôn tự gọi clone() nội bộ không cách nào tuỳ
+    chỉnh, mà CatBoostClassifier không tương thích với clone() (lỗi
+    "constructor does not set or modifies parameter cat_features") — dùng
+    cross_validate trực tiếp sẽ crash bất kỳ lúc nào pipeline là CatBoost.
+    """
     cv = StratifiedKFold(n_splits=cv_folds, shuffle=True, random_state=random_state)
-    results = cross_validate(
-        pipeline, X, y, cv=cv,
-        scoring=["f1_macro", "f1_weighted"],
-        n_jobs=-1,
-    )
+    f1_macro_scores, f1_weighted_scores = [], []
+
+    X_arr = X.reset_index(drop=True) if hasattr(X, "reset_index") else X
+    for train_idx, test_idx in cv.split(X_arr, y):
+        X_tr = X_arr.iloc[train_idx] if hasattr(X_arr, "iloc") else X_arr[train_idx]
+        X_te = X_arr.iloc[test_idx] if hasattr(X_arr, "iloc") else X_arr[test_idx]
+        y_tr, y_te = y[train_idx], y[test_idx]
+
+        model = deepcopy(pipeline)
+        model.fit(X_tr, y_tr)
+        y_pred = model.predict(X_te)
+
+        f1_macro_scores.append(f1_score(y_te, y_pred, average="macro"))
+        f1_weighted_scores.append(f1_score(y_te, y_pred, average="weighted"))
+
+    f1_macro_scores = np.array(f1_macro_scores)
+    f1_weighted_scores = np.array(f1_weighted_scores)
     return {
-        "f1_macro_mean":    results["test_f1_macro"].mean(),
-        "f1_macro_std":     results["test_f1_macro"].std(),
-        "f1_weighted_mean": results["test_f1_weighted"].mean(),
-        "f1_weighted_std":  results["test_f1_weighted"].std(),
+        "f1_macro_mean":    f1_macro_scores.mean(),
+        "f1_macro_std":     f1_macro_scores.std(),
+        "f1_weighted_mean": f1_weighted_scores.mean(),
+        "f1_weighted_std":  f1_weighted_scores.std(),
     }
 
 
@@ -168,7 +187,12 @@ def repeated_stratified_recall(pipeline, X: pd.DataFrame, y: np.ndarray,
         X_te = X_arr.iloc[test_idx] if hasattr(X_arr, "iloc") else X_arr[test_idx]
         y_tr, y_te = y[train_idx], y[test_idx]
 
-        model = clone(pipeline)
+        # deepcopy thay vì sklearn.base.clone(): CatBoostClassifier không
+        # tương thích với clone() (lỗi "constructor does not set or modifies
+        # parameter cat_features") — pipeline truyền vào đây luôn ở trạng
+        # thái CHƯA fit nên deepcopy cho kết quả tương đương, không phụ
+        # thuộc get_params()/constructor có tái tạo đúng hay không.
+        model = deepcopy(pipeline)
         if sample_weight_fn is not None:
             model.fit(X_tr, y_tr, classifier__sample_weight=sample_weight_fn(y_tr))
         else:
