@@ -1,5 +1,7 @@
 \chapter{KẾT LUẬN VÀ KIẾN NGHỊ}
 
+Trên cơ sở toàn bộ kết quả thực nghiệm đã trình bày ở Chương 4, chương cuối cùng này tổng kết luận văn. Chương lần lượt trình bày: (i) kết luận chung về pipeline và kết quả chính trên hai bộ dữ liệu; (ii) trả lời trực tiếp bốn câu hỏi nghiên cứu đã đặt ra ở Chương 1; (iii) tổng hợp các đóng góp về phương pháp và thực tiễn của luận văn; (iv) nêu rõ các hạn chế cần lưu ý khi diễn giải và sử dụng kết quả; (v) đề xuất kiến nghị cụ thể đối với ngân hàng về dữ liệu, mô hình và quản trị; và (vi) định hướng các hướng nghiên cứu tiếp theo, đặc biệt là xây dựng mô hình dự báo chuyển nhóm nợ và cảnh báo sớm.
+
 \section{Kết luận chung}
 
 Luận văn giữ nguyên định hướng của đề tài \textit{``Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam''}. Trên hai bộ dữ liệu gốc và code hiện có, nghiên cứu đã xây dựng được pipeline phân loại năm nhóm nợ, kiểm soát một số nguồn rò rỉ, xử lý mất cân bằng, so sánh các mô hình cây và phân tích vai trò của đặc trưng. Khả năng chuyển nhóm nợ được xác định là hướng phát triển nhằm hỗ trợ phân loại nợ và cảnh báo sớm rủi ro tín dụng; kết quả hiện tại là nền tảng cho hướng này, chưa phải kiểm định hoàn chỉnh theo thời gian.
@@ -96,8 +98,11 @@ Nhánh bộ A dùng ngày tham chiếu cố định 31/12/2021, nhưng hàm tạ
 Siêu tham số hiện được cấu hình cố định, chưa có nested cross-validation. Xác suất đầu ra chưa được đánh giá calibration. Logistic Regression chưa chạy lại được do tương thích phiên bản thư viện. Code mới cho phép boost xác suất lớp hiếm để dịch ranh giới quyết định, nhưng đang tìm hệ số trên chính tập hiển thị kết quả; vì vậy chỉ được xem là phân tích hậu nghiệm và có nguy cơ lạc quan. Cần chọn hệ số trên validation riêng, khóa cấu hình rồi mới đánh giá test. Vì vậy, bảng so sánh chưa phải benchmark cuối cùng như các nghiên cứu quy mô lớn \cite{lessmann2015benchmarking}.
 
 \subsection{Importance chưa phải bằng chứng nhân quả}
+\label{sec:limit-importance}
 
 Feature importance và SHAP giải thích hành vi của mô hình, không chứng minh quan hệ nhân quả \cite{lundberg2017unified}. Các biến tương quan có thể chia sẻ hoặc thay thế importance; chỉ số ưu tiên dữ liệu hiện là heuristic chưa gắn với chi phí kinh tế.
+
+Quan trọng hơn, hai thước đo importance đã cài đặt — Gain của XGBoost và SHAP — không phải lúc nào cũng đồng thuận. Ở bộ B, Top-10 theo Gain và Top-10 theo SHAP chỉ trùng đúng 2 biến (\textit{AGG\_PD\_BAL\_YTD} và \textit{ACC\_PD\_BAL\_RATE}); nhóm Lãi suất chiếm 15,0\% theo Gain nhưng chỉ 3,8\% theo SHAP, trong khi nhóm Sản phẩm--mục đích--kênh phân phối tăng từ 9,7\% lên 20,7\%. Ở bộ A, mức đồng thuận cao hơn nhưng vẫn lệch đáng kể ở hai nhóm Dư nợ--hạn mức (12,9\%$\to$27,3\%) và Sản phẩm--mục đích vay (21,9\%$\to$8,4\%). Vì bảng ưu tiên đầu tư dữ liệu ở Chương 4 được tính từ Gain, kết luận ``nên ưu tiên nhóm nào'' có thể đổi thứ hạng nếu tính lại bằng SHAP — đây là hạn chế cần nêu rõ với người ra quyết định, không chỉ là chi tiết kỹ thuật: một khuyến nghị đầu tư dữ liệu dựa trên một thước đo importance duy nhất có nguy cơ nhạy cảm với lựa chọn phương pháp hơn là với bản chất dữ liệu.
 
 \section{Kiến nghị đối với ngân hàng}
 
@@ -115,7 +120,8 @@ Thay vì bổ sung nhiều trường rời rạc, ngân hàng nên:
     \item giảm tỷ lệ thiếu của biến lãi suất;
     \item thống nhất danh mục sản phẩm, mục đích và kênh;
     \item lập data lineage để biết biến tồn tại từ thời điểm nào;
-    \item giám sát drift và tỷ lệ thiếu theo kỳ.
+    \item giám sát drift và tỷ lệ thiếu theo kỳ;
+    \item đối chiếu ít nhất hai thước đo importance (Gain và SHAP) trước khi quyết định đầu tư thu thập một nhóm dữ liệu cụ thể, vì hai thước đo có thể xếp hạng nhóm nghiệp vụ khác nhau đáng kể như đã chỉ ra ở mục \ref{sec:limit-importance}.
 \end{enumerate}
 
 \subsection{Thiết kế cảnh báo theo chi phí}
@@ -155,3 +161,5 @@ trong đó $a$ là nhóm nợ tại thời điểm quan sát; $b$ là nhóm đí
 \section{Kết luận chương}
 
 Nghiên cứu đã tạo được hai pipeline và bằng chứng thực nghiệm cho bài toán phân loại năm nhóm nợ. Trên bộ A, LightGBM đạt Macro-F1 cao nhất với 11 biến; XGBoost cho thấy 11 biến cấu hình nhỉnh hơn pool 13 biến, và nhóm Kỳ hạn khoản vay có importance lớn nhất. Trên bộ B, XGBoost đạt Macro-F1 cao nhất; nhóm Dư nợ và giải ngân đứng đầu; Top-60 là ứng viên nếu chấp nhận giữ khoảng 95\% hiệu năng, còn chưa có bằng chứng giảm dưới 98 biến nếu yêu cầu 99\%. Hạn chế về dữ liệu theo thời gian, cỡ mẫu lớp hiếm, lựa chọn $k$ trên cùng holdout và sự khác nhau của pipeline khiến kết quả chưa thể được diễn giải là mô hình cảnh báo chuyển nhóm hoàn chỉnh.
+
+Đây cũng là nội dung khép lại toàn bộ luận văn: bốn câu hỏi nghiên cứu đặt ra ở Chương 1 đã được trả lời trên cơ sở bằng chứng thực nghiệm của Chương 4, đóng góp và hạn chế đã được nhìn nhận thẳng thắn, còn các kiến nghị đối với ngân hàng và hướng nghiên cứu tiếp theo là cơ sở để các công trình kế thừa hoàn thiện mô hình dự báo chuyển nhóm nợ và cảnh báo sớm trong tương lai.

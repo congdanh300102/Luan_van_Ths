@@ -86,8 +86,16 @@ def build_pipeline(model_key: str,
                    numerical_cols: list,
                    random_state: int = 42,
                    imbalance_strategy: str = "smote_moderate",
-                   custom_smote_strategy: dict | None = None) -> ImbPipeline:
+                   custom_smote_strategy: dict | None = None,
+                   model_params: dict | None = None) -> ImbPipeline:
     """
+    model_params: override một phần siêu tham số mặc định của classifier
+    (VD {"max_depth": 8, "learning_rate": 0.1}) — dùng cho grid search / so
+    sánh nhiều cấu hình mà không phải sửa code cho từng lần thử. Tham số nào
+    không truyền thì giữ giá trị mặc định đã benchmark. Không áp dụng cho
+    random_state, class_weight, cat_features — các tham số cấu trúc của
+    pipeline, không phải đối tượng của grid search.
+
     imbalance_strategy:
       "none"               — không xử lý (baseline tốt nhất về Macro F1)
       "smote_moderate"     — SMOTE chỉ oversample minority vừa phải (mặc định)
@@ -107,18 +115,20 @@ def build_pipeline(model_key: str,
     (cơ chế cân bằng lớp tích hợp sẵn của CatBoost) thay vì resampling.
     """
     use_class_weight = imbalance_strategy == "class_weight"
+    overrides = model_params or {}
 
     if model_key == "catboost":
         if not _HAS_CATBOOST:
             raise ImportError("CatBoost không khả dụng: pip install catboost")
         preprocessor = CatBoostPreprocessor(categorical_cols, numerical_cols)
         cat_idx = list(range(len(numerical_cols), len(numerical_cols) + len(categorical_cols)))
+        cb_params = {"iterations": 400, "depth": 6, "learning_rate": 0.05, **overrides}
         clf = CatBoostClassifier(
-            iterations=400, depth=6, learning_rate=0.05,
             loss_function="MultiClass", random_state=random_state,
             cat_features=cat_idx,
             auto_class_weights=None if imbalance_strategy == "none" else "Balanced",
             verbose=False,
+            **cb_params,
         )
         return ImbPipeline([("preprocessor", preprocessor), ("classifier", clf)])
 
@@ -126,38 +136,48 @@ def build_pipeline(model_key: str,
     class_weight = "balanced" if use_class_weight else None
 
     if model_key == "logistic":
+        lr_params = {"C": 1.0, **overrides}
         clf = LogisticRegression(
             max_iter=1000, random_state=random_state,
-            multi_class="multinomial", solver="lbfgs", C=1.0,
+            solver="lbfgs",
             class_weight=class_weight,
+            **lr_params,
         )
     elif model_key == "decision_tree":
+        dt_params = {"max_depth": 10, "min_samples_leaf": 10, **overrides}
         clf = DecisionTreeClassifier(
-            max_depth=10, min_samples_leaf=10,
             random_state=random_state, class_weight=class_weight,
+            **dt_params,
         )
     elif model_key == "random_forest":
+        rf_params = {"n_estimators": 300, "max_depth": 15, "min_samples_leaf": 5, **overrides}
         clf = RandomForestClassifier(
-            n_estimators=300, max_depth=15, min_samples_leaf=5,
             random_state=random_state, n_jobs=-1, class_weight=class_weight,
+            **rf_params,
         )
     elif model_key == "xgboost":
         if not _HAS_XGB:
             raise ImportError("XGBoost cần: brew install libomp")
+        xgb_params = {
+            "n_estimators": 400, "max_depth": 6, "learning_rate": 0.05,
+            "subsample": 0.8, "colsample_bytree": 0.8, **overrides,
+        }
         clf = XGBClassifier(
-            n_estimators=400, max_depth=6, learning_rate=0.05,
-            subsample=0.8, colsample_bytree=0.8,
             eval_metric="mlogloss", random_state=random_state,
             n_jobs=-1, verbosity=0,
+            **xgb_params,
         )
     elif model_key == "lightgbm":
         if not _HAS_LGB:
             raise ImportError("LightGBM không khả dụng")
+        lgb_params = {
+            "n_estimators": 400, "max_depth": 8, "learning_rate": 0.05,
+            "subsample": 0.8, "colsample_bytree": 0.8, **overrides,
+        }
         clf = LGBMClassifier(
-            n_estimators=400, max_depth=8, learning_rate=0.05,
-            subsample=0.8, colsample_bytree=0.8,
             random_state=random_state, n_jobs=-1, verbose=-1,
             class_weight=class_weight,
+            **lgb_params,
         )
     else:
         raise ValueError(f"Unknown model key: {model_key}")

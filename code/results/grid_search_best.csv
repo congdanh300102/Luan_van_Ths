@@ -1,0 +1,13 @@
+﻿Bộ dữ liệu,Mô hình,model_key,config_id,params,Accuracy,Macro-F1,Weighted-F1,ROC-AUC macro,Trạng thái,Lỗi
+A,CatBoost,catboost,8,"{'depth': 8, 'learning_rate': 0.1, 'iterations': 400}",0.8111460840585076,0.5676740198058297,0.842543874298765,0.9049655284572579,OK,
+A,Decision Tree,decision_tree,2,"{'max_depth': 5, 'min_samples_leaf': 20}",0.8998333641918164,0.608628730934141,0.8846339768801783,0.8611780453143482,OK,
+A,LightGBM,lightgbm,7,"{'max_depth': 8, 'learning_rate': 0.05, 'n_estimators': 400}",0.9113127198666914,0.6484334043692797,0.9001237752632766,0.9181492652032546,OK,
+A,Logistic Regression,logistic,3,{'C': 10.0},0.8735419366783929,0.4219911888960892,0.837088372172277,0.8059367473792161,OK,
+A,Random Forest,random_forest,17,"{'n_estimators': 500, 'max_depth': 20, 'min_samples_leaf': 10}",0.9057581929272357,0.6303444698638041,0.8938843162744017,0.9173808628489775,OK,
+A,XGBoost,xgboost,4,"{'max_depth': 6, 'learning_rate': 0.05, 'n_estimators': 400}",0.9096463617848547,0.6442366483812576,0.8981773905242884,0.9201282850049386,OK,
+B,CatBoost,catboost,5,"{'depth': 6, 'learning_rate': 0.1, 'iterations': 400}",0.9535747446610956,0.3634466826682832,0.9613979503092508,0.9519989664977118,OK,
+B,Decision Tree,decision_tree,5,"{'max_depth': 10, 'min_samples_leaf': 20}",0.9628597957288765,0.4360443994509512,0.9671281401039278,0.7137099820389343,OK,
+B,LightGBM,lightgbm,0,"{'max_depth': 4, 'learning_rate': 0.03, 'n_estimators': 400}",0.9842154131847726,0.43719276094276094,0.9806071000941011,0.9733082710939005,OK,
+B,Logistic Regression,logistic,1,{'C': 0.1},0.9647168059424327,0.31047346679377186,0.964363077066514,0.7582544571443753,OK,
+B,Random Forest,random_forest,5,"{'n_estimators': 100, 'max_depth': 20, 'min_samples_leaf': 10}",0.9749303621169917,0.27199074074074076,0.9706209807765054,0.9537281952839145,OK,
+B,XGBoost,xgboost,1,"{'max_depth': 4, 'learning_rate': 0.05, 'n_estimators': 400}",0.9823584029712163,0.4278196152633239,0.9782231322802076,0.9756026654947796,OK,
