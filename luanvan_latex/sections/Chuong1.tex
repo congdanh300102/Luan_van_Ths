@@ -86,9 +86,9 @@ Hạn chế của reject inference là không thể quan sát chắc chắn nhã
 \medskip
 \noindent\textbf{Baesens và Lessmann.}
 
-Baesens và Lessmann có đóng góp quan trọng trong benchmark giữa các mô hình thống kê và học máy. Lessmann và cộng sự \cite{lessmann2015benchmarking} cho thấy thứ hạng mô hình thay đổi theo dữ liệu, thước đo và quy trình thực nghiệm; ensemble thường cạnh tranh nhưng không thể mặc định luôn tối ưu.
+Baesens và Lessmann có đóng góp quan trọng trong các nghiên cứu đối sánh mô hình thống kê và học máy. Lessmann và cộng sự \cite{lessmann2015benchmarking} cho thấy thứ hạng mô hình thay đổi tùy theo dữ liệu, thước đo và quy trình thực nghiệm; các mô hình tổ hợp thường đạt kết quả cạnh tranh nhưng không phải lúc nào cũng tối ưu.
 
-Hạn chế của nhiều benchmark là sử dụng dữ liệu công khai nhỏ, cũ, chủ yếu nhị phân và chưa phản ánh đầy đủ dữ liệu ngân hàng thực tế.
+Hạn chế của nhiều nghiên cứu đối sánh là sử dụng các bộ dữ liệu công khai có quy mô nhỏ, thời gian thu thập đã lâu, chủ yếu phục vụ phân loại nhị phân và chưa phản ánh đầy đủ đặc điểm của dữ liệu ngân hàng trong thực tế.
 
 \medskip
 \noindent\textbf{Nhận xét tổng hợp.}
@@ -132,8 +132,8 @@ Nghiên cứu phát triển hơn các công trình đi trước ở các khía c
 \item sử dụng hai bộ dữ liệu thực tế đã ẩn danh từ một ngân hàng Việt Nam để đối chiếu kết luận trong hai cấu trúc dữ liệu khác nhau;
     \item xây dựng đặc trưng nghiệp vụ về thời hạn, mục đích vay, cơ cấu nợ và tính nhất quán;
     \item xem mất cân bằng lớp là thành phần trung tâm;
-    \item cài đặt sáu mô hình và xác nhận lại kết quả của năm mô hình chạy thành công trong môi trường hiện tại;
-    \item kết hợp hiệu quả dự báo với feature importance và SHAP;
+    \item triển khai sáu mô hình và xác nhận kết quả của năm mô hình được thực thi thành công trong môi trường nghiên cứu;
+    \item kết hợp đánh giá hiệu quả dự báo với mức độ quan trọng của đặc trưng và SHAP;
     \item lựa chọn mô hình theo hiệu quả, nhận diện rủi ro, sai lệch thứ tự và khả năng giải thích.
 \end{enumerate}
 
@@ -153,7 +153,7 @@ Xây dựng và đánh giá các mô hình học máy nhằm hỗ trợ phân lo
 \begin{enumerate}
     \item Hệ thống hóa lý thuyết và nghiên cứu liên quan.
     \item Làm sạch và xây dựng đặc trưng từ dữ liệu thực tế.
-    \item Xây dựng Logistic Regression làm baseline.
+    \item Xây dựng Logistic Regression làm mô hình cơ sở.
     \item So sánh với Decision Tree, Random Forest, XGBoost, LightGBM và CatBoost.
     \item Đánh giá ảnh hưởng của mất cân bằng lớp.
     \item Phân tích tính thứ tự và mức độ nghiêm trọng của sai số.

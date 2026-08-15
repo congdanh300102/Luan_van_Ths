@@ -190,7 +190,7 @@ LightGBM tối ưu tốc độ và bộ nhớ bằng các kỹ thuật như Grad
 \medskip
 \noindent\textbf{CatBoost.}
 
-CatBoost xử lý biến phân loại và sử dụng ordered boosting để hạn chế leakage \cite{prokhorenkova2018catboost}.
+CatBoost có khả năng xử lý trực tiếp biến phân loại và sử dụng cơ chế \textit{ordered boosting} để hạn chế rò rỉ thông tin trong quá trình huấn luyện \cite{prokhorenkova2018catboost}.
 
 \section{Những thách thức khi mô hình hóa dữ liệu tín dụng}
 
@@ -338,7 +338,7 @@ Tại Việt Nam, nghiên cứu thường tập trung vào đánh giá rủi ro 
 
 \medskip
 \noindent\textbf{Định hướng nghiên cứu.}
-Luận văn xây dựng bài toán năm nhóm nợ, kiểm tra và xây dựng đặc trưng nghiệp vụ, cài đặt Logistic Regression làm baseline, so sánh với mô hình cây và boosting, xử lý mất cân bằng, đánh giá bằng chỉ tiêu đa lớp và giải thích mô hình bằng feature importance và SHAP. Thực nghiệm hiện tại dùng chia ngẫu nhiên phân tầng; chia theo thời gian là yêu cầu cho giai đoạn xây dựng nhãn chuyển nhóm.
+Luận văn xây dựng bài toán phân loại năm nhóm nợ, kiểm tra và hình thành các đặc trưng nghiệp vụ, sử dụng Logistic Regression làm mô hình cơ sở để đối chiếu với các mô hình cây và mô hình tăng cường, đồng thời xử lý mất cân bằng lớp, đánh giá bằng hệ thống chỉ tiêu đa lớp và giải thích mô hình thông qua mức độ quan trọng của đặc trưng cùng SHAP. Thực nghiệm hiện tại sử dụng phép chia ngẫu nhiên có phân tầng; phép chia theo thời gian là yêu cầu cần thiết trong giai đoạn xây dựng nhãn chuyển nhóm nợ.
 
 \section{Tóm tắt chương}
 

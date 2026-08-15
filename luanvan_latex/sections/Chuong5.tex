@@ -1,12 +1,12 @@
 \chapter{KẾT LUẬN VÀ KIẾN NGHỊ}
 
-Trên cơ sở toàn bộ kết quả thực nghiệm đã trình bày ở Chương 4, chương cuối cùng này tổng kết luận văn. Chương lần lượt trình bày: (i) kết luận chung về pipeline và kết quả chính trên hai bộ dữ liệu; (ii) trả lời trực tiếp bốn câu hỏi nghiên cứu đã đặt ra ở Chương 1; (iii) tổng hợp các đóng góp về phương pháp và thực tiễn của luận văn; (iv) nêu rõ các hạn chế cần lưu ý khi diễn giải và sử dụng kết quả; (v) đề xuất kiến nghị cụ thể đối với ngân hàng về dữ liệu, mô hình và quản trị; và (vi) định hướng các hướng nghiên cứu tiếp theo, đặc biệt là xây dựng mô hình dự báo chuyển nhóm nợ và cảnh báo sớm.
+Trên cơ sở các kết quả thực nghiệm được trình bày ở Chương 4, chương này tổng hợp những kết luận chủ yếu của luận văn. Nội dung chương bao gồm: (i) khái quát quy trình nghiên cứu và kết quả chính trên hai bộ dữ liệu; (ii) trả lời bốn câu hỏi nghiên cứu đã xác lập ở Chương 1; (iii) tổng hợp các đóng góp về phương pháp và thực tiễn; (iv) phân tích những hạn chế trong việc diễn giải và sử dụng kết quả; (v) đề xuất kiến nghị đối với ngân hàng về dữ liệu, mô hình và công tác quản trị; và (vi) định hướng nghiên cứu tiếp theo, trọng tâm là xây dựng mô hình dự báo chuyển nhóm nợ và cảnh báo sớm.
 
 \section{Kết luận chung}
 
-Luận văn giữ nguyên định hướng của đề tài \textit{``Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam''}. Trên hai bộ dữ liệu gốc và code hiện có, nghiên cứu đã xây dựng được pipeline phân loại năm nhóm nợ, kiểm soát một số nguồn rò rỉ, xử lý mất cân bằng, so sánh các mô hình cây và phân tích vai trò của đặc trưng. Khả năng chuyển nhóm nợ được xác định là hướng phát triển nhằm hỗ trợ phân loại nợ và cảnh báo sớm rủi ro tín dụng; kết quả hiện tại là nền tảng cho hướng này, chưa phải kiểm định hoàn chỉnh theo thời gian.
+Luận văn được thực hiện theo định hướng của đề tài \textit{``Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam''}. Trên cơ sở hai bộ dữ liệu gốc và mã nguồn hiện có, nghiên cứu đã xây dựng quy trình phân loại năm nhóm nợ, kiểm soát một số nguồn rò rỉ thông tin, xử lý mất cân bằng lớp, so sánh các mô hình cây và phân tích vai trò của các đặc trưng. Dự báo khả năng chuyển nhóm nợ được xác định là hướng phát triển tiếp theo nhằm hỗ trợ cảnh báo sớm rủi ro tín dụng; kết quả hiện tại tạo nền tảng cho hướng nghiên cứu này nhưng chưa cấu thành một phép kiểm định đầy đủ theo thời gian.
 
-Bộ dữ liệu A có 27.001 hồ sơ và 21 cột thô. Trang huấn luyện chính sử dụng 11 biến cấu hình, còn mô-đun phân tích đặc trưng dùng pool 13 biến gồm tám biến số và năm biến phân loại. Phép chia phân tầng tạo 21.600 mẫu huấn luyện và 5.401 mẫu kiểm định. Trên 11 biến, LightGBM đạt Macro-F1 cao nhất là 0,6484; XGBoost đạt 0,6442 và ROC-AUC macro 0,9201.
+Bộ dữ liệu A gồm 27.001 hồ sơ và 21 biến ban đầu. Cấu hình huấn luyện chính sử dụng 11 biến, trong khi mô-đun phân tích đặc trưng sử dụng tập mở rộng gồm 13 biến, bao gồm tám biến số và năm biến phân loại. Phép chia có phân tầng tạo ra 21.600 quan sát huấn luyện và 5.401 quan sát kiểm định. Trên tập 11 biến, LightGBM đạt Macro-F1 cao nhất (0,6484); XGBoost đạt Macro-F1 bằng 0,6442 và ROC-AUC macro bằng 0,9201.
 
 Bộ dữ liệu B có 5.400 dòng và 178 cột thô. Sau khi loại 19 dòng thiếu nhãn và các trường không phù hợp, mô hình sử dụng 5.381 quan sát với 98 đặc trưng, gồm 63 biến số thô, 26 biến phân loại và 9 biến tạo thêm. Phép chia phân tầng tạo 4.304 mẫu huấn luyện và 1.077 mẫu kiểm định.
 
@@ -45,7 +45,7 @@ Ngân hàng nên ưu tiên lưu snapshot theo thời gian, chuẩn hóa ngày gi
 
 \subsection{Đóng góp phương pháp}
 
-Nghiên cứu xây dựng hai pipeline độc lập nhưng cùng nguyên tắc, gồm lựa chọn cột theo taxonomy nghiệp vụ, tạo đặc trưng, điền khuyết, chuẩn hóa, mã hóa, xử lý mất cân bằng và huấn luyện mô hình. Việc loại \textit{NHOMNO} khỏi bộ A và loại các trường nhóm nợ/ngày quá hạn trực tiếp khỏi bộ B thể hiện chủ đích hạn chế mô hình học lại quy tắc tạo nhãn.
+Nghiên cứu xây dựng hai quy trình thực nghiệm độc lập dựa trên cùng một hệ nguyên tắc, bao gồm lựa chọn biến theo phân nhóm nghiệp vụ, xây dựng đặc trưng, điền khuyết, chuẩn hóa, mã hóa, xử lý mất cân bằng lớp và huấn luyện mô hình. Việc loại \textit{NHOMNO} khỏi bộ A, đồng thời loại các trường phản ánh trực tiếp nhóm nợ hoặc số ngày quá hạn khỏi bộ B, nhằm hạn chế khả năng mô hình học lại quy tắc hình thành nhãn.
 
 Nghiên cứu cũng tách ba khái niệm thường bị đồng nhất: số cột thô, số đặc trưng hợp lệ và số đặc trưng rút gọn theo hiệu năng. Sự phân biệt này giúp câu hỏi ``178 biến có cần thiết không'' được trả lời chặt chẽ hơn. Việc chạy cùng bốn câu hỏi trên hai cấu trúc dữ liệu còn cho thấy kết luận về số lượng và nhóm đặc trưng không nên được khái quát từ một bộ dữ liệu duy nhất.
 
@@ -54,7 +54,7 @@ Nghiên cứu cũng tách ba khái niệm thường bị đồng nhất: số c�
 Kết quả cung cấp:
 
 \begin{itemize}
-    \item kết quả đối sánh năm mô hình chạy thành công trên từng bộ dữ liệu;
+    \item kết quả đối sánh năm mô hình được thực thi thành công trên từng bộ dữ liệu;
     \item bảng hiệu năng theo lớp, cho thấy rõ điểm yếu ở lớp hiếm của bộ B;
     \item hai đường cong hiệu năng theo số lượng đặc trưng;
     \item xếp hạng nhóm thông tin nghiệp vụ riêng cho từng bộ;
@@ -75,11 +75,11 @@ Trong bộ B, nhóm 3 và 4 có tổng cộng 11 và 13 hồ sơ. Tập kiểm �
 
 \subsection{Thiết kế kiểm định}
 
-Code vẫn dùng một phép chia ngẫu nhiên phân tầng cho các bảng chính, nên kết quả có thể phụ thuộc seed và chưa phản ánh data drift. Phiên bản mới có \texttt{RepeatedStratifiedKFold}, mặc định ba lần lặp của 5-fold, và tổng hợp Precision, Recall, F1 theo từng nhóm. Chức năng này giảm độ nhạy với một holdout đơn nhưng không thay thế kiểm định ngoài thời gian.
+Các bảng kết quả chính vẫn dựa trên một phép chia ngẫu nhiên có phân tầng; do đó, kết quả có thể phụ thuộc vào hạt giống ngẫu nhiên và chưa phản ánh sự thay đổi phân bố dữ liệu theo thời gian. Quy trình \texttt{RepeatedStratifiedKFold}, với cấu hình mặc định gồm ba lần lặp của kiểm định chéo 5 phần, cho phép tổng hợp Precision, Recall và F1 theo từng nhóm. Cách tiếp cận này giảm mức độ phụ thuộc vào một lần chia mẫu nhưng không thay thế được kiểm định trên dữ liệu ngoài thời gian.
 
-Các mốc Top-$k$ được xem xét trên cùng tập kiểm định rồi mới rút ra mốc tốt, gây thiên lệch lựa chọn. Do đó, Top-9 và Top-60 chỉ là ứng viên khám phá; cần chọn $k$ trên validation hoặc nested cross-validation và đánh giá lại một lần trên test độc lập.
+Các giá trị $k$ được khảo sát trên cùng một tập kiểm định trước khi lựa chọn cấu hình tốt nhất, vì vậy có thể phát sinh thiên lệch lựa chọn. Do đó, tập 9 biến và tập 60 biến chỉ được xem là các cấu hình ứng viên từ phân tích khám phá. Giá trị $k$ cần được lựa chọn trên tập xác thực hoặc thông qua kiểm định chéo lồng nhau, sau đó đánh giá một lần trên tập kiểm định độc lập.
 
-\subsection{Sự không thống nhất trong pipeline}
+\subsection{Sự chưa đồng nhất trong quy trình thực nghiệm}
 
 Mô hình đầy đủ của bộ B sử dụng SMOTE tùy chỉnh, còn trang Top-$k$ dùng chiến lược SMOTE ở mức vừa. CatBoost dùng trọng số lớp thay cho SMOTE. Vì vậy, một phần chênh lệch có thể đến từ chiến lược mất cân bằng chứ không chỉ số lượng biến.
 
@@ -160,6 +160,6 @@ trong đó $a$ là nhóm nợ tại thời điểm quan sát; $b$ là nhóm đí
 
 \section{Kết luận chương}
 
-Nghiên cứu đã tạo được hai pipeline và bằng chứng thực nghiệm cho bài toán phân loại năm nhóm nợ. Trên bộ A, LightGBM đạt Macro-F1 cao nhất với 11 biến; XGBoost cho thấy 11 biến cấu hình nhỉnh hơn pool 13 biến, và nhóm Kỳ hạn khoản vay có importance lớn nhất. Trên bộ B, XGBoost đạt Macro-F1 cao nhất; nhóm Dư nợ và giải ngân đứng đầu; Top-60 là ứng viên nếu chấp nhận giữ khoảng 95\% hiệu năng, còn chưa có bằng chứng giảm dưới 98 biến nếu yêu cầu 99\%. Hạn chế về dữ liệu theo thời gian, cỡ mẫu lớp hiếm, lựa chọn $k$ trên cùng holdout và sự khác nhau của pipeline khiến kết quả chưa thể được diễn giải là mô hình cảnh báo chuyển nhóm hoàn chỉnh.
+Nghiên cứu đã xây dựng hai quy trình thực nghiệm và cung cấp bằng chứng cho bài toán phân loại năm nhóm nợ. Trên bộ A, LightGBM đạt Macro-F1 cao nhất với 11 biến; đối với XGBoost, tập 11 biến trong cấu hình chính cho kết quả cao hơn nhẹ so với tập mở rộng 13 biến, đồng thời nhóm Kỳ hạn khoản vay có mức độ quan trọng lớn nhất. Trên bộ B, XGBoost đạt Macro-F1 cao nhất trong bảng so sánh theo cấu hình mặc định và nhóm Dư nợ và giải ngân đứng đầu về mức độ quan trọng. Tập 60 biến là cấu hình ứng viên nếu chấp nhận duy trì khoảng 95\% hiệu quả; trong khi đó, chưa có bằng chứng cho phép giảm xuống dưới 98 biến nếu yêu cầu duy trì 99\%. Các hạn chế về dữ liệu theo thời gian, quy mô lớp hiếm, việc lựa chọn $k$ trên cùng một tập kiểm định và sự chưa đồng nhất giữa các quy trình thực nghiệm chưa cho phép diễn giải kết quả như một mô hình cảnh báo chuyển nhóm nợ hoàn chỉnh.
 
 Đây cũng là nội dung khép lại toàn bộ luận văn: bốn câu hỏi nghiên cứu đặt ra ở Chương 1 đã được trả lời trên cơ sở bằng chứng thực nghiệm của Chương 4, đóng góp và hạn chế đã được nhìn nhận thẳng thắn, còn các kiến nghị đối với ngân hàng và hướng nghiên cứu tiếp theo là cơ sở để các công trình kế thừa hoàn thiện mô hình dự báo chuyển nhóm nợ và cảnh báo sớm trong tương lai.

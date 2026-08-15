@@ -1,10 +1,10 @@
 \chapter{DỮ LIỆU VÀ PHƯƠNG PHÁP NGHIÊN CỨU}
 
-Trên cơ sở lý thuyết và định hướng nghiên cứu đã trình bày ở Chương 2, chương này mô tả dữ liệu và quy trình thực nghiệm được triển khai trong mã nguồn. Nội dung chương bao gồm: (i) định hướng, phạm vi thực nghiệm và tổng quan quy trình nghiên cứu; (ii) thu thập dữ liệu; (iii) phân tích khám phá và làm sạch dữ liệu; (iv) tiền xử lý và lựa chọn biến; (v) phân chia dữ liệu huấn luyện--kiểm định và xử lý mất cân bằng lớp; (vi) huấn luyện mô hình, bao gồm xây dựng, hiệu chỉnh, triển khai và định hướng giám sát mô hình.
+Trên cơ sở lý thuyết và định hướng nghiên cứu đã trình bày ở Chương 2, chương này mô tả dữ liệu và quy trình thực nghiệm. Nội dung chương bao gồm: (i) định hướng, phạm vi thực nghiệm và tổng quan quy trình nghiên cứu; (ii) thu thập dữ liệu; (iii) phân tích khám phá và làm sạch dữ liệu; (iv) tiền xử lý và lựa chọn biến; (v) phân chia dữ liệu huấn luyện -- kiểm định và xử lý mất cân bằng lớp; (vi) huấn luyện mô hình.
 
 \section{Định hướng và phạm vi thực nghiệm}
 
-Tập nguồn bao gồm hai bộ dữ liệu chứa thông tin đã được mã hóa về các khoản vay tại hai ngân hàng ở Việt Nam. Bộ dữ liệu A, \textbf{Data\_credit\_rating\_VN.xlsx}, gồm 27.001 quan sát và 21 biến ban đầu; biến đích \textbf{NHOMNOMOI} nhận giá trị từ 1 đến 5, tương ứng với năm nhóm nợ. Bộ dữ liệu B, \textbf{fct\_l.xlsx}, gồm 5.400 quan sát và 178 biến ban đầu; biến đích \textbf{CLASSIFICATION} cũng biểu thị nhóm nợ từ 1 đến 5.
+Tập nguồn bao gồm hai bộ dữ liệu chứa thông tin đã được mã hóa về các khoản vay tại hai ngân hàng khác nhau ở Việt Nam. Bộ dữ liệu A, \textbf{Data\_credit\_rating\_VN.xlsx}, gồm 27.001 quan sát và 21 biến ban đầu; biến đích \textbf{NHOMNOMOI} nhận giá trị từ 1 đến 5, tương ứng với năm nhóm nợ. Bộ dữ liệu B, \textbf{fct\_l.xlsx}, gồm 5.400 quan sát và 178 biến ban đầu; biến đích \textbf{CLASSIFICATION} cũng biểu thị nhóm nợ từ 1 đến 5.
 
 Mục tiêu dài hạn của đề tài là xây dựng mô hình học máy dự báo khả năng chuyển nhóm nợ của khách hàng nhằm hỗ trợ cảnh báo sớm rủi ro tín dụng. Tuy nhiên, do hai bộ dữ liệu hiện có chỉ phản ánh trạng thái nhóm nợ tại một thời điểm, phạm vi thực nghiệm của luận văn được giới hạn ở bài toán phân loại năm nhóm nợ. Kết quả thu được vì vậy đóng vai trò mô hình cơ sở để kiểm chứng quy trình xử lý dữ liệu và phương pháp mô hình hóa, chưa phải bằng chứng thực nghiệm về năng lực dự báo chuyển nhóm nợ trong tương lai.
 
@@ -103,7 +103,7 @@ Tỷ lệ nhóm 1 rất cao, trong khi nhóm 3 và 4 chỉ có 11 và 13 quan s�
 \section{Bước 2 — EDA \& làm sạch dữ liệu}
 \label{sec:eda}
 
-Tiếp theo chúng ta sẽ tiến hành khảo sát hai bộ dữ liệu gốc bằng thống kê mô tả, phát hiện giá trị ngoại lệ theo khoảng tứ phân vị (IQR), tỷ lệ giá trị thiếu và ma trận tương quan Pearson giữa các biến số. Mục tiêu của bước này là xác định biến nào cần chuẩn hóa mạnh, biến nào có nguy cơ đa cộng tuyến, và biến nào có phân phối quá lệch để lựa chọn phương pháp điền khuyết phù hợp — không chỉ mô tả mà còn làm căn cứ cho các quyết định tiền xử lý trình bày ở Bước 3 (mục \ref{sec:preprocessing-examples}).
+Tiếp theo ta sẽ tiến hành khảo sát hai bộ dữ liệu gốc bằng thống kê mô tả, phát hiện giá trị ngoại lệ theo khoảng tứ phân vị (IQR), tỷ lệ giá trị thiếu và ma trận tương quan Pearson giữa các biến số. Mục tiêu của bước này là xác định biến nào cần chuẩn hóa mạnh, biến nào có nguy cơ đa cộng tuyến, và biến nào có phân phối quá lệch để lựa chọn phương pháp điền khuyết phù hợp — không chỉ mô tả mà còn làm căn cứ cho các quyết định tiền xử lý trình bày ở Bước 3 (mục \ref{sec:preprocessing-examples}).
 
 \subsection{Bộ dữ liệu A}
 
@@ -623,7 +623,7 @@ Con số 178 là số cột của tệp thô, không phải số biến thực t
     \item không đưa trực tiếp trường ngày vào mô hình; các trường này chỉ dùng để tạo biến thời lượng; đồng thời loại cột chỉ có một giá trị quan sát.
 \end{enumerate}
 
-Sau lọc, code giữ 63 biến số và 26 biến phân loại. Bước tạo đặc trưng nghiệp vụ bổ sung 9 biến số, đưa tổng số đầu vào lên:
+Sau quá trình sàng lọc, tập dữ liệu còn 63 biến số và 26 biến phân loại. Bước xây dựng đặc trưng nghiệp vụ bổ sung 9 biến số, đưa tổng số biến đầu vào lên:
 \[
 p=63+26+9=98.
 \]
@@ -631,7 +631,7 @@ Tương đương, phép đếm từ tệp nguồn có thể viết:
 \[
 178-1-38-19-31+9=98.
 \]
-Trong đó 1 là biến đích; 38 là số trường định danh, khóa thay thế hoặc leakage có mặt trong tệp; 19 là số trường ngày không đưa trực tiếp vào mô hình; 31 là số trường còn lại có không quá một giá trị quan sát; và 9 là số biến tạo thêm. Vì vậy, câu hỏi ``giảm từ 178 xuống bao nhiêu'' được triển khai chính xác hơn thành hai bước: giảm 178 cột thô xuống tập 98 đặc trưng hợp lệ theo quy tắc nghiệp vụ, sau đó đánh giá khả năng rút gọn tiếp từ 98 đặc trưng.
+Trong đó, 1 là biến đích; 38 là số trường định danh, khóa thay thế hoặc có nguy cơ rò rỉ thông tin; 19 là số trường ngày không được đưa trực tiếp vào mô hình; 31 là số trường còn lại có không quá một giá trị quan sát; và 9 là số biến được xây dựng thêm. Do đó, quá trình rút gọn từ 178 biến ban đầu được thực hiện theo hai giai đoạn: trước hết giảm xuống 98 đặc trưng hợp lệ dựa trên các quy tắc nghiệp vụ, sau đó đánh giá khả năng tiếp tục rút gọn tập 98 đặc trưng này.
 
 \begin{figure}[H]
 \centering
@@ -661,7 +661,7 @@ Bộ 16 biến là cấu hình vận hành rút gọn được xác định trư
 
 \subsubsection{Nhóm đặc trưng nghiệp vụ}
 
-Đối với bộ A, code ánh xạ 13 biến vào sáu nhóm: Dư nợ và hạn mức sử dụng; Lãi suất; Kỳ hạn khoản vay; Đơn vị/chi nhánh; Sản phẩm và mục đích vay; Nhân khẩu học có IV thấp. Đối với bộ B, code ánh xạ 98 biến vào chín nhóm: (1) Dư nợ và giải ngân; (2) Lãi suất; (3) Trả nợ và thu hồi; (4) Kỳ hạn và gia hạn; (5) Sản phẩm, mục đích và kênh phân phối; (6) Khách hàng và đối tác; (7) Thay đổi và trạng thái hợp đồng; (8) Bối cảnh và nguồn dữ liệu; và (9) Đặc trưng kỹ thuật.
+Đối với bộ A, 13 biến được phân vào sáu nhóm: Dư nợ và hạn mức sử dụng; Lãi suất; Kỳ hạn khoản vay; Đơn vị/chi nhánh; Sản phẩm và mục đích vay; Nhân khẩu học có IV thấp. Đối với bộ B, 98 biến được phân vào chín nhóm: (1) Dư nợ và giải ngân; (2) Lãi suất; (3) Trả nợ và thu hồi; (4) Kỳ hạn và gia hạn; (5) Sản phẩm, mục đích và kênh phân phối; (6) Khách hàng và đối tác; (7) Thay đổi và trạng thái hợp đồng; (8) Bối cảnh và nguồn dữ liệu; và (9) Đặc trưng kỹ thuật.
 
 Việc phân nhóm biến phục vụ hai mục đích: giải thích mô hình ở cấp độ nghiệp vụ và xây dựng khuyến nghị đầu tư dữ liệu. Tuy nhiên, tổng mức độ quan trọng của một nhóm chỉ phản ánh cách mô hình sử dụng dữ liệu hiện có và không cung cấp bằng chứng về quan hệ nhân quả.
 
@@ -685,11 +685,11 @@ trong đó $\mu_j$ và $\sigma_j$ lần lượt là trung bình và độ lệch
 
 \subsection{Biến phân loại}
 
-Đối với Logistic Regression, Decision Tree, Random Forest, XGBoost và LightGBM, code dùng \texttt{LabelEncoder} riêng cho từng cột. Nếu giá trị mới không xuất hiện trong huấn luyện, code ánh xạ nó về lớp đầu tiên trong encoder. Đây là cách xử lý kỹ thuật nhưng có thể tạo thứ tự giả cho biến định danh; kết quả cần được xem là hạn chế của pipeline.
+Đối với Logistic Regression, Decision Tree, Random Forest, XGBoost và LightGBM, mã nguồn sử dụng một bộ \texttt{LabelEncoder} riêng cho từng cột. Nếu xuất hiện giá trị mới chưa có trong tập huấn luyện, giá trị đó được ánh xạ về lớp đầu tiên của bộ mã hóa. Cách xử lý này bảo đảm khả năng thực thi nhưng có thể tạo ra thứ tự không có ý nghĩa đối với biến định danh; đây là một hạn chế của quy trình tiền xử lý cần được lưu ý khi diễn giải kết quả.
 
 CatBoost sử dụng preprocessor riêng: biến số chỉ được điền trung vị, không chuẩn hóa; biến phân loại thiếu được thay bằng \texttt{UNKNOWN} và giữ dạng chuỗi để thuật toán xử lý trực tiếp, phù hợp cơ chế của CatBoost \cite{prokhorenkova2018catboost}.
 
-Việc chọn trung vị thay vì trung bình cho bước điền khuyết không phải lựa chọn mặc định mà xuất phát trực tiếp từ EDA ở mục \ref{sec:eda}: các biến tiền tệ của cả hai bộ đều lệch phải mạnh (Bảng \ref{tab:eda-a-describe}, \ref{tab:eda-b-describe}), độ lệch chuẩn lớn hơn trung bình hàng chục lần và một tỷ lệ đáng kể quan sát là ngoại lệ theo IQR. Trung vị là thống kê bền vững (robust) với ngoại lệ và phân phối lệch, trong khi trung bình sẽ bị kéo về phía các giá trị cực lớn, làm giá trị điền khuyết không đại diện cho đa số hồ sơ điển hình \cite{bishop2006pattern}.
+Việc sử dụng trung vị thay cho trung bình ở bước điền khuyết được lựa chọn dựa trên kết quả phân tích khám phá tại mục \ref{sec:eda}. Các biến tiền tệ trong cả hai bộ dữ liệu có phân phối lệch phải mạnh (Bảng \ref{tab:eda-a-describe}, \ref{tab:eda-b-describe}), độ lệch chuẩn lớn hơn giá trị trung bình nhiều lần và tỷ lệ ngoại lệ theo IQR đáng kể. Trung vị ít nhạy cảm hơn với ngoại lệ và phân phối lệch, trong khi trung bình có thể bị chi phối bởi các giá trị cực lớn, khiến giá trị điền khuyết kém đại diện cho phần lớn hồ sơ \cite{bishop2006pattern}.
 
 \subsection{Ví dụ minh họa trước và sau xử lý}
 \label{sec:preprocessing-examples}
