@@ -7,10 +7,11 @@ Trả lời 4 câu hỏi nghiên cứu, chạy độc lập trên cả 2 bộ đ
   4. Ngân hàng nên ưu tiên thu thập những nhóm thông tin nào để đạt hiệu quả cao nhất?
 
 Dataset 1 (Data_credit_rating_VN.xlsx) chỉ có 21 cột thô — quy mô rất khác
-fct_l.xlsx (178 cột thô). Pool "đầy đủ" của Dataset 1 gồm 11 đặc trưng đã
-chọn qua IV (dùng ở trang 2) + 2 đặc trưng từng bị loại vì IV quá thấp
-(SEX, LOAIKH) — đây là toàn bộ candidate hợp lệ còn lại sau khi loại
-leakage/trùng lặp/hằng số, không phải một pool 178 cột tương đương.
+Dataset 2 (Thông tin tín dụng, 33 cột chung giữa 2 file train/test). Pool
+"đầy đủ" của Dataset 1 gồm 11 đặc trưng đã chọn qua IV (dùng ở trang 2) + 2
+đặc trưng từng bị loại vì IV quá thấp (SEX, LOAIKH) — đây là toàn bộ
+candidate hợp lệ còn lại sau khi loại leakage/trùng lặp/hằng số, không phải
+một pool tương đương quy mô với Dataset 2.
 """
 import sys
 from pathlib import Path
@@ -25,10 +26,10 @@ from sklearn.model_selection import train_test_split
 from config.config import (
     RANDOM_STATE, DATA_RAW, TARGET_COL, DROP_COLS,
     CATEGORICAL_COLS, NUMERICAL_COLS, TEST_SIZE,
-    FCT_L_NUMERICAL_COLS, FCT_L_CATEGORICAL_COLS,
+    CREDIT_INFO_SMOTE_STRATEGY,
 )
 from src.preprocessing import prepare, DATASET1_FEATURE_GROUPS, dataset1_feature_to_group
-from src.fct_l_preprocessing import FEATURE_GROUPS, feature_to_group
+from src.credit_info_preprocessing import FEATURE_GROUPS, feature_to_group
 from src.models import build_pipeline, available_models
 from src.evaluation import compute_metrics
 from src.data_loader import get_raw_bytes
@@ -48,7 +49,7 @@ st.markdown(
 
 tab_ds1, tab_ds2 = st.tabs([
     "📁 Dataset 1 — Data_credit_rating_VN (tối đa 13 đặc trưng)",
-    "📁 Dataset 2 — fct_l.xlsx (178 cột thô)",
+    "📁 Dataset 2 — Thông tin tín dụng (33 cột chung train/test)",
 ])
 
 
@@ -153,7 +154,7 @@ with tab_ds1:
             st.markdown("#### Đường cong hiệu năng theo số lượng đặc trưng")
             st.caption(
                 "Chỉ có tối đa 13 đặc trưng khả dụng nên đường cong ngắn hơn nhiều so "
-                "với fct_l — nhưng vẫn đủ để kiểm tra liệu thêm 2 đặc trưng IV thấp "
+                "với Dataset 2 — nhưng vẫn đủ để kiểm tra liệu thêm 2 đặc trưng IV thấp "
                 "(SEX, LOAIKH) vào 11 đặc trưng đã chọn có cải thiện hiệu năng không."
             )
             default_ks1 = [k for k in [3, 5, 7, 9, 11, len(ordered1)] if k <= len(ordered1)]
@@ -178,7 +179,7 @@ with tab_ds1:
                 verdict1 = (
                     f"Macro F1 cao nhất đạt ở **k = {best_k1}** ({peak_f1_1:.4f}). "
                     + ("Dùng toàn bộ 13 đặc trưng (kể cả 2 đặc trưng IV thấp) KHÔNG "
-                       "cải thiện thêm — nhất quán với kết luận ở fct_l.xlsx: nhiều "
+                       "cải thiện thêm — nhất quán với kết luận ở Dataset 2: nhiều "
                        "đặc trưng hơn không tự động tốt hơn."
                        if len(full_f1_1) and full_f1_1[0] <= peak_f1_1 + 1e-9 and best_k1 < len(ordered1)
                        else "Xem bảng/biểu đồ để đánh giá xu hướng cụ thể.")
@@ -253,28 +254,28 @@ with tab_ds1:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# DATASET 2 — fct_l.xlsx (178 cột thô)
+# DATASET 2 — Thông tin tín dụng (33 cột chung train/test)
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_ds2:
-    REQUIRED_KEYS = ["fct_l_pipe", "fct_l_X_train", "fct_l_X_test", "fct_l_cat_cols", "fct_l_num_cols"]
-    if not all(k in st.session_state for k in REQUIRED_KEYS) or not st.session_state.get("fct_l_use_full_set"):
+    REQUIRED_KEYS = ["credit_info_pipe", "credit_info_X_train", "credit_info_X_test",
+                     "credit_info_cat_cols", "credit_info_num_cols"]
+    if not all(k in st.session_state for k in REQUIRED_KEYS):
         st.warning(
-            "⚠️ Chưa có mô hình huấn luyện trên **bộ đặc trưng đầy đủ**. "
-            "Vào **Trang 5 — Mô hình FCT_L**, chọn *\"Đầy đủ + kỹ thuật đặc trưng\"* "
-            "ở thanh bên rồi bấm **Huấn luyện mô hình** trước khi quay lại đây."
+            "⚠️ Chưa có mô hình đã huấn luyện. Vào **Trang 5 — Mô hình Tín dụng** "
+            "rồi bấm **Huấn luyện mô hình** trước khi quay lại đây."
         )
         st.stop()
 
-    pipe        = st.session_state["fct_l_pipe"]
-    model_key   = st.session_state["fct_l_model_key"]
-    model_lbl   = st.session_state.get("fct_l_model_lbl", model_key)
-    cat_cols    = st.session_state["fct_l_cat_cols"]
-    num_cols    = st.session_state["fct_l_num_cols"]
-    X_train     = st.session_state["fct_l_X_train"]
-    y_train     = st.session_state["fct_l_y_train"]
-    X_test      = st.session_state["fct_l_X_test"]
-    y_test      = st.session_state["fct_l_y_test"]
-    X_all       = st.session_state.get("fct_l_X_all", pd.concat([X_train, X_test]))
+    pipe        = st.session_state["credit_info_pipe"]
+    model_key   = st.session_state["credit_info_model_key"]
+    model_lbl   = st.session_state.get("credit_info_model_lbl", model_key)
+    cat_cols    = st.session_state["credit_info_cat_cols"]
+    num_cols    = st.session_state["credit_info_num_cols"]
+    X_train     = st.session_state["credit_info_X_train"]
+    y_train     = st.session_state["credit_info_y_train"]
+    X_test      = st.session_state["credit_info_X_test"]
+    y_test      = st.session_state["credit_info_y_test"]
+    X_all       = st.session_state.get("credit_info_X_all", pd.concat([X_train, X_test]))
 
     all_features = num_cols + cat_cols
     importance = importance_from_pipeline(pipe)
@@ -293,8 +294,13 @@ with tab_ds2:
     def _build_and_eval(subset: list) -> dict:
         cat_sub = [c for c in cat_cols if c in subset]
         num_sub = [c for c in num_cols if c in subset]
+        # smote_moderate mặc định được hiệu chỉnh cho phân phối lớp của Dataset
+        # 1 — không tương thích với cỡ mẫu lớn hơn nhiều của Dataset 2 (SMOTE
+        # yêu cầu target >= số mẫu gốc). Dùng đúng chiến lược custom đã hiệu
+        # chỉnh cho dữ liệu Thông tin tín dụng, nhất quán với Trang 5.
         p = build_pipeline(model_key, cat_sub, num_sub, random_state=RANDOM_STATE,
-                           imbalance_strategy="smote_moderate")
+                           imbalance_strategy="custom",
+                           custom_smote_strategy=CREDIT_INFO_SMOTE_STRATEGY)
         p.fit(X_train[subset], y_train)
         y_pred  = p.predict(X_test[subset]) + 1
         y_proba = p.predict_proba(X_test[subset])
@@ -317,10 +323,10 @@ with tab_ds2:
         if st.button("▶️ Chạy đánh giá theo k", type="primary", disabled=len(ks) == 0):
             with st.spinner("Đang huấn luyện lại cho từng mốc k…"):
                 df_k = evaluate_performance_vs_k(_build_and_eval, ordered_features, sorted(ks))
-            st.session_state["fct_l_perf_vs_k"] = df_k
+            st.session_state["credit_info_perf_vs_k"] = df_k
 
-        if "fct_l_perf_vs_k" in st.session_state:
-            df_k = st.session_state["fct_l_perf_vs_k"]
+        if "credit_info_perf_vs_k" in st.session_state:
+            df_k = st.session_state["credit_info_perf_vs_k"]
             st.dataframe(df_k.style.format({c: "{:.4f}" for c in df_k.columns if c != "k"}),
                         use_container_width=True, hide_index=True)
             st.plotly_chart(plot_performance_vs_k(df_k), use_container_width=True)
@@ -360,23 +366,21 @@ with tab_ds2:
             f"~{target_pct}% tổng importance."
         )
 
-        reduced_16 = [c for c in FCT_L_NUMERICAL_COLS + FCT_L_CATEGORICAL_COLS if c in X_all.columns]
-        st.markdown("#### So sánh Full vs Top-k (đề xuất) vs Rút gọn hiện tại (16 biến)")
-        compare_ks = sorted(set([k_reco, len(ordered_features), len(reduced_16)]))
-        if st.button("▶️ Chạy so sánh 3 cấu hình"):
-            with st.spinner("Đang huấn luyện lại 3 cấu hình…"):
+        st.markdown("#### So sánh Đầy đủ vs Top-k (đề xuất)")
+        compare_ks = sorted(set([k_reco, len(ordered_features)]))
+        if st.button("▶️ Chạy so sánh cấu hình"):
+            with st.spinner("Đang huấn luyện lại các cấu hình…"):
                 rows = []
                 for k in compare_ks:
                     subset = ordered_features[:k] if k <= len(ordered_features) else ordered_features
                     m = _build_and_eval(subset)
-                    tag = ("Rút gọn 16 biến (hiện tại)" if k == len(reduced_16) and k != len(ordered_features)
-                           else f"Đầy đủ ({k} biến)" if k == len(ordered_features)
+                    tag = (f"Đầy đủ ({k} biến)" if k == len(ordered_features)
                            else f"Top-{k} (đề xuất)")
                     rows.append({"Cấu hình": tag, "k": k, **m})
-                st.session_state["fct_l_compare3"] = pd.DataFrame(rows)
+                st.session_state["credit_info_compare"] = pd.DataFrame(rows)
 
-        if "fct_l_compare3" in st.session_state:
-            df_c3 = st.session_state["fct_l_compare3"]
+        if "credit_info_compare" in st.session_state:
+            df_c3 = st.session_state["credit_info_compare"]
             st.dataframe(df_c3.style.format({c: "{:.4f}" for c in df_c3.columns if c not in ("Cấu hình", "k")}),
                         use_container_width=True, hide_index=True)
 

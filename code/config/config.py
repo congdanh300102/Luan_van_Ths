@@ -74,54 +74,50 @@ MODEL_OPTIONS = {
     "LightGBM":            "lightgbm",
 }
 
-# ── Dataset 2: fct_l.xlsx ─────────────────────────────────────────────────────
-DATA_FCT_L           = ROOT_DIR / "data" / "raw" / "fct_l.xlsx"
-DATA_FCT_L_PROCESSED = ROOT_DIR / "data" / "processed" / "fct_l_30k.csv"
+# ── Dataset 2: Thông tin tín dụng (train 20260430 / test 20260507) ───────────
+DATA_CREDIT_INFO_TRAIN = ROOT_DIR / "data" / "raw" / "Thông tin tín dụng 20260430.xlsx"
+DATA_CREDIT_INFO_TEST  = ROOT_DIR / "data" / "raw" / "Thông tin tín dụng 20260507.xlsx"
 
-FCT_L_TARGET_COL = "CLASSIFICATION"
+CREDIT_INFO_TARGET_COL = "Nhóm nợ tự phân loại"
 
-FCT_L_NUMERICAL_COLS = [
-    "INTEREST_RATE",       # lãi suất
-    "INTEREST_SPREAD",     # biên độ lãi suất
-    "BALANCE",             # dư nợ hiện tại
-    "BALANCE_PE",          # dư nợ gốc
-    "BALANCE_PS",          # dư nợ lãi
-    "AGG_DISBURSEMENT_AMT",# tổng giải ngân tích lũy
-    "CONTRACT_CHANGE_CNT", # số lần thay đổi hợp đồng
-    "NUM_GRACE_PERIOD",    # số kỳ ân hạn
-    "MIS_DAO",             # MIS DAO
-    "CURR_MIS_DAO",        # MIS DAO hiện tại
-    "FIXED_RATE",          # lãi suất cố định
-    "LN_APPR_AMT",         # hạn mức được phê duyệt
+# 20260507 (test) chỉ có 33/41 cột của 20260430 (train) — tập đặc trưng chỉ
+# được xây từ 33 cột chung để mô hình huấn luyện trên train vẫn chấm điểm
+# được trên tập test độc lập. Danh sách đầy đủ + lý do loại từng cột nằm ở
+# src/credit_info_preprocessing.py (ID_LEAKAGE_COLS, DATE_COLS, FEATURE_GROUPS).
+CREDIT_INFO_NUMERICAL_COLS = [
+    "Mã chi nhánh TCTD",
+    "Lãi suất",
+    "Số dư nợ theo nguyên tệ",
+    "Số lần cơ cấu lại thời hạn trả nợ",
+    "Số tiền nợ gốc cơ cấu",
+    "Số tiền nợ lãi cơ cấu",
+    "Lãi phải thu hạch toán nội bảng",
+    "Lãi chưa thu hạch toán ngoại bảng",
+    "Số tiền đã thanh toán",
 ]
 
-FCT_L_CATEGORICAL_COLS = [
-    "CATEGORY",       # danh mục khoản vay (20 nhóm)
-    "SEAB_PRODUCTS",  # sản phẩm SEAB (36 nhóm)
-    "TERM_SBV",       # kỳ hạn theo SBV (M01, M12, H00, ...)
-    "DATASOURCE",     # nguồn dữ liệu (PD / LD)
+CREDIT_INFO_CATEGORICAL_COLS = [
+    "Hoạt động cấp tín dụng bằng phương tiện điện tử",
+    "Mã thời hạn cấp tín dụng",
+    "Hình thức cấp tín dụng",
+    "Phương thức cho vay",
+    "Mã tiền tệ",
+    "Mục đích sử dụng tiền vay phân theo ngành kinh tế",
+    "Mô tả mục đích sử dụng tiền vay",
+    "Nguồn cấp tín dụng",
 ]
 
-# SMOTE cho fct_l gốc (5,400 rows) — 0-based class index
-FCT_L_SMOTE_ORIGINAL = {
-    1: 300,   # N2: 87  → 300
-    2: 100,   # N3: 11  → 100
-    3: 100,   # N4: 13  → 100
-    4: 200,   # N5: 23  → 200
+# SMOTE cho tập train (80% của 20260430, ~80.5k dòng) — 0-based class index.
+# Phân phối gốc trên 100% file 20260430: N1=88.875, N2=6.321, N3=998, N4=1.446,
+# N5=2.977 → phân phối trên phần train (80%) xấp xỉ N1=71.100, N2=5.057,
+# N3=798, N4=1.157, N5=2.382. Nâng minority lên mức vừa phải (không full
+# balance), theo đúng triết lý smote_moderate/custom đã dùng cho 2 bộ dữ liệu
+# trước — tỉ lệ synthetic vẫn < 50% mỗi lớp thiểu số.
+CREDIT_INFO_SMOTE_STRATEGY = {
+    1: 8000,   # N2: ~5.057 → 8.000  (~11% của N1)
+    2: 4000,   # N3: ~798   → 4.000  (~5.6% của N1)
+    3: 4500,   # N4: ~1.157 → 4.500  (~6.3% của N1)
+    4: 6000,   # N5: ~2.382 → 6.000  (~8.4% của N1)
 }
 
-# SMOTE cho fct_l_30k (30,000 rows) — 0-based class index
-FCT_L_SMOTE_30K = {
-    1: 2000,  # N2: ~483  → 2000
-    2: 1000,  # N3: ~60   → 1000
-    3: 1000,  # N4: ~72   → 1000
-    4: 1500,  # N5: ~129  → 1500
-}
-
-FCT_L_NHOMNO_LABELS = {
-    1: "Nhóm 1 – Đủ tiêu chuẩn",
-    2: "Nhóm 2 – Cần chú ý",
-    3: "Nhóm 3 – Dưới tiêu chuẩn",
-    4: "Nhóm 4 – Nghi ngờ",
-    5: "Nhóm 5 – Có khả năng mất vốn",
-}
+CREDIT_INFO_NHOMNO_LABELS = NHOMNO_LABELS

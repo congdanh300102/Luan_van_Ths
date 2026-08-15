@@ -87,10 +87,10 @@ with st.expander("🔬 Dành cho chuyên viên phân tích / Data Scientist (EDA
     with col2:
         st.page_link("pages/2_🤖_Huấn_Luyện.py", label="Trang 2 — Huấn luyện mô hình (Logistic, RF, XGBoost, LightGBM)", icon="🤖")
 
-    st.markdown("#### 📁 Bộ dữ liệu 2 — fct_l.xlsx (mới, 178 biến)")
+    st.markdown("#### 📁 Bộ dữ liệu 2 — Thông tin tín dụng (train 20260430 / test 20260507)")
     col3, col4 = st.columns(2)
     with col3:
-        st.page_link("pages/5_📊_Mô_Hình_FCT_L.py", label="Trang 5 — Mô hình FCT_L: xây dựng & huấn luyện", icon="📊")
+        st.page_link("pages/5_📊_Mô_Hình_Tín_Dụng.py", label="Trang 5 — Mô hình Tín dụng: xây dựng & huấn luyện", icon="📊")
     with col4:
         st.page_link("pages/6_⚖️_So_Sánh_Model.py", label="Trang 6 — So sánh Model: metrics, confusion matrix", icon="⚖️")
 
@@ -102,12 +102,12 @@ with st.expander("🔬 Dành cho chuyên viên phân tích / Data Scientist (EDA
     st.markdown("""
     **So sánh hai bộ dữ liệu:**
 
-    | | Data_credit_rating_VN.xlsx | fct_l.xlsx |
+    | | Data_credit_rating_VN.xlsx | Thông tin tín dụng |
     |---|---|---|
-    | **Số hồ sơ** | ~27,001 | 5,400 (30,000 sau augmentation) |
-    | **Số biến** | 21 | 178 |
-    | **Target** | `NHOMNOMOI` | `CLASSIFICATION` |
-    | **Imbalance ratio** | ~34.7× | ~228× |
+    | **Số hồ sơ** | ~27,001 | 100.617 (train 20260430) + 100.274 (test 20260507) |
+    | **Số biến** | 21 | 41 (train) / 33 (test) — 33 cột chung dùng làm đặc trưng |
+    | **Target** | `NHOMNOMOI` | `Nhóm nợ tự phân loại` |
+    | **Imbalance ratio** | ~34.7× | ~89× |
     """)
 
 st.markdown("👈 Hoặc dùng thanh điều hướng bên trái để đi tới bất kỳ trang nào.")

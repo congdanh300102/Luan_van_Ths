@@ -2,13 +2,20 @@
 
 Thư mục này chứa các file được **sinh tự động** từ những lần chạy huấn luyện /
 phân tích trong app Streamlit (chủ yếu từ trang **7 — Phân tích & Lựa chọn Đặc
-trưng**, trang **2 — Huấn luyện**, và module `src/iv_analysis.py`). Tất cả đều
-phục vụ 2 bộ dữ liệu song song trong luận văn:
+trưng**, trang **2 — Huấn luyện**, và module `src/iv_analysis.py`), cộng thêm
+các file `credit_info_*.csv` sinh bởi `src/generate_credit_info_report.py`.
+Tất cả đều phục vụ 2 bộ dữ liệu song song trong luận văn:
 
 | Ký hiệu | Tên file gốc | Số cột thô | Biến mục tiêu | Ghi chú |
 |---|---|---|---|---|
 | **Bộ A** | `Data_credit_rating_VN.xlsx` | 21 | `NHOMNOMOI` (Nhóm nợ 1–5) | Dữ liệu nhỏ, dùng ở Trang 2 |
-| **Bộ B** | `fct_l.xlsx` | 178 | `CLASSIFICATION` (Nhóm nợ 1–5) | Dữ liệu lớn, dùng ở Trang 5 |
+| **Bộ B** | `Thông tin tín dụng 20260430.xlsx` (train) / `20260507.xlsx` (test độc lập) | 41 / 33 (33 cột chung) | `Nhóm nợ tự phân loại` (1–5) | Thay thế fct_l.xlsx, dùng ở Trang 5 |
+
+> **Lưu ý:** `grid_search_results.csv`, `grid_search_best.csv` và các sheet
+> `B_*`/`GridSearch_*` trong `model_runs_summary.xlsx` được sinh từ bộ B **cũ**
+> (fct_l.xlsx, đã bị loại khỏi luận văn) — các hàng/sheet "Bộ A" trong 3 file
+> này vẫn hợp lệ, nhưng hàng/sheet "Bộ B" đã lỗi thời. Số liệu Bộ B hiện hành
+> nằm trong các file `credit_info_*.csv` (xem bảng bên dưới).
 
 Cả hai đều là bài toán **phân loại đa lớp mất cân bằng mạnh** — Nhóm 1 (nợ đủ
 tiêu chuẩn) chiếm phần lớn, Nhóm 3/4 (nợ xấu) rất hiếm (tỉ lệ mất cân bằng ghi

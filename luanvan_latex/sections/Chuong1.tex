@@ -123,21 +123,21 @@ Do năm nhóm có quan hệ về mức độ rủi ro:
 \]
 bài toán cần vừa đạt hiệu quả tổng thể, vừa nhận diện nhóm rủi ro cao, giảm khoảng cách sai lệch, hạn chế đánh giá thấp rủi ro, duy trì khả năng tổng quát hóa theo thời gian và bảo đảm khả năng giải thích.
 
-\subsection{Điểm phát triển so với các công trình đi trước}
+\subsection{Đóng góp dự kiến của nghiên cứu}
 
-Nghiên cứu phát triển hơn các công trình đi trước ở các khía cạnh:
+Trên cơ sở kế thừa các công trình trước, luận văn dự kiến đóng góp ở các khía cạnh sau:
 \begin{enumerate}
     \item chuyển từ nhị phân sang phân loại trực tiếp năm nhóm nợ;
     \item xem xét thứ tự của nhãn bằng $|y_i-\hat{y}_i|$;
-\item sử dụng hai bộ dữ liệu thực tế đã ẩn danh từ một ngân hàng Việt Nam để đối chiếu kết luận trong hai cấu trúc dữ liệu khác nhau;
+    \item sử dụng hai bộ dữ liệu thực tế đã được ẩn danh của một ngân hàng thương mại tại Việt Nam để đối chiếu kết luận trên hai cấu trúc dữ liệu khác nhau;
     \item xây dựng đặc trưng nghiệp vụ về thời hạn, mục đích vay, cơ cấu nợ và tính nhất quán;
     \item xem mất cân bằng lớp là thành phần trung tâm;
-    \item triển khai sáu mô hình và xác nhận kết quả của năm mô hình được thực thi thành công trong môi trường nghiên cứu;
+    \item đối sánh sáu mô hình học máy; trong đó năm mô hình được thực thi thành công trên bộ dữ liệu A và sáu mô hình được thực thi thành công trên bộ dữ liệu B;
     \item kết hợp đánh giá hiệu quả dự báo với mức độ quan trọng của đặc trưng và SHAP;
     \item lựa chọn mô hình theo hiệu quả, nhận diện rủi ro, sai lệch thứ tự và khả năng giải thích.
 \end{enumerate}
 
-Tính mới của luận văn không nằm ở việc phát minh một thuật toán mới, mà nằm ở cách xây dựng, đánh giá và tổ chức bài toán phù hợp hơn với dữ liệu tín dụng thực tế.
+Đóng góp của luận văn không tập trung vào việc đề xuất thuật toán mới, mà thể hiện ở cách thiết kế bài toán, tổ chức thực nghiệm và đánh giá mô hình phù hợp với đặc điểm của dữ liệu tín dụng thực tế tại ngân hàng được nghiên cứu.
 
 \section{Mục tiêu, câu hỏi và phương pháp nghiên cứu}
 
@@ -163,20 +163,20 @@ Xây dựng và đánh giá các mô hình học máy nhằm hỗ trợ phân lo
 \subsection{Câu hỏi nghiên cứu}
 
 \begin{enumerate}
-    \item Mô hình nào cân bằng tốt nhất giữa hiệu quả phân loại tổng thể, khả năng nhận diện các nhóm nợ rủi ro và mức độ giải thích được?
-    \item Nhiều đặc trưng hơn có luôn giúp mô hình phân loại nhóm nợ tốt hơn không?
-    \item Nhóm đặc trưng nghiệp vụ nào đóng góp lớn nhất cho việc phân loại nhóm nợ?
-    \item Cần bổ sung cấu trúc dữ liệu và cách kiểm định nào để phát triển mô hình hiện tại thành mô hình dự báo khả năng chuyển nhóm nợ và cảnh báo sớm?
+    \item Việc gia tăng số lượng đặc trưng có luôn cải thiện hiệu quả phân loại nhóm nợ hay không?
+    \item Nhóm đặc trưng nghiệp vụ nào có đóng góp lớn nhất đối với kết quả phân loại nhóm nợ?
+    \item Có thể rút gọn tập đặc trưng đến mức nào mà vẫn duy trì hiệu quả dự báo ngoài mẫu?
+    \item Ngân hàng nên ưu tiên hoàn thiện và duy trì chất lượng đối với những nhóm thông tin nào để phục vụ mô hình phân loại nhóm nợ và định hướng cảnh báo sớm?
 \end{enumerate}
 
 \subsection{Phương pháp nghiên cứu}
 
-Luận văn kết hợp nghiên cứu định tính để tổng quan tài liệu với nghiên cứu định lượng để xử lý dữ liệu, xây dựng mô hình và đánh giá thực nghiệm. Quy trình hiện tại được chạy độc lập trên \textit{Data\_credit\_rating\_VN.xlsx} và \textit{fct\_l.xlsx}, gồm làm sạch, xây dựng đặc trưng, EDA, chia ngẫu nhiên phân tầng, xử lý mất cân bằng, huấn luyện, đánh giá và giải thích mô hình. Các kết quả giữa hai bộ chỉ được đối chiếu về xu hướng, không so sánh điểm số như hai mẫu đồng nhất.
+Luận văn kết hợp phương pháp nghiên cứu định tính trong tổng quan tài liệu với phương pháp định lượng trong xử lý dữ liệu, xây dựng mô hình và đánh giá thực nghiệm. Quy trình thực nghiệm được triển khai độc lập trên \textit{Data\_credit\_rating\_VN.xlsx} (bộ A) và dữ liệu Thông tin tín dụng (bộ B), bao gồm làm sạch dữ liệu, xây dựng đặc trưng, phân tích khám phá dữ liệu, chia mẫu ngẫu nhiên có phân tầng, xử lý mất cân bằng lớp, huấn luyện, đánh giá và giải thích mô hình. Riêng bộ B được đánh giá bổ sung trên một tập kiểm tra độc lập theo thời gian thuộc kỳ báo cáo kế tiếp. Do khác biệt về cấu trúc và phân bố dữ liệu, kết quả của hai bộ chỉ được đối chiếu về xu hướng, không được so sánh trực tiếp như các mẫu đồng nhất.
 
 Về khoa học, luận văn bổ sung bằng chứng thực nghiệm về phân loại năm nhóm nợ, kết hợp mất cân bằng và khả năng giải thích. Về thực tiễn, kết quả có thể hỗ trợ chuẩn hóa đánh giá, nhận diện khoản vay suy giảm và xây dựng cảnh báo sớm. Mô hình chỉ đóng vai trò hỗ trợ, không thay thế hoàn toàn quyết định của cán bộ tín dụng.
 
 \section{Tóm tắt chương}
 
-Chương 1 đã trình bày bối cảnh và động lực nghiên cứu xuất phát từ vai trò của hoạt động tín dụng và rủi ro tín dụng trong ngân hàng thương mại, khái quát sự phát triển của các phương pháp đánh giá tín dụng từ cách tiếp cận chuyên gia, mô hình thống kê đến các nghiên cứu học máy liên quan, đồng thời phát biểu chính thức bài toán phân loại năm nhóm nợ cùng mục tiêu, câu hỏi và phương pháp nghiên cứu của luận văn. Điểm phát triển so với các công trình đi trước và phạm vi thực nghiệm hiện tại cũng đã được làm rõ để tránh diễn giải vượt quá bằng chứng sẵn có.
+Chương 1 đã trình bày bối cảnh và động lực nghiên cứu xuất phát từ vai trò của hoạt động tín dụng và rủi ro tín dụng trong ngân hàng thương mại; khái quát sự phát triển của các phương pháp đánh giá tín dụng từ cách tiếp cận chuyên gia, mô hình thống kê đến các nghiên cứu học máy; đồng thời xác lập bài toán phân loại năm nhóm nợ, mục tiêu, câu hỏi và phương pháp nghiên cứu. Các đóng góp dự kiến và giới hạn của phạm vi thực nghiệm cũng được xác định nhằm bảo đảm rằng những kết luận của luận văn phù hợp với bằng chứng thu được.
 
 Trên cơ sở đó, Chương 2 sẽ hệ thống hóa cơ sở lý thuyết về tín dụng, rủi ro và phân loại nhóm nợ, trình bày các mô hình học máy được sử dụng, những thách thức đặc thù của dữ liệu tín dụng, hệ thống chỉ tiêu đánh giá và tổng quan các nghiên cứu liên quan, làm nền tảng lý thuyết cho phần dữ liệu và phương pháp thực nghiệm ở Chương 3.

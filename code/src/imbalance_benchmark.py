@@ -20,10 +20,20 @@ def benchmark_strategies(model_key: str,
     """
     rows = []
     for label, strategy_key in strategies.items():
-        pipe = build_pipeline(model_key, cat_cols, num_cols,
-                              random_state=random_state,
-                              imbalance_strategy=strategy_key)
-        pipe.fit(X_train, y_train)
+        try:
+            pipe = build_pipeline(model_key, cat_cols, num_cols,
+                                  random_state=random_state,
+                                  imbalance_strategy=strategy_key)
+            pipe.fit(X_train, y_train)
+        except ValueError:
+            # VD: chiến lược SMOTE có target thấp hơn số mẫu gốc của lớp đó
+            # (mốc target cố định không tương thích với phân phối lớp của
+            # tập dữ liệu đang dùng) — bỏ qua chiến lược này thay vì crash
+            # toàn bộ bảng so sánh.
+            rows.append({"Chiến lược": label, "Macro F1": np.nan,
+                        "Weighted F1": np.nan, "ROC-AUC": np.nan})
+            continue
+
         y_pred  = pipe.predict(X_test) + 1
         y_proba = pipe.predict_proba(X_test)
         y_true  = y_test + 1

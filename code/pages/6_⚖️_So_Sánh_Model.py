@@ -13,10 +13,10 @@ import streamlit as st
 from config.config import (
     DATA_RAW, MODEL_DIR,
     TARGET_COL, DROP_COLS, SCORE_BANDS, GROUP_COLORS, NHOMNO_LABELS,
-    FCT_L_TARGET_COL, FCT_L_NUMERICAL_COLS, FCT_L_CATEGORICAL_COLS,
+    CREDIT_INFO_TARGET_COL, CREDIT_INFO_NUMERICAL_COLS, CREDIT_INFO_CATEGORICAL_COLS,
 )
 from src.preprocessing import parse_dates, engineer_features, clean
-from src.fct_l_preprocessing import transform_fct_l
+from src.credit_info_preprocessing import transform_credit_info, engineer_business_features
 from src.models import available_models
 from src.scoring import proba_to_score, classify_score
 from src.evaluation import compute_metrics, plot_confusion_matrix
@@ -52,10 +52,11 @@ def _preprocess_a(df: pd.DataFrame):
 
 
 def _preprocess_b(df: pd.DataFrame):
-    """Tiền xử lý cho Mô hình B (fct_l format)."""
-    has_target = FCT_L_TARGET_COL in df.columns
-    y_true = df[FCT_L_TARGET_COL].dropna().astype(int).values if has_target else None
-    X = transform_fct_l(df, FCT_L_NUMERICAL_COLS, FCT_L_CATEGORICAL_COLS)
+    """Tiền xử lý cho Mô hình B (dữ liệu Thông tin tín dụng)."""
+    has_target = CREDIT_INFO_TARGET_COL in df.columns
+    df_eng, eng_cols = engineer_business_features(df)
+    y_true = df_eng[CREDIT_INFO_TARGET_COL].dropna().astype(int).values if has_target else None
+    X = transform_credit_info(df_eng, CREDIT_INFO_NUMERICAL_COLS + eng_cols, CREDIT_INFO_CATEGORICAL_COLS)
     return X, y_true
 
 
@@ -93,7 +94,7 @@ def _col_header(title: str, color: str, subtitle: str):
 avail_a = {l: k for l, k in available_models().items()
            if (MODEL_DIR / f"model_{k}.pkl").exists()}
 avail_b = {l: k for l, k in available_models().items()
-           if (MODEL_DIR / f"model_fct_l_{k}.pkl").exists()}
+           if (MODEL_DIR / f"model_credit_info_{k}.pkl").exists()}
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 1 — Cấu hình & Upload song song
@@ -142,7 +143,7 @@ with col_sep:
     )
 
 with col_b:
-    _col_header("🟠 Mô hình B", "#e67e22", "fct_l.xlsx — CLASSIFICATION")
+    _col_header("🟠 Mô hình B", "#e67e22", "Thông tin tín dụng — Nhóm nợ tự phân loại")
 
     if avail_b:
         b_lbl = st.selectbox("Chọn mô hình B", list(avail_b.keys()), key="sel_b")
@@ -155,17 +156,18 @@ with col_b:
         "Upload dữ liệu cho Mô hình B",
         type=["xlsx", "csv"],
         key="up_b",
-        help="Cần có cột: INTEREST_RATE, INTEREST_SPREAD, BALANCE, BALANCE_PE, "
-             "BALANCE_PS, AGG_DISBURSEMENT_AMT, CONTRACT_CHANGE_CNT, NUM_GRACE_PERIOD, "
-             "MIS_DAO, CURR_MIS_DAO, CATEGORY, SEAB_PRODUCTS, TERM_SBV, DATASOURCE. "
-             "Tùy chọn: CLASSIFICATION (để tính độ chính xác).",
+        help="Cần có các cột của file Thông tin tín dụng (vd. Lãi suất, Số dư nợ "
+             "theo nguyên tệ, Mã chi nhánh TCTD, Hình thức cấp tín dụng, Phương "
+             "thức cho vay, Mã tiền tệ, Mục đích sử dụng tiền vay…, ETL_DATE, "
+             "Ngày giải ngân, Ngày kết thúc khế ước). "
+             "Tùy chọn: Nhóm nợ tự phân loại (để tính độ chính xác).",
     )
     if up_b:
         st.caption(f"✅ {up_b.name} — {up_b.size/1024:.0f} KB")
 
     # Template download từ session state
-    if st.session_state.get("fct_l_pipe") is not None:
-        st.caption("💡 Dùng dữ liệu fct_l.xlsx làm template cho Mô hình B.")
+    if st.session_state.get("credit_info_pipe") is not None:
+        st.caption("💡 Dùng dữ liệu Thông tin tín dụng làm template cho Mô hình B.")
 
 # ── Nút So sánh ───────────────────────────────────────────────────────────────
 st.markdown("---")
@@ -204,7 +206,7 @@ if run_btn:
         # Model B
         if ready_b:
             try:
-                pipe_b = _load_model(str(MODEL_DIR / f"model_fct_l_{b_key}.pkl"))
+                pipe_b = _load_model(str(MODEL_DIR / f"model_credit_info_{b_key}.pkl"))
                 df_b   = _read_file(up_b.getvalue(), up_b.name)
                 X_b, y_b = _preprocess_b(df_b)
                 res_b  = _score_result(pipe_b, X_b, y_b)
@@ -516,7 +518,7 @@ with tab_cm:
                 st.dataframe(report_df.style.format({c: "{:.3f}" for c in num_r}),
                              use_container_width=True)
         else:
-            st.info("Mô hình B: Upload file có cột `CLASSIFICATION` để xem Confusion Matrix.")
+            st.info("Mô hình B: Upload file có cột `Nhóm nợ tự phân loại` để xem Confusion Matrix.")
 
 
 # ══════════════════════════════════════════════════════════════════════════════

@@ -1,17 +1,21 @@
 \newpage
 \begin{center}
 \fontsize{15pt}{18pt}\selectfont 
- \bf{Tóm tắt nội dung luận văn}   
+ \bf{TÓM TẮT NỘI DUNG LUẬN VĂN}
 \end{center}
 \par
-Ngoài phần mở đầu, kết luận, tài liệu tham khảo và phụ lục, luận văn được kết cấu thành các chương như sau:
+Luận văn nghiên cứu khả năng ứng dụng các mô hình học máy trong phân loại năm nhóm nợ trên hai bộ dữ liệu thực tế đã được ẩn danh của một ngân hàng thương mại tại Việt Nam. Quy trình nghiên cứu bao gồm làm sạch và tiền xử lý dữ liệu, xây dựng đặc trưng nghiệp vụ, kiểm soát nguy cơ rò rỉ thông tin, xử lý mất cân bằng lớp, huấn luyện và đối sánh sáu mô hình, đồng thời phân tích kết quả bằng mức độ quan trọng của đặc trưng và SHAP. Hiệu quả mô hình được đánh giá bằng nhiều chỉ tiêu, trong đó Macro-F1 được sử dụng làm chỉ tiêu trọng tâm nhằm phản ánh tốt hơn kết quả trên các nhóm nợ có tần suất thấp.
+
+Kết quả thực nghiệm cho thấy LightGBM đạt Macro-F1 cao nhất trên tập kiểm định của cả hai bộ dữ liệu, lần lượt bằng 0,6484 đối với bộ A và 0,6954 đối với bộ B. Tuy nhiên, trên tập kiểm tra độc lập theo thời gian của bộ B, Random Forest đạt kết quả cao nhất với Macro-F1 bằng 0,5142, trong khi hiệu quả của tất cả mô hình đều giảm từ 20--35\% so với tập kiểm định cùng kỳ. Kết quả này cho thấy việc gia tăng số lượng đặc trưng không tất yếu cải thiện hiệu quả dự báo và nhấn mạnh yêu cầu kiểm định mô hình trên dữ liệu ngoài thời gian trước khi triển khai. Nghiên cứu hiện tập trung vào phân loại trạng thái nhóm nợ; dự báo chuyển nhóm nợ và cảnh báo sớm được xác định là hướng phát triển tiếp theo khi có chuỗi dữ liệu theo thời gian và cửa sổ dự báo phù hợp.
+
+Ngoài phần mở đầu, kết luận, tài liệu tham khảo và phụ lục, nội dung luận văn được kết cấu thành năm chương như sau:
 
 \begin{itemize}
-    \item \textbf{Chương 1: Giới thiệu tổng quan về đề tài.} Chương này trình bày bối cảnh nghiên cứu, tính cấp thiết, câu hỏi nghiên cứu, phương pháp nghiên cứu, ý nghĩa và đóng góp của đề tài.
-    \item \textbf{Chương 2: Cơ sở lý thuyết và các nghiên cứu liên quan.} Chương này trình bày các khái niệm về tín dụng, rủi ro tín dụng, xếp hạng tín dụng, trí tuệ nhân tạo, học máy và tổng quan các nghiên cứu trong và ngoài nước.
-    \item \textbf{Chương 3: Dữ liệu và phương pháp nghiên cứu.} Chương này mô tả hai bộ dữ liệu gốc, hai nhánh tiền xử lý, quy trình xây dựng đặc trưng, xử lý mất cân bằng, lựa chọn mô hình và phương pháp đánh giá số lượng cũng như nhóm đặc trưng.
-    \item \textbf{Chương 4: Kết quả thực nghiệm và thảo luận.} Chương này trình bày riêng kết quả trên từng bộ dữ liệu, sau đó đối chiếu bốn câu hỏi về lợi ích của việc bổ sung biến, nhóm thông tin đóng góp lớn nhất, mức rút gọn đặc trưng và ưu tiên đầu tư dữ liệu.
-    \item \textbf{Chương 5: Kết luận và khuyến nghị.} Chương này tổng hợp kết quả trên hai bộ dữ liệu, trả lời các câu hỏi nghiên cứu, nêu hạn chế của thiết kế phân loại hiện tại và đề xuất lộ trình phát triển mô hình cảnh báo chuyển nhóm nợ theo thời gian.
+    \item \textbf{Chương 1: Giới thiệu tổng quan về đề tài.} Trình bày bối cảnh, tính cấp thiết, mục tiêu, câu hỏi, phương pháp và phạm vi nghiên cứu.
+    \item \textbf{Chương 2: Cơ sở lý thuyết và các nghiên cứu liên quan.} Hệ thống hóa những khái niệm nền tảng về tín dụng, rủi ro tín dụng và xếp hạng tín dụng; giới thiệu các phương pháp học máy được sử dụng; đồng thời tổng quan các công trình có liên quan để xác định khoảng trống nghiên cứu.
+    \item \textbf{Chương 3: Dữ liệu và phương pháp nghiên cứu.} Mô tả hai bộ dữ liệu, quy trình tiền xử lý và xây dựng đặc trưng, phương pháp xử lý mất cân bằng lớp, thiết kế thực nghiệm và hệ thống chỉ tiêu đánh giá.
+    \item \textbf{Chương 4: Kết quả thực nghiệm và thảo luận.} Trình bày kết quả trên từng bộ dữ liệu và thảo luận theo bốn câu hỏi nghiên cứu về số lượng đặc trưng, nhóm thông tin có đóng góp lớn, khả năng rút gọn tập đặc trưng và định hướng ưu tiên dữ liệu.
+    \item \textbf{Chương 5: Kết luận và kiến nghị.} Tổng hợp các kết quả chủ yếu, làm rõ đóng góp và hạn chế của nghiên cứu, đề xuất một số kiến nghị đối với ngân hàng và định hướng nghiên cứu tiếp theo.
 \end{itemize}
 
 \begin{center}
@@ -19,5 +23,3 @@ Ngoài phần mở đầu, kết luận, tài liệu tham khảo và phụ lục
  \vspace{2 cm}
    \hspace{9.5cm} \bf Đàm Công Danh
 \end{center}
-
-

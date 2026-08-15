@@ -149,7 +149,7 @@ def prepare(df: pd.DataFrame, drop_cols: list, target_col: str):
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Taxonomy nghiệp vụ cho Dataset 1 (Data_credit_rating_VN.xlsx) — dùng cho phân
-# tích chọn đặc trưng (trang 7), đối chiếu song song với fct_l.xlsx.
+# tích chọn đặc trưng (trang 7), đối chiếu song song với dữ liệu Thông tin tín dụng.
 # Dataset 1 chỉ có 21 cột thô; sau khi loại leakage/trùng lặp/hằng số còn 11
 # đặc trưng đã chọn qua IV (dùng để huấn luyện chính ở trang 2) + 2 đặc trưng
 # từng bị loại vì IV quá thấp (SEX, LOAIKH) — giữ lại 2 cột này làm "pool đầy
