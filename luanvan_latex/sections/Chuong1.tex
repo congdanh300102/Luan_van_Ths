@@ -1,6 +1,6 @@
 \chapter{GIỚI THIỆU TỔNG QUAN VỀ ĐỀ TÀI}
 
-Chương này mở đầu luận văn bằng việc trình bày bối cảnh, động lực nghiên cứu, phát biểu bài toán và mục tiêu nghiên cứu. Cụ thể, chương lần lượt: (i) phân tích vai trò của hoạt động tín dụng, rủi ro tín dụng và chuyển đổi số trong ngân hàng; (ii) khái quát sự phát triển của các phương pháp đánh giá tín dụng từ chuyên gia đến mô hình thống kê cùng các nghiên cứu liên quan; (iii) phát biểu chính thức bài toán phân loại năm nhóm nợ và làm rõ phạm vi thực nghiệm so với mục tiêu dài hạn của đề tài; và (iv) xác định mục tiêu, câu hỏi nghiên cứu và phương pháp nghiên cứu sẽ được triển khai xuyên suốt các chương tiếp theo.
+Chương này trình bày những nội dung có tính định hướng cho toàn bộ luận văn. Trước hết, chương phân tích vai trò của hoạt động tín dụng, bản chất của rủi ro tín dụng và yêu cầu đổi mới phương pháp đánh giá trong bối cảnh chuyển đổi số của ngành ngân hàng. Tiếp theo, sự phát triển của các phương pháp đánh giá tín dụng, từ cách tiếp cận chuyên gia đến mô hình thống kê và học máy, được khái quát nhằm xác định vị trí của nghiên cứu trong hệ thống các công trình đã công bố. Trên cơ sở đó, chương xác lập bài toán phân loại năm nhóm nợ, phạm vi thực nghiệm, mục tiêu và các câu hỏi nghiên cứu. Những nội dung này tạo nền tảng để hệ thống hóa cơ sở lý thuyết, thiết kế phương pháp và phân tích kết quả trong các chương tiếp theo.
 
 \section{Bối cảnh và động lực nghiên cứu}
 
@@ -81,14 +81,14 @@ Hạn chế của nhiều mô hình truyền thống được Thomas tổng hợ
 
 Crook có nhiều đóng góp trong suy luận đối với hồ sơ bị từ chối, phân tích hành vi, phân tích sống còn và mô hình rủi ro động. Các nghiên cứu của ông làm rõ sai lệch chọn mẫu do dữ liệu huấn luyện thường chỉ gồm khách hàng đã được duyệt và mở rộng bài toán từ ``có vỡ nợ hay không'' sang ``khi nào vỡ nợ'' \cite{crook2007recent}.
 
-Hạn chế của reject inference là không thể quan sát chắc chắn nhãn thật của hồ sơ bị từ chối; survival model cũng phụ thuộc vào các giả định có thể không phù hợp với mọi dữ liệu.
+Hạn chế của phương pháp suy luận đối với hồ sơ bị từ chối là không thể quan sát trực tiếp nhãn thực của các hồ sơ này. Bên cạnh đó, mô hình phân tích sống còn phụ thuộc vào một số giả định thống kê có thể không phù hợp với mọi cấu trúc dữ liệu.
 
 \medskip
 \noindent\textbf{Baesens và Lessmann.}
 
-Baesens và Lessmann có đóng góp quan trọng trong các nghiên cứu đối sánh mô hình thống kê và học máy. Lessmann và cộng sự \cite{lessmann2015benchmarking} cho thấy thứ hạng mô hình thay đổi tùy theo dữ liệu, thước đo và quy trình thực nghiệm; các mô hình tổ hợp thường đạt kết quả cạnh tranh nhưng không phải lúc nào cũng tối ưu.
+Baesens và Lessmann có đóng góp quan trọng trong các nghiên cứu đối chiếu, so sánh mô hình thống kê và học máy. Lessmann và cộng sự \cite{lessmann2015benchmarking} cho thấy thứ hạng mô hình thay đổi tùy theo dữ liệu, thước đo và quy trình thực nghiệm; các mô hình tổ hợp thường đạt kết quả cạnh tranh nhưng không phải lúc nào cũng tối ưu.
 
-Hạn chế của nhiều nghiên cứu đối sánh là sử dụng các bộ dữ liệu công khai có quy mô nhỏ, thời gian thu thập đã lâu, chủ yếu phục vụ phân loại nhị phân và chưa phản ánh đầy đủ đặc điểm của dữ liệu ngân hàng trong thực tế.
+Hạn chế của nhiều nghiên cứu đối chiếu, so sánh là sử dụng các bộ dữ liệu công khai có quy mô nhỏ, thời gian thu thập đã lâu, chủ yếu phục vụ phân loại nhị phân và chưa phản ánh đầy đủ đặc điểm của dữ liệu ngân hàng trong thực tế.
 
 \medskip
 \noindent\textbf{Nhận xét tổng hợp.}
@@ -132,7 +132,7 @@ Trên cơ sở kế thừa các công trình trước, luận văn dự kiến �
     \item sử dụng hai bộ dữ liệu thực tế đã được ẩn danh của một ngân hàng thương mại tại Việt Nam để đối chiếu kết luận trên hai cấu trúc dữ liệu khác nhau;
     \item xây dựng đặc trưng nghiệp vụ về thời hạn, mục đích vay, cơ cấu nợ và tính nhất quán;
     \item xem mất cân bằng lớp là thành phần trung tâm;
-    \item đối sánh sáu mô hình học máy; trong đó năm mô hình được thực thi thành công trên bộ dữ liệu A và sáu mô hình được thực thi thành công trên bộ dữ liệu B;
+    \item đối chiếu, so sánh sáu mô hình học máy; trong đó năm mô hình được thực thi thành công trên bộ dữ liệu A và sáu mô hình được thực thi thành công trên bộ dữ liệu B;
     \item kết hợp đánh giá hiệu quả dự báo với mức độ quan trọng của đặc trưng và SHAP;
     \item lựa chọn mô hình theo hiệu quả, nhận diện rủi ro, sai lệch thứ tự và khả năng giải thích.
 \end{enumerate}
@@ -171,7 +171,7 @@ Xây dựng và đánh giá các mô hình học máy nhằm hỗ trợ phân lo
 
 \subsection{Phương pháp nghiên cứu}
 
-Luận văn kết hợp phương pháp nghiên cứu định tính trong tổng quan tài liệu với phương pháp định lượng trong xử lý dữ liệu, xây dựng mô hình và đánh giá thực nghiệm. Quy trình thực nghiệm được triển khai độc lập trên \textit{Data\_credit\_rating\_VN.xlsx} (bộ A) và dữ liệu Thông tin tín dụng (bộ B), bao gồm làm sạch dữ liệu, xây dựng đặc trưng, phân tích khám phá dữ liệu, chia mẫu ngẫu nhiên có phân tầng, xử lý mất cân bằng lớp, huấn luyện, đánh giá và giải thích mô hình. Riêng bộ B được đánh giá bổ sung trên một tập kiểm tra độc lập theo thời gian thuộc kỳ báo cáo kế tiếp. Do khác biệt về cấu trúc và phân bố dữ liệu, kết quả của hai bộ chỉ được đối chiếu về xu hướng, không được so sánh trực tiếp như các mẫu đồng nhất.
+Luận văn kết hợp phương pháp nghiên cứu định tính trong tổng quan tài liệu với phương pháp định lượng trong xử lý dữ liệu, xây dựng mô hình và đánh giá thực nghiệm. Quy trình thực nghiệm được triển khai độc lập trên \path{Data_credit_rating_VN.xlsx} (bộ A) và dữ liệu Thông tin tín dụng (bộ B), bao gồm làm sạch dữ liệu, xây dựng đặc trưng, phân tích khám phá dữ liệu, chia mẫu ngẫu nhiên có phân tầng, xử lý mất cân bằng lớp, huấn luyện, đánh giá và giải thích mô hình. Riêng bộ B được đánh giá bổ sung trên một tập kiểm tra độc lập theo thời gian thuộc kỳ báo cáo kế tiếp. Do khác biệt về cấu trúc và phân bố dữ liệu, kết quả của hai bộ chỉ được đối chiếu về xu hướng, không được so sánh trực tiếp như các mẫu đồng nhất.
 
 Về khoa học, luận văn bổ sung bằng chứng thực nghiệm về phân loại năm nhóm nợ, kết hợp mất cân bằng và khả năng giải thích. Về thực tiễn, kết quả có thể hỗ trợ chuẩn hóa đánh giá, nhận diện khoản vay suy giảm và xây dựng cảnh báo sớm. Mô hình chỉ đóng vai trò hỗ trợ, không thay thế hoàn toàn quyết định của cán bộ tín dụng.
 

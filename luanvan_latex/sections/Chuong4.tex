@@ -1,14 +1,14 @@
 \chapter{KẾT QUẢ THỰC NGHIỆM VÀ THẢO LUẬN}
 
-Kế thừa dữ liệu và năm bước phương pháp đã trình bày ở Chương 3, chương này trình bày hai bước cuối của quy trình nghiên cứu, gồm đánh giá và giải thích kết quả, kết luận và đề xuất ứng dụng. Các phân tích được thực hiện trên cơ sở kết quả thực nghiệm tái lập trực tiếp từ mã nguồn. Cụ thể, chương lần lượt: (i) xác lập nguyên tắc báo cáo nhằm bảo đảm tính minh bạch và khả năng tái lập; (ii) trình bày hệ thống thước đo đánh giá; (iii) phân tích kết quả so sánh mô hình, hiệu quả theo số lượng đặc trưng và mức đóng góp của các nhóm đặc trưng trên bộ dữ liệu A; (iv) thực hiện các phân tích tương ứng trên bộ dữ liệu B, đồng thời sử dụng SHAP và đối chiếu với các nghiên cứu so sánh mô hình trước đây; (v) đánh giá độ nhạy siêu tham số dựa trên thiết kế tìm kiếm theo lưới đã trình bày ở Chương 3; (vi) trả lời bốn câu hỏi nghiên cứu được xác lập tại Chương 1; và (vii) thảo luận ý nghĩa của kết quả đối với định hướng xây dựng mô hình dự báo chuyển nhóm nợ.
+Trong chương này, luận văn trình bày và thảo luận các kết quả thu được từ quy trình thực nghiệm đã mô tả ở Chương 3. Trước hết, chương xác lập nguyên tắc báo cáo và hệ thống thước đo nhằm bảo đảm việc so sánh mô hình được thực hiện nhất quán. Tiếp theo, kết quả trên từng bộ dữ liệu được phân tích riêng theo hiệu quả phân loại, số lượng đặc trưng, đóng góp của các nhóm thông tin và khả năng giải thích bằng SHAP. Chương đồng thời đánh giá độ nhạy của siêu tham số và khả năng tổng quát hóa trên kỳ dữ liệu độc lập. Trên cơ sở các bằng chứng thực nghiệm, bốn câu hỏi nghiên cứu được trả lời và ý nghĩa của kết quả đối với định hướng xây dựng hệ thống cảnh báo sớm được thảo luận. Nội dung chương là căn cứ trực tiếp cho các kết luận và kiến nghị ở Chương 5.
 
 \section{Nguyên tắc báo cáo kết quả}
 
-Các kết quả định lượng trong chương được tái lập trực tiếp từ tệp \path{Data_credit_rating_VN.xlsx} và hai tệp \path{Thông tin tín dụng 20260430.xlsx}/\path{Thông tin tín dụng 20260507.xlsx} bằng các hàm trong thư mục \texttt{src}. Bộ dữ liệu A được phân chia theo tỷ lệ 80/20 có phân tầng, với tham số \texttt{random\_state=42}. Bộ dữ liệu B được đánh giá theo hai tầng: 80/20 có phân tầng trên kỳ 20260430 (dùng để so sánh và chọn mô hình), cộng thêm một lần đánh giá bổ sung trên toàn bộ kỳ 20260507 — hoàn toàn tách biệt, không tham gia huấn luyện hay lựa chọn mô hình — để ước lượng khả năng tổng quát hóa ngoài thời gian. Do có sự khác biệt về biến đích, quy mô mẫu, phân bố lớp và không gian đặc trưng, kết quả của từng bộ dữ liệu được trình bày và diễn giải riêng biệt.
+Các kết quả định lượng trong chương được tái lập trực tiếp từ tệp \path{Data_credit_rating_VN.xlsx} và hai tệp \path{Thông tin tín dụng 20260430.xlsx}/\path{Thông tin tín dụng 20260507.xlsx} bằng các hàm trong thư mục \texttt{src}. Bộ dữ liệu A được phân chia theo tỷ lệ 80/20 có phân tầng, với tham số \mbox{\texttt{random\_state=42}}. Bộ dữ liệu B được đánh giá theo hai tầng: 80/20 có phân tầng trên kỳ 20260430 (dùng để so sánh và chọn mô hình), cộng thêm một lần đánh giá bổ sung trên toàn bộ kỳ 20260507 — hoàn toàn tách biệt, không tham gia huấn luyện hay lựa chọn mô hình — để ước lượng khả năng tổng quát hóa ngoài thời gian. Do có sự khác biệt về biến đích, quy mô mẫu, phân bố lớp và không gian đặc trưng, kết quả của từng bộ dữ liệu được trình bày và diễn giải riêng biệt.
 
-Đối với bộ A, bảng so sánh mô hình sử dụng 11 biến trong cấu hình chính và chiến lược \texttt{smote\_moderate}; phân tích theo số lượng biến được thực hiện trên tập 13 biến. Đối với bộ B, bảng so sánh sử dụng 20 đặc trưng và chiến lược SMOTE tùy chỉnh; thí nghiệm với $k$ đặc trưng quan trọng nhất cũng dùng chiến lược SMOTE tùy chỉnh này. Vì vậy, mỗi kết quả chỉ có ý nghĩa trong cấu hình thực nghiệm tương ứng và không được xem là kết quả của quá trình tìm kiếm siêu tham số.
+Đối với bộ A, bảng so sánh mô hình sử dụng 11 biến trong cấu hình chính và chiến lược \mbox{\texttt{smote\_moderate}}; phân tích theo số lượng biến được thực hiện trên tập 13 biến. Đối với bộ B, bảng so sánh sử dụng 20 đặc trưng và chiến lược SMOTE tùy chỉnh; thí nghiệm với $k$ đặc trưng quan trọng nhất cũng dùng chiến lược SMOTE tùy chỉnh này. Vì vậy, mỗi kết quả chỉ có ý nghĩa trong cấu hình thực nghiệm tương ứng và không được xem là kết quả của quá trình tìm kiếm siêu tham số.
 
-Trong môi trường thư viện được sử dụng để tái lập kết quả, Logistic Regression phát sinh lỗi tương thích giao diện lập trình ứng dụng liên quan đến tham số \texttt{multi\_class} khi chạy trên bộ A. Do đó, bảng so sánh chính của bộ A chỉ báo cáo kết quả của năm mô hình được thực thi thành công. Đối với bộ B, lỗi này không xuất hiện trong môi trường hiện tại nên bảng so sánh chính có đầy đủ sáu mô hình. Hạn chế kỹ thuật riêng của bộ A cần được lưu ý khi diễn giải mức độ đầy đủ của phép so sánh trên bộ đó.
+Trong môi trường thư viện được sử dụng để tái lập kết quả, Logistic Regression phát sinh lỗi tương thích giao diện lập trình ứng dụng liên quan đến tham số \mbox{\texttt{multi\_class}} khi chạy trên bộ A. Do đó, bảng so sánh chính của bộ A chỉ báo cáo kết quả của năm mô hình được thực thi thành công. Đối với bộ B, lỗi này không xuất hiện trong môi trường hiện tại nên bảng so sánh chính có đầy đủ sáu mô hình. Hạn chế kỹ thuật riêng của bộ A cần được lưu ý khi diễn giải mức độ đầy đủ của phép so sánh trên bộ đó.
 
 \section{Thước đo đánh giá}
 \label{sec:metrics}
@@ -37,7 +37,7 @@ trong đó $K=5$. Weighted-F1 dùng tỷ trọng hỗ trợ:
 \[
 F1_{\mathrm{weighted}}=\sum_{k=1}^{K}\frac{n_k}{N}F1_k,
 \]
-trong đó $n_k$ là số quan sát thực của lớp $k$ và $N=\sum_k n_k$. Ở bộ B, nhóm 1 chiếm 97,51\%, nên Weighted-F1 có thể cao dù mô hình không nhận diện được nhóm 3 và 4; vì vậy Macro-F1 là tiêu chí chính. Bộ A cân bằng hơn nhưng nhóm 1 vẫn chiếm 77,65\%, nên cùng nguyên tắc báo cáo được áp dụng.
+trong đó $n_k$ là số quan sát thực của lớp $k$ và $N=\sum_k n_k$. Ở bộ B, nhóm 1 chiếm 88,34\% (Bảng \ref{tab:split-distribution}), nên Weighted-F1 vẫn có thể ở mức cao dù Recall của các nhóm hiếm thấp hơn nhiều; vì vậy Macro-F1 được ưu tiên làm tiêu chí chính. Bộ A cân bằng hơn nhưng nhóm 1 vẫn chiếm 77,65\%, nên cùng nguyên tắc báo cáo được áp dụng.
 
 \subsection{Accuracy và ROC-AUC đa lớp}
 
@@ -53,7 +53,7 @@ Code tính ROC-AUC theo One-vs-Rest và lấy trung bình macro:
 \]
 trong đó $y^{(k)}$ là nhãn nhị phân ``thuộc/không thuộc lớp $k$''; $\hat{p}^{(k)}$ là xác suất dự báo cho lớp $k$; và $\mathrm{AUC}$ đo khả năng xếp hạng giữa mẫu dương và âm \cite{fawcett2006roc}.
 
-Ngoài bốn chỉ tiêu trên, Chương 3 (mục \ref{sec:repeated-cv}) đã trình bày cơ chế \texttt{RepeatedStratifiedKFold} và hiệu chỉnh ngưỡng theo lớp — hai công cụ hỗ trợ ước lượng ổn định hơn cho các nhóm nợ hiếm, được nhắc lại khi cần trong các mục kết quả dưới đây.
+Ngoài bốn chỉ tiêu trên, Chương 3 (mục \ref{sec:repeated-cv}) đã trình bày cơ chế \mbox{\texttt{RepeatedStratifiedKFold}} và hiệu chỉnh ngưỡng theo lớp — hai công cụ hỗ trợ ước lượng ổn định hơn cho các nhóm nợ hiếm, được nhắc lại khi cần trong các mục kết quả dưới đây.
 
 \section{Kết quả trên bộ dữ liệu A}
 
@@ -98,9 +98,9 @@ $k$ & Accuracy & Macro-F1 & Weighted-F1 & ROC-AUC macro\\
 \end{tabular}
 \end{table}
 
-Trong các tập gồm $k$ đặc trưng quan trọng nhất, tập đầy đủ 13 biến đạt Macro-F1 cao nhất; tuy nhiên, đường cong hiệu quả không tăng đơn điệu, thể hiện ở việc tập 11 biến đứng đầu cho kết quả thấp hơn tập 9 biến đứng đầu. Khi huấn luyện theo đúng danh sách 11 biến của cấu hình chính, thay vì lựa chọn 11 biến có mức độ quan trọng cao nhất, XGBoost đạt Macro-F1 bằng 0,6442, cao hơn mức 0,6434 của tập 13 biến. Weighted-F1 tăng từ 0,8977 lên 0,8982 và ROC-AUC tăng từ 0,9192 lên 0,9201. Như vậy, việc bổ sung lại hai biến \textit{SEX} và \textit{LOAIKH} không tạo ra mức cải thiện đáng kể trong phép chia dữ liệu này.
+Trong các tập gồm $k$ đặc trưng quan trọng nhất, tập đầy đủ 13 biến đạt Macro-F1 cao nhất; tuy nhiên, đường cong hiệu quả không tăng đơn điệu, thể hiện ở việc tập 11 biến đứng đầu cho kết quả thấp hơn tập 9 biến đứng đầu. Khi huấn luyện theo đúng danh sách 11 biến của cấu hình chính, thay vì lựa chọn 11 biến có mức độ quan trọng cao nhất, XGBoost đạt Macro-F1 bằng 0,6442, cao hơn mức 0,6434 của tập 13 biến. Weighted-F1 tăng từ 0,8977 lên 0,8982 và ROC-AUC tăng từ 0,9192 lên 0,9201. Như vậy, việc bổ sung lại hai biến \texttt{SEX} và \texttt{LOAIKH} không tạo ra mức cải thiện đáng kể trong phép chia dữ liệu này.
 
-Top-9 giữ:
+Tỷ lệ Macro-F1 của cấu hình 9 biến so với tập đầy đủ được xác định như sau:
 \[
 \rho_{A,9}
 =\frac{0,6383}{0,6434}
@@ -112,7 +112,7 @@ tương ứng khoảng 99,20\% Macro-F1 của tập 13 biến trong cùng quy tr
 
 \begin{table}[H]
 \centering
-\caption{Tỷ trọng importance theo nhóm nghiệp vụ của bộ dữ liệu A}
+\caption{Tỷ trọng mức độ quan trọng theo nhóm nghiệp vụ của bộ dữ liệu A}
 \label{tab:dataset-a-group-importance}
 \begin{tabular}{|l|r|}
 \hline
@@ -123,14 +123,14 @@ Sản phẩm và mục đích vay & 21,9\\
 Dư nợ và hạn mức sử dụng & 12,9\\
 Đơn vị/Chi nhánh & 9,4\\
 Nhân khẩu học có IV thấp & 8,1\\
-Lãi suất & 7,6\\
+\texttt{Lãi suất} & 7,6\\
 \hline
 \end{tabular}
 \end{table}
 
-Hai biến \textit{DAYS\_TO\_MATURITY} và \textit{LOAN\_TENURE\_DAYS} lần lượt có importance 24,48\% và 15,63\%, làm nhóm Kỳ hạn khoản vay đứng đầu với 40,1\%. Nhóm Sản phẩm và mục đích vay đứng thứ hai, đạt 21,9\%.
+Hai biến \mbox{\texttt{DAYS\_TO\_MATURITY}} và \mbox{\texttt{LOAN\_TENURE\_DAYS}} có mức độ quan trọng lần lượt bằng 24,48\% và 15,63\%, đưa tổng tỷ trọng của nhóm Kỳ hạn khoản vay lên 40,1\%. Nhóm Sản phẩm và mục đích vay có tỷ trọng lớn thứ hai, đạt 21,9\%.
 
-Đường cong tích lũy cần 12/13 biến để đạt 95\% importance và 13/13 biến để đạt 99\%. Tuy nhiên, mốc này không mâu thuẫn với việc Top-9 giữ 99,20\% Macro-F1, vì tổng importance và hiệu năng ngoài mẫu là hai đại lượng khác nhau.
+Đường cong tích lũy cần 12 trong tổng số 13 biến để đạt 95\% mức độ quan trọng và cần toàn bộ 13 biến để đạt 99\%. Kết quả này không mâu thuẫn với việc cấu hình 9 biến duy trì 99,20\% Macro-F1, bởi mức độ quan trọng tích lũy và hiệu quả dự báo ngoài mẫu là hai đại lượng khác nhau.
 
 Các nhóm đặc trưng của bộ A hầu như không có giá trị thiếu; riêng nhóm Nhân khẩu học có IV thấp ghi nhận tỷ lệ thiếu trung bình 2,05\%. Do đó, việc chỉ số quy ước xếp nhóm Kỳ hạn khoản vay ở vị trí đầu chủ yếu xuất phát từ mức độ quan trọng của nhóm, không phải từ sự thiếu hụt dữ liệu. Kết quả này gợi ý ngân hàng cần duy trì chất lượng các trường ngày và phát triển dữ liệu lịch sử theo thời gian, thay vì chỉ bổ sung thêm các trường kỳ hạn tĩnh.
 
@@ -166,12 +166,12 @@ CatBoost & 0,8236 & 0,6046 & 0,7673 & 0,9195\\
 \end{tabular}
 \end{table}
 
-Cả sáu mô hình đều chạy thành công trong môi trường hiện tại, không cần loại Logistic Regression vì lỗi tương thích thư viện. LightGBM đạt Macro-F1 cao nhất (0,6954), sát nút XGBoost (0,6941) — chênh lệch chỉ 0,0013, nhỏ hơn nhiều so với biên độ dao động theo hyperparameter quan sát được ở mục Grid Search (\ref{sec:grid-search}). LightGBM cũng đạt ROC-AUC macro cao nhất (0,9411). Vì LightGBM dẫn đầu cả hai chỉ tiêu trên tập kiểm định, mô hình này được chọn làm mô hình phân tích đặc trưng và SHAP của bộ B. Logistic Regression và CatBoost có Macro-F1 thấp hơn rõ rệt so với bốn mô hình cây/ensemble còn lại — tương tự khoảng cách quan sát được ở bộ A.
+Khác với bộ A, cả sáu mô hình đều được thực thi thành công trên bộ B. LightGBM đạt Macro-F1 cao nhất, bằng 0,6954, trong khi XGBoost đạt 0,6941; mức chênh lệch 0,0013 là tương đối nhỏ so với biên độ biến động theo siêu tham số tại Mục \ref{sec:grid-search}. LightGBM đồng thời đạt ROC-AUC macro cao nhất, bằng 0,9411, nên được lựa chọn cho các phân tích tiếp theo về đặc trưng và SHAP. Logistic Regression và CatBoost có Macro-F1 thấp hơn các mô hình dựa trên cây còn lại trong cấu hình thực nghiệm này.
 
 \subsection{Đánh giá trên tập kiểm tra độc lập (20260507)}
 \label{sec:holdout-b}
 
-Bộ B có thêm một tầng đánh giá thứ hai bên cạnh tập kiểm định: áp dụng đúng pipeline đã fit (tiền xử lý + mô hình, không huấn luyện lại) lên toàn bộ 100.274 hồ sơ của kỳ báo cáo kế tiếp, 20260507. Bảng \ref{tab:holdout-b-results} trình bày kết quả.
+Bên cạnh tập kiểm định nội bộ, bộ B được đánh giá bổ sung trên toàn bộ 100.274 hồ sơ của kỳ báo cáo kế tiếp, 20260507. Quy trình tiền xử lý và mô hình đã được ước lượng từ kỳ 20260430 được giữ nguyên, không huấn luyện lại trên dữ liệu mới. Kết quả được trình bày tại Bảng \ref{tab:holdout-b-results}.
 
 \begin{table}[H]
 \centering
@@ -191,7 +191,7 @@ CatBoost & 0,7930 & 0,4105 & 0,7682 & 0,9045\\
 \end{tabular}
 \end{table}
 
-Đây là phát hiện quan trọng nhất của luận văn ở bộ dữ liệu B: \textbf{thứ hạng mô hình đảo ngược giữa hai tầng đánh giá}. LightGBM dẫn đầu trên tập kiểm định (Macro-F1 0,6954) nhưng chỉ đứng thứ ba trên tập kiểm tra độc lập (0,4952); Random Forest — đứng thứ tư trên tập kiểm định (0,6568) — lại dẫn đầu trên tập kiểm tra độc lập (0,5142). Toàn bộ sáu mô hình đều sụt giảm Macro-F1 đáng kể khi chuyển từ tập kiểm định sang tập kiểm tra độc lập (ví dụ LightGBM giảm từ 0,6954 xuống 0,4952, tương đương 28,8\%), dù ROC-AUC macro của các mô hình boosting hầu như không đổi hoặc thậm chí tăng nhẹ (LightGBM: 0,9411$\to$0,9232; XGBoost: 0,9401$\to$0,9205) — cho thấy khả năng \emph{xếp hạng xác suất} của mô hình vẫn ổn định, nhưng \emph{ngưỡng quyết định} tối ưu trên tập kiểm định không còn tối ưu trên dữ liệu của kỳ báo cáo kế tiếp. Đây là bằng chứng thực nghiệm trực tiếp cho thấy một phép chia ngẫu nhiên trong cùng một kỳ dữ liệu — dù có phân tầng — có thể đánh giá lạc quan hơn khả năng tổng quát hóa thực tế theo thời gian, củng cố khuyến nghị ở Chương 3 (mục \ref{sec:leakage-a}) rằng chia dữ liệu theo thời gian là cần thiết cho mục tiêu dài hạn của đề tài (dự báo chuyển nhóm nợ).
+Thứ hạng mô hình thay đổi giữa hai tầng đánh giá. LightGBM có Macro-F1 cao nhất trên tập kiểm định nội bộ (0,6954) nhưng đạt 0,4952 trên tập kiểm tra độc lập; Random Forest tăng từ vị trí thứ tư trên tập kiểm định (0,6568) lên mức cao nhất trên tập kiểm tra độc lập (0,5142). Macro-F1 của cả sáu mô hình đều giảm khi chuyển sang kỳ dữ liệu mới; riêng LightGBM giảm 28,8\%. ROC-AUC macro của LightGBM và XGBoost giảm ít hơn Macro-F1, lần lượt từ 0,9411 xuống 0,9232 và từ 0,9401 xuống 0,9205. Điều này cho thấy khả năng xếp hạng xác suất được duy trì tốt hơn chất lượng của nhãn phân loại tại ngưỡng quyết định hiện hành. Kết quả cung cấp bằng chứng rằng phép chia ngẫu nhiên có phân tầng trong cùng một kỳ dữ liệu có thể tạo ra ước lượng lạc quan về khả năng tổng quát hóa theo thời gian, qua đó củng cố yêu cầu chia mẫu theo thời gian đối với bài toán dự báo chuyển nhóm nợ.
 
 \subsection{Kết quả chi tiết theo nhóm nợ}
 
@@ -216,7 +216,7 @@ Bảng \ref{tab:lgb-by-class} trình bày Precision, Recall, F1 của LightGBM �
 \end{tabular}
 \end{table}
 
-Với 200--1.421 quan sát mỗi nhóm hiếm tùy tầng đánh giá, các con số Recall dưới đây phản ánh năng lực thật của mô hình, không phải may rủi của một vài mẫu đơn lẻ.
+Với từ 200 đến 1.421 quan sát ở mỗi nhóm hiếm tùy theo tầng đánh giá, Recall trong Bảng \ref{tab:lgb-by-class} có độ tin cậy cao hơn trường hợp chỉ có một số ít quan sát. Tuy nhiên, các chỉ tiêu vẫn có thể chịu ảnh hưởng của khác biệt phân bố giữa hai kỳ dữ liệu.
 
 Trên tập kiểm định, mô hình cân bằng khá tốt giữa các nhóm: Recall nhóm 3 (0,52) và nhóm 4 (0,71) đều ở mức chấp nhận được, nhóm 5 đạt 0,91. Nhưng trên tập kiểm tra độc lập, bức tranh đổi khác rõ rệt: Recall nhóm 5 sụt mạnh từ 0,91 xuống 0,24 (mô hình bỏ sót phần lớn hồ sơ nhóm rủi ro cao nhất ở kỳ báo cáo mới), trong khi Recall nhóm 3 và 4 tăng lên (0,52$\to$0,52 và 0,71$\to$0,81) nhưng đổi lại Precision giảm mạnh (nhóm 3: 0,60$\to$0,28; nhóm 4: 0,72$\to$0,33) — mô hình cảnh báo nhóm 3/4 nhiều hơn nhưng kém chính xác hơn. Nhóm 2 giữ Recall thấp ở cả hai tầng (khoảng 0,17--0,19), là nhóm mô hình khó nhận diện nhất trong toàn bộ năm nhóm.
 
@@ -227,24 +227,24 @@ So sánh Recall trên tập kiểm định giữa các mô hình cho thấy:
     \item Random Forest: nhóm 3 đạt 0,470, nhóm 4 đạt 0,585;
     \item XGBoost: nhóm 3 đạt 0,545, nhóm 4 đạt 0,706;
     \item LightGBM: nhóm 3 đạt 0,520, nhóm 4 đạt 0,713;
-    \item CatBoost: Recall trung bình các nhóm hiếm cao hơn nhưng Accuracy/Weighted-F1 thấp hơn hẳn (0,8236/0,7673) do phát sinh nhiều cảnh báo sai hơn — cùng cơ chế \texttt{auto\_class\_weights=Balanced} đã quan sát được ở bộ A.
+    \item CatBoost: Recall trung bình các nhóm hiếm cao hơn nhưng Accuracy/Weighted-F1 thấp hơn hẳn (0,8236/0,7673) do phát sinh nhiều cảnh báo sai hơn — cùng cơ chế \mbox{\texttt{auto\_class\_weights=Balanced}} đã quan sát được ở bộ A.
 \end{itemize}
 
 CatBoost minh họa rõ đánh đổi giữa phát hiện lớp thiểu số và số cảnh báo sai. Do đó, lựa chọn mô hình triển khai không nên chỉ dựa vào một thứ hạng chung; ngân hàng cần xác định chi phí bỏ sót và chi phí rà soát, đồng thời — theo phát hiện ở mục \ref{sec:holdout-b} — không nên chỉ dựa vào thứ hạng trên tập kiểm định cùng kỳ dữ liệu.
 
 \subsection{Đánh giá các lớp hiếm bằng quy trình kiểm định lặp}
 
-Hàm \texttt{repeated\_stratified\_recall()} báo cáo giá trị trung bình và độ lệch chuẩn của Precision, Recall và F1 theo từng lớp qua nhiều lượt chia mẫu. Với cấu hình mặc định $3\times5$-fold, mỗi hồ sơ thuộc nhóm 3 và 4 được đưa vào tập kiểm định ba lần qua các lượt lặp, thay vì suy luận chỉ từ 2 và 3 hồ sơ trong một tập kiểm định duy nhất. Cách tiếp cận này giúp giảm mức độ phụ thuộc của ước lượng vào một lần chia mẫu, nhưng không khắc phục được hạn chế về quy mô dữ liệu gốc. Tổng số lượt quan sát tăng do cùng một hồ sơ được đánh giá lặp lại, chứ không phản ánh số khách hàng độc lập tăng thêm.
+Quy trình kiểm định chéo phân tầng lặp lại báo cáo giá trị trung bình và độ lệch chuẩn của Precision, Recall và F1 theo từng lớp qua nhiều lần chia mẫu. Với cấu hình $3\times5$ phần, mỗi hồ sơ thuộc nhóm 3 và 4 xuất hiện trong phần kiểm định ba lần qua các lượt lặp. Cách tiếp cận này làm giảm mức độ phụ thuộc của ước lượng vào một lần chia mẫu, nhưng không làm tăng số khách hàng độc lập và không thể thay thế dữ liệu ngoài thời gian.
 
-Phiên bản mới cũng sửa đường truyền trọng số cho XGBoost: khi chọn \texttt{class\_weight}, trọng số nghịch đảo tần suất được truyền vào từng lần \texttt{fit()}, kể cả trong từng fold. Vì Bảng \ref{tab:verified-model-results} được tạo bằng SMOTE tùy chỉnh, thay đổi này không làm đổi trực tiếp các số đã báo cáo; nó làm cho nhánh cost-sensitive có hiệu lực đúng như lựa chọn trên giao diện.
+Đối với XGBoost, trọng số nghịch đảo tần suất được tính và truyền riêng trong từng phần huấn luyện của kiểm định chéo. Tuy nhiên, Bảng \ref{tab:verified-model-results} sử dụng chiến lược SMOTE tùy chỉnh, nên cơ chế trọng số không ảnh hưởng trực tiếp đến các kết quả được báo cáo trong bảng này.
 
-Chức năng ``Tìm hệ số điều chỉnh tối ưu'' nhân xác suất dự báo của các lớp hiếm với một hệ số trước khi áp dụng phép \texttt{argmax}. Đây là công cụ phân tích độ nhạy nhằm xem xét sự đánh đổi giữa Precision và Recall, không phải một mô hình mới. Do hệ số hiện được lựa chọn trên chính tập đánh giá, Macro-F1 sau điều chỉnh không được đưa vào bảng kết quả chính. Để bảo đảm tính hợp lệ, dữ liệu cần được tách thành ba tập huấn luyện, xác thực và kiểm định; hệ số được lựa chọn trên tập xác thực và chỉ được đánh giá một lần trên tập kiểm định.
+Phân tích hiệu chỉnh lớp hiếm nhân xác suất dự báo của từng lớp với một hệ số trước khi áp dụng phép $\arg\max$. Đây là phân tích độ nhạy đối với sự đánh đổi giữa Precision và Recall, không phải một mô hình độc lập. Do hệ số được lựa chọn trên chính tập đánh giá, Macro-F1 sau hiệu chỉnh không được đưa vào bảng kết quả chính. Một thiết kế chặt chẽ hơn cần tách riêng tập huấn luyện, tập xác thực và tập kiểm tra; hệ số được lựa chọn trên tập xác thực và chỉ đánh giá một lần trên tập kiểm tra.
 
 \subsection{Hiệu năng theo số lượng đặc trưng}
 
 \subsubsection{Nhiều đặc trưng hơn có luôn giúp mô hình tốt hơn không?}
 
-Các đặc trưng được sắp xếp theo mức độ quan trọng của mô hình LightGBM đầy đủ (mô hình dẫn đầu bảng so sánh chính); sau đó, mô hình được huấn luyện lại tại từng giá trị $k$, cùng chiến lược SMOTE tùy chỉnh với bảng so sánh chính. Kết quả được trình bày trong Bảng \ref{tab:top-k-results}.
+Các đặc trưng được sắp xếp theo mức độ quan trọng của mô hình LightGBM sử dụng tập đầy đủ. Mô hình sau đó được huấn luyện lại với từng giá trị $k$, trong khi chiến lược SMOTE được giữ nguyên. Kết quả được trình bày tại Bảng \ref{tab:top-k-results}.
 
 \begin{table}[H]
 \centering
@@ -265,35 +265,35 @@ $k$ & Macro-F1 & ROC-AUC macro\\
 \end{tabular}
 \end{table}
 
-Phát hiện đáng chú ý nhất của Bảng \ref{tab:top-k-results}: \textbf{Top-17 đạt Macro-F1 cao nhất (0,7031), vượt cả tập đầy đủ 20 biến (0,6954)}. Đây là bằng chứng trực tiếp cho câu hỏi nghiên cứu thứ nhất: thêm đặc trưng không những không cải thiện mà còn có thể làm giảm nhẹ hiệu năng — ba biến bị loại khỏi Top-17 (nhiều khả năng là các biến IV thấp như \textit{Nguồn cấp tín dụng}, \textit{Hình thức cấp tín dụng}, \textit{ENG\_HAS\_RESTRUCTURE} — xem Bảng \ref{tab:iv-b-full}) có thể đã bổ sung nhiễu nhiều hơn tín hiệu. Đáng chú ý hơn, chỉ với \textbf{Top-8 đặc trưng (40\% của bể 20 biến), Macro-F1 đã đạt 0,6967} — cao hơn cả tập đầy đủ — và các mốc $k=8,11,14,17$ đều dao động rất hẹp quanh 0,695--0,703, cho thấy hiệu năng đã bão hòa từ rất sớm. Ngược lại, ở vùng $k$ rất nhỏ ($k=3,5$), Macro-F1 sụt giảm mạnh (0,299 và 0,435), khẳng định vẫn cần một số lượng đặc trưng tối thiểu nhất định.
+Bảng \ref{tab:top-k-results} cho thấy cấu hình 17 đặc trưng đạt Macro-F1 cao nhất, bằng 0,7031, so với 0,6954 của tập đầy đủ 20 biến. Cấu hình 8 đặc trưng, tương ứng 40\% số biến, đạt Macro-F1 bằng 0,6967 và cũng cao hơn tập đầy đủ. Các kết quả tại $k=8,11,14,17$ nằm trong khoảng 0,695--0,703, cho thấy hiệu quả thay đổi không đáng kể trong khoảng này. Ngược lại, Macro-F1 giảm rõ rệt tại $k=3$ và $k=5$, lần lượt bằng 0,2989 và 0,4346. Trong phạm vi phép chia mẫu hiện tại, kết quả cho thấy việc bổ sung đặc trưng không tất yếu cải thiện hiệu quả và mô hình vẫn cần một số lượng đặc trưng tối thiểu.
 
-Phát biểu phù hợp với bằng chứng là: \textit{nhiều đặc trưng hơn không những không bảo đảm tốt hơn về mặt lý thuyết, mà trong thực nghiệm này còn có bằng chứng cụ thể (Top-17 vượt Top-20) cho thấy thêm biến có thể gây nhiễu}. Đây là kết luận mạnh hơn so với bộ A, nơi đường cong chỉ cho thấy không đơn điệu ở vùng $k$ nhỏ, chưa từng quan sát được Top-$k$ nhỏ hơn vượt hẳn tập đầy đủ.
+So với bộ A, kết quả của bộ B cung cấp bằng chứng rõ hơn về tính không đơn điệu giữa số lượng đặc trưng và hiệu quả dự báo. Tuy nhiên, chưa thể quy phần chênh lệch hoàn toàn cho nhiễu của từng biến, bởi các cấu hình được lựa chọn và đánh giá trên cùng một tập kiểm định.
 
 Các giá trị $k$ được khảo sát và lựa chọn trên cùng tập kiểm định gồm 20.124 hồ sơ. Vì vậy, đường cong chỉ có ý nghĩa khám phá và thiên lệch lựa chọn (selection bias) vẫn áp dụng như đã nêu ở bộ A. Cấu hình rút gọn được lựa chọn từ kết quả này cần được xác định trước và đánh giá lại trên tập kiểm tra độc lập 20260507 hoặc quy trình xác thực lồng nhau trước khi khuyến nghị triển khai.
 
 \subsubsection{Có thể giảm còn bao nhiêu đặc trưng?}
 
-Theo tổng importance của LightGBM, 8 đặc trưng đầu tiên đã chiếm 95\% và 13 đặc trưng chiếm 99\% importance — một tỷ lệ giảm sâu hơn nhiều so với bộ A (12/13 và 13/13), phản ánh đúng đặc điểm bể đặc trưng nhỏ và tập trung của bộ dữ liệu này (mục \ref{sec:pool-a}). Tại $k=8$, tỷ lệ Macro-F1 so với tập đầy đủ ($k=20$) là:
+Theo mức độ quan trọng tích lũy của LightGBM, 8 đặc trưng đầu tiên chiếm 95\% và 13 đặc trưng chiếm 99\% tổng mức độ quan trọng. Mức độ tập trung này cao hơn so với bộ A, nơi cần lần lượt 12 và 13 đặc trưng để đạt hai ngưỡng tương ứng. Tại $k=8$, tỷ lệ Macro-F1 so với tập đầy đủ ($k=20$) là:
 \[
 \rho_{8}
 =\frac{0,6967}{0,6954}
 \approx 1,0019.
 \]
-Trong đó 0,6967 là Macro-F1 của Top-8 và 0,6954 là Macro-F1 của tập 20 biến trong cùng quy trình Top-$k$. Như vậy Top-8 không chỉ giữ mà còn \textbf{vượt nhẹ} hiệu năng của tập đầy đủ — khác với bộ A, nơi mốc rút gọn tốt nhất (Top-9) chỉ đạt xấp xỉ tập đầy đủ.
+Trong đó 0,6967 là Macro-F1 của cấu hình 8 biến và 0,6954 là Macro-F1 của tập đầy đủ 20 biến trong cùng quy trình đánh giá. Chênh lệch quan sát được là nhỏ và cần được kiểm định lại trước khi khái quát.
 
-Vì vậy, đối với bộ B, kết luận không cần đặt điều kiện theo ngưỡng 95\% hay 99\% như bộ A: \textbf{Top-8 (40\% của 20 đặc trưng hợp lệ) là ứng viên rút gọn tự nhiên}, vừa giảm số biến vừa không đánh đổi Macro-F1 trên tập kiểm định. Cấu hình này vẫn cần được xác nhận thêm trên tập kiểm tra độc lập 20260507 hoặc kiểm định lặp trước khi khuyến nghị triển khai chính thức, đúng nguyên tắc thận trọng đã áp dụng xuyên suốt luận văn.
+Do đó, cấu hình 8 trong tổng số 20 đặc trưng được xem là một ứng viên rút gọn vì không làm giảm Macro-F1 trên tập kiểm định. Cấu hình này cần được xác nhận trên tập kiểm tra độc lập kỳ 20260507 hoặc bằng quy trình xác thực lồng nhau trước khi đưa ra khuyến nghị triển khai.
 
 Ở cấp dữ liệu thô, quy trình đã giảm từ 33 cột chung giữa hai kỳ báo cáo xuống 20 đặc trưng hợp lệ, tương đương loại:
 \[
 \frac{33-20}{33}\times100\%\approx39,39\%.
 \]
-Mức giảm này chủ yếu bắt nguồn từ việc loại bỏ trường định danh, trường có nguy cơ rò rỉ thông tin, trường ngày ban đầu và một cột hằng số, thay vì từ quá trình lựa chọn dựa trên hiệu quả dự báo — bể cột chung giữa hai kỳ báo cáo vốn đã được thu hẹp bởi ràng buộc dữ liệu thực tế (mục \ref{sec:pool-a}).
+Mức giảm này chủ yếu bắt nguồn từ việc loại bỏ các trường định danh, trường có nguy cơ rò rỉ thông tin, trường ngày ban đầu và một cột hằng số, thay vì từ quá trình lựa chọn dựa trên hiệu quả dự báo. Số cột chung giữa hai kỳ cũng bị giới hạn bởi cấu trúc dữ liệu thực tế (Mục \ref{sec:pool-a}).
 
 \subsection{Đóng góp của các nhóm đặc trưng}
 
 \begin{table}[H]
 \centering
-\caption{Tỷ trọng importance của LightGBM theo nhóm nghiệp vụ (Gain)}
+\caption{Tỷ trọng mức độ quan trọng của LightGBM theo nhóm nghiệp vụ (Gain)}
 \label{tab:group-importance}
 \begin{tabular}{|l|r|}
 \hline
@@ -302,31 +302,31 @@ Nhóm nghiệp vụ & Tỷ trọng (\%)\\
 Đặc trưng kỹ thuật & 37,2\\
 Dư nợ \& Thanh toán & 30,8\\
 Chi nhánh & 15,3\\
-Lãi suất & 12,7\\
+\texttt{Lãi suất} & 12,7\\
 Hình thức \& Mục đích vay & 2,9\\
 Kỳ hạn \& Cơ cấu lại & 1,1\\
 \hline
 \end{tabular}
 \end{table}
 
-Khác với bộ A — nơi nhóm dẫn đầu là một nhóm biến gốc trực tiếp — nhóm \textbf{Đặc trưng kỹ thuật} (4 biến tự tạo ở Chương 3, mục \ref{sec:eng-util-b}) đóng góp lớn nhất theo Gain, chiếm 37,2\% tổng importance, nhỉnh hơn nhóm Dư nợ \& Thanh toán (30,8\%). Đây là bằng chứng cho thấy việc xây dựng đặc trưng thời gian (tuổi khoản vay, số ngày tới đáo hạn, kỳ hạn thực tế) mang lại giá trị dự báo đáng kể — nhất quán với phát hiện IV cao bất thường của \textit{ENG\_LOAN\_AGE\_DAYS} ở Chương 3 (Bảng \ref{tab:iv-b-full}). Nhóm Chi nhánh (15,3\%, chỉ gồm một biến — mã chi nhánh TCTD) và Lãi suất (12,7\%) đứng tiếp theo; hai nhóm Hình thức \& Mục đích vay và Kỳ hạn \& Cơ cấu lại đóng góp không đáng kể (dưới 3\% mỗi nhóm).
+Theo Gain, nhóm Đặc trưng kỹ thuật gồm bốn biến được xây dựng tại Chương 3 chiếm 37,2\% tổng mức độ quan trọng, tiếp theo là nhóm Dư nợ \& Thanh toán với 30,8\%. Kết quả cho thấy các đặc trưng thời gian, gồm tuổi khoản vay, số ngày đến đáo hạn và kỳ hạn thực tế, chứa thông tin dự báo đáng kể. Nhóm Chi nhánh và Lãi suất lần lượt chiếm 15,3\% và 12,7\%; hai nhóm Hình thức \& Mục đích vay và Kỳ hạn \& Cơ cấu lại đều có tỷ trọng dưới 3\%.
 
-Kết quả này trả lời câu hỏi ``mô hình sử dụng nhóm nào nhiều nhất'', nhưng chưa trả lời hoàn toàn ``nhóm nào tạo giá trị biên lớn nhất''. Importance có thể bị chia sẻ giữa các biến tương quan — đặc biệt giữa \textit{ENG\_DAYS\_TO\_MATURITY} và \textit{ENG\_TENOR\_ACTUAL\_DAYS} ($r=0,975$, mục \ref{sec:feature-b-eda}), cả hai đều thuộc nhóm Đặc trưng kỹ thuật. Để kết luận mạnh hơn cần thí nghiệm loại bỏ từng nhóm và đo chênh lệch Macro-F1 ngoài mẫu; phiên bản hiện tại mới tổng hợp importance, chưa thực hiện group ablation.
+Kết quả phản ánh mức độ mô hình sử dụng từng nhóm, nhưng chưa lượng hóa đầy đủ giá trị biên của nhóm đó. Mức độ quan trọng có thể được chia sẻ giữa các biến tương quan, đặc biệt là \mbox{\texttt{ENG\_DAYS\_TO\_MATURITY}} và \mbox{\texttt{ENG\_TENOR\_ACTUAL\_DAYS}} với $r=0,975$. Để củng cố kết luận, cần thực hiện thí nghiệm loại bỏ lần lượt từng nhóm và đo thay đổi Macro-F1 ngoài mẫu.
 
 \subsection{Ưu tiên đầu tư dữ liệu}
 \label{sec:priority-b}
 
-Nhóm Đặc trưng kỹ thuật và nhóm Dư nợ \& Thanh toán — hai nhóm đóng góp lớn nhất — đều có tỷ lệ thiếu trung bình 0,00\% (các biến cấu thành không thiếu giá trị nào, mục \ref{sec:feature-b-eda} và Bảng \ref{tab:eda-b-describe}), nên điểm ưu tiên của chúng chỉ đến từ hệ số nền 0,1 trong công thức $\mathrm{Priority}_g=S_g(M_g/100+0,1)$ (Chương 3, mục \ref{sec:pool-a}), không phải từ khoảng trống dữ liệu. Theo chỉ số heuristic được cài đặt, ba ưu tiên đầu là:
+Nhóm Đặc trưng kỹ thuật và nhóm Dư nợ \& Thanh toán đều có tỷ lệ thiếu trung bình bằng 0,00\%. Vì vậy, chỉ số ưu tiên của hai nhóm chủ yếu phản ánh mức độ quan trọng và hệ số nền 0,1 trong công thức $\mathrm{Priority}_g=S_g(M_g/100+0,1)$, không phản ánh khoảng trống về tính đầy đủ của dữ liệu. Theo chỉ số quy ước, ba nhóm có giá trị cao nhất là:
 
 \begin{enumerate}
-    \item Đặc trưng kỹ thuật: 37,2\% importance, 0,00\% thiếu, điểm ưu tiên 3,72;
-    \item Dư nợ \& Thanh toán: 30,8\% importance, 0,00\% thiếu, điểm ưu tiên 3,08;
-    \item Chi nhánh: 15,3\% importance, 0,00\% thiếu, điểm ưu tiên 1,53.
+    \item Đặc trưng kỹ thuật: mức độ quan trọng 37,2\%, tỷ lệ thiếu 0,00\%, chỉ số ưu tiên 3,72;
+    \item Dư nợ \& Thanh toán: mức độ quan trọng 30,8\%, tỷ lệ thiếu 0,00\%, chỉ số ưu tiên 3,08;
+    \item Chi nhánh: mức độ quan trọng 15,3\%, tỷ lệ thiếu 0,00\%, chỉ số ưu tiên 1,53.
 \end{enumerate}
 
-Nhóm duy nhất có tỷ lệ thiếu đáng kể là Kỳ hạn \& Cơ cấu lại (74,79\% thiếu, do ba biến về cơ cấu nợ chỉ ghi nhận cho hồ sơ đã từng cơ cấu — mục \ref{sec:eda}), nhưng vì importance của nhóm này chỉ 1,1\%, điểm ưu tiên vẫn xếp cuối (0,93). Vì các nhóm quan trọng nhất đã tương đối đầy đủ dữ liệu, khuyến nghị ưu tiên không phải ``bổ sung dữ liệu thiếu'' mà là \textbf{duy trì chất lượng ghi nhận ngày giải ngân/kết thúc khế ước} (nguồn của nhóm Đặc trưng kỹ thuật) và \textbf{chuẩn hóa các trường dư nợ, lãi phải/chưa thu} — hai nhóm đã đóng góp lớn nhất nhưng chưa cần "thu thập thêm", mà cần "giữ đúng những gì đang có". Vì điểm ưu tiên là tích của importance với một hàm quy ước của tỷ lệ thiếu, kết quả không nên được diễn giải thành lợi tức đầu tư định lượng; cần chạy lại group ablation để xác nhận giá trị biên trước khi ra quyết định đầu tư thực tế.
+Nhóm Kỳ hạn \& Cơ cấu lại có tỷ lệ thiếu 74,79\%, nhưng chỉ chiếm 1,1\% tổng mức độ quan trọng nên có chỉ số ưu tiên thấp nhất, bằng 0,93. Do các nhóm có mức độ quan trọng cao đã tương đối đầy đủ, kiến nghị tập trung vào duy trì chất lượng ngày giải ngân, ngày kết thúc khế ước và chuẩn hóa các trường dư nợ, lãi phải thu hoặc chưa thu. Chỉ số ưu tiên là một đại lượng quy ước, không được diễn giải như lợi tức đầu tư định lượng; giá trị biên cần được xác nhận bằng thực nghiệm loại bỏ lần lượt từng nhóm.
 
-\subsection{Giải thích mô hình và giới hạn của importance}
+\subsection{Giải thích mô hình và giới hạn của mức độ quan trọng}
 
 Mã nguồn hỗ trợ SHAP, dựa trên giá trị Shapley \cite{lundberg2017unified}. Với mô hình cộng tính giải thích:
 \[
@@ -334,11 +334,11 @@ f(\mathbf{x})=\phi_0+\sum_{j=1}^{p}\phi_j,
 \]
 trong đó $f(\mathbf{x})$ là đầu ra của mô hình tại hồ sơ $\mathbf{x}$ trên thang mà explainer sử dụng; $\phi_0$ là giá trị nền; và $\phi_j$ là phần đóng góp của đặc trưng $j$. Giá trị $\phi_j>0$ làm đầu ra của lớp đang xét tăng so với nền, còn $\phi_j<0$ làm giảm.
 
-SHAP giải thích dự báo của mô hình, không chứng minh rằng thay đổi biến sẽ gây ra thay đổi rủi ro. Đặc biệt, các biến số dư và giải ngân có tương quan có thể chia sẻ importance. Vì vậy, kết luận nghiệp vụ cần kết hợp SHAP, phân tích ổn định và hiểu biết chuyên gia.
+SHAP giải thích cách mô hình hình thành dự báo, nhưng không chứng minh rằng thay đổi một biến sẽ gây ra thay đổi rủi ro. Các biến về số dư và giải ngân có tương quan có thể chia sẻ mức độ đóng góp. Vì vậy, kết luận nghiệp vụ cần kết hợp SHAP, phân tích độ ổn định và nhận định của chuyên gia.
 
 \subsubsection{Kết quả SHAP trên bộ dữ liệu A}
 
-SHAP được tính bằng \texttt{TreeExplainer} cho đúng mô hình XGBoost đã dùng ở bảng so sánh chính (11 biến, \texttt{smote\_moderate}), trên toàn bộ 5.401 quan sát kiểm định. Bảng \ref{tab:shap-a-top} liệt kê trung bình $|\phi_j|$ của từng biến trên cả năm lớp.
+SHAP được tính bằng \mbox{\texttt{TreeExplainer}} cho đúng mô hình XGBoost đã dùng ở bảng so sánh chính (11 biến, \mbox{\texttt{smote\_moderate}}), trên toàn bộ 5.401 quan sát kiểm định. Bảng \ref{tab:shap-a-top} liệt kê trung bình $|\phi_j|$ của từng biến trên cả năm lớp.
 
 \begin{table}[H]
 \centering
@@ -348,26 +348,26 @@ SHAP được tính bằng \texttt{TreeExplainer} cho đúng mô hình XGBoost �
 \hline
 Biến & Trung bình $|\phi_j|$\\
 \hline
-DAYS\_TO\_MATURITY & 0,8489\\
-UTIL\_RATE & 0,3217\\
-LOAN\_TENURE\_DAYS & 0,2652\\
-CURR\_BAL & 0,2493\\
-LAISUAT & 0,2404\\
-PARENTORGNBR & 0,2219\\
-ORGNBR & 0,2176\\
-BASE\_BAL & 0,1903\\
-CURRMIACCTTYPCD & 0,1419\\
-MUCDICHVAY & 0,0699\\
-MJACCTTYPCD & 0,0220\\
+\texttt{\seqsplit{DAYS\_TO\_MATURITY}} & 0,8489\\
+\texttt{\seqsplit{UTIL\_RATE}} & 0,3217\\
+\texttt{\seqsplit{LOAN\_TENURE\_DAYS}} & 0,2652\\
+\texttt{\seqsplit{CURR\_BAL}} & 0,2493\\
+\texttt{LAISUAT} & 0,2404\\
+\texttt{\seqsplit{PARENTORGNBR}} & 0,2219\\
+\texttt{ORGNBR} & 0,2176\\
+\texttt{\seqsplit{BASE\_BAL}} & 0,1903\\
+\texttt{\seqsplit{CURRMIACCTTYPCD}} & 0,1419\\
+\texttt{\seqsplit{MUCDICHVAY}} & 0,0699\\
+\texttt{\seqsplit{MJACCTTYPCD}} & 0,0220\\
 \hline
 \end{tabular}
 \end{table}
 
-\textit{DAYS\_TO\_MATURITY} vượt trội các biến còn lại theo SHAP, phù hợp việc nó đứng đầu bảng importance dạng Gain ở Bảng \ref{tab:dataset-a-group-importance}. Quy về nhóm nghiệp vụ (Bảng \ref{tab:shap-a-group}), Kỳ hạn khoản vay vẫn đứng đầu với 39,9\% — gần như trùng khớp 40,1\% theo Gain — cho thấy kết luận ``kỳ hạn là nhóm quan trọng nhất của bộ A'' ổn định qua hai phương pháp đo importance khác nhau.
+\mbox{\texttt{DAYS\_TO\_MATURITY}} vượt trội các biến còn lại theo SHAP, phù hợp việc nó đứng đầu bảng importance dạng Gain ở Bảng \ref{tab:dataset-a-group-importance}. Quy về nhóm nghiệp vụ (Bảng \ref{tab:shap-a-group}), Kỳ hạn khoản vay vẫn đứng đầu với 39,9\% — gần như trùng khớp 40,1\% theo Gain — cho thấy kết luận ``kỳ hạn là nhóm quan trọng nhất của bộ A'' ổn định qua hai phương pháp đo importance khác nhau.
 
 \begin{table}[H]
 \centering
-\caption{Tỷ trọng importance theo SHAP theo nhóm nghiệp vụ — bộ dữ liệu A}
+\caption{Tỷ trọng mức độ quan trọng theo SHAP của các nhóm nghiệp vụ — bộ dữ liệu A}
 \label{tab:shap-a-group}
 \begin{tabular}{|l|r|}
 \hline
@@ -376,13 +376,13 @@ Nhóm nghiệp vụ & Tỷ trọng SHAP (\%)\\
 Kỳ hạn khoản vay & 39,9\\
 Dư nợ và hạn mức sử dụng & 27,3\\
 Đơn vị/Chi nhánh & 15,8\\
-Lãi suất & 8,6\\
+\texttt{Lãi suất} & 8,6\\
 Sản phẩm và mục đích vay & 8,4\\
 \hline
 \end{tabular}
 \end{table}
 
-Tuy nhiên, hai nhóm còn lại đổi thứ hạng đáng kể: Dư nợ và hạn mức sử dụng tăng từ 12,9\% (Gain) lên 27,3\% (SHAP), trong khi Sản phẩm và mục đích vay giảm từ 21,9\% xuống 8,4\%. Khác biệt này phù hợp với đặc điểm biến \textit{MUCDICHVAY} có 79 danh mục: Gain-importance của XGBoost cộng dồn theo số lần một biến được dùng để chia nhánh, nên biến phân loại nhiều danh mục có xu hướng được chọn làm điểm chia thường xuyên hơn dù mức đóng góp thực tế theo từng dự báo (đo bằng SHAP) không lớn tương ứng — một thiên lệch đã được ghi nhận với các thước đo importance dựa trên cấu trúc cây \cite{lundberg2017unified}. Vì vậy, luận văn khuyến nghị dùng SHAP làm căn cứ chính khi so sánh nhóm nghiệp vụ, chỉ dùng Gain như tham chiếu bổ sung.
+Tuy nhiên, hai nhóm còn lại đổi thứ hạng đáng kể: Dư nợ và hạn mức sử dụng tăng từ 12,9\% (Gain) lên 27,3\% (SHAP), trong khi Sản phẩm và mục đích vay giảm từ 21,9\% xuống 8,4\%. Khác biệt này phù hợp với đặc điểm biến \mbox{\texttt{MUCDICHVAY}} có 79 danh mục: Gain-importance của XGBoost cộng dồn theo số lần một biến được dùng để chia nhánh, nên biến phân loại nhiều danh mục có xu hướng được chọn làm điểm chia thường xuyên hơn dù mức đóng góp thực tế theo từng dự báo (đo bằng SHAP) không lớn tương ứng — một thiên lệch đã được ghi nhận với các thước đo importance dựa trên cấu trúc cây \cite{lundberg2017unified}. Vì vậy, luận văn khuyến nghị dùng SHAP làm căn cứ chính khi so sánh nhóm nghiệp vụ, chỉ dùng Gain như tham chiếu bổ sung.
 
 \subsubsection{Kết quả SHAP trên bộ dữ liệu B}
 
@@ -396,25 +396,27 @@ Với bộ B, SHAP được tính trên mô hình LightGBM 20 biến, SMOTE tùy
 \hline
 Biến & $|\phi_j|$ & Biến & $|\phi_j|$\\
 \hline
-Lãi chưa thu hạch toán ngoại bảng & 1,0870 & Mục đích SD tiền vay (ngành KT) & 0,0488\\
-ENG\_LOAN\_AGE\_DAYS & 0,8514 & Mô tả mục đích SD tiền vay & 0,0467\\
-Số dư nợ theo nguyên tệ & 0,2482 & Mã thời hạn cấp tín dụng & 0,0345\\
-ENG\_DAYS\_TO\_MATURITY & 0,2461 & Phương thức cho vay & 0,0272\\
-Lãi suất & 0,2193 & Kênh điện tử & 0,0078\\
-ENG\_TENOR\_ACTUAL\_DAYS & 0,1882 & ENG\_HAS\_RESTRUCTURE & 0,0025\\
-Mã chi nhánh TCTD & 0,1844 & Số tiền nợ gốc cơ cấu & 0,0018\\
-Lãi phải thu hạch toán nội bảng & 0,1616 & Số tiền nợ lãi cơ cấu & 0,0018\\
+\texttt{Lãi chưa thu hạch toán ngoại bảng} & 1,0870 & Mục đích SD tiền vay (ngành KT) & 0,0488\\
+\texttt{\seqsplit{ENG\_LOAN\_AGE\_DAYS}} & 0,8514 & Mô tả mục đích SD tiền vay & 0,0467\\
+\texttt{Số dư nợ theo nguyên tệ} & 0,2482 & Mã thời hạn cấp tín dụng & 0,0345\\
+\texttt{\seqsplit{ENG\_DAYS\_TO\_MATURITY}} & 0,2461 & Phương thức cho vay & 0,0272\\
+\texttt{Lãi suất} & 0,2193 & Kênh điện tử & 0,0078\\
+\texttt{\seqsplit{ENG\_TENOR\_ACTUAL\_DAYS}} & 0,1882 & \texttt{\seqsplit{ENG\_HAS\_RESTRUCTURE}} & 0,0025\\
+\texttt{Mã chi nhánh TCTD} & 0,1844 & Số tiền nợ gốc cơ cấu & 0,0018\\
+\texttt{Lãi phải thu hạch toán nội bảng} & 0,1616 & Số tiền nợ lãi cơ cấu & 0,0018\\
  & & Số lần cơ cấu lại thời hạn trả nợ & 0,0014\\
  & & Hình thức cấp tín dụng & 0,0001\\
+ & & Mã tiền tệ & 0,0000\\
+ & & Nguồn cấp tín dụng & 0,0000\\
 \hline
 \end{tabular}
 \end{table}
 
-So với Top-8 theo Gain của cùng mô hình — Đặc trưng kỹ thuật và Dư nợ \& Thanh toán chiếm phần lớn Top-8 theo Gain (Bảng \ref{tab:group-importance}) — thứ hạng cá thể theo SHAP có khác biệt đáng chú ý: \textit{Lãi chưa thu hạch toán ngoại bảng} đứng đầu SHAP (0,3130 IV, mức Mạnh) nhưng không phải biến có Gain cao nhất trong nhóm Dư nợ \& Thanh toán; ngược lại \textit{ENG\_LOAN\_AGE\_DAYS} — biến có IV cao nhất toàn bộ bể đặc trưng (Bảng \ref{tab:iv-b-full}) — đứng thứ hai SHAP, nhất quán với vai trò nổi bật của nó ở cả ba thước đo (IV, Gain nhóm, SHAP). Mức đồng thuận khá cao này một phần vì bể đặc trưng nhỏ (20 biến) nên ít chỗ cho các biến có Gain cao cục bộ nhưng đóng góp trung bình thấp.
+So với Top-8 theo Gain của cùng mô hình — Đặc trưng kỹ thuật và Dư nợ \& Thanh toán chiếm phần lớn Top-8 theo Gain (Bảng \ref{tab:group-importance}) — thứ hạng cá thể theo SHAP có khác biệt đáng chú ý: \texttt{Lãi chưa thu hạch toán ngoại bảng} đứng đầu SHAP (0,3130 IV, mức Mạnh) nhưng không phải biến có Gain cao nhất trong nhóm Dư nợ \& Thanh toán; ngược lại \mbox{\texttt{ENG\_LOAN\_AGE\_DAYS}} — biến có IV cao nhất toàn bộ bể đặc trưng (Bảng \ref{tab:iv-b-full}) — đứng thứ hai SHAP, nhất quán với vai trò nổi bật của nó ở cả ba thước đo (IV, Gain nhóm, SHAP). Mức đồng thuận khá cao này một phần vì bể đặc trưng nhỏ (20 biến) nên ít chỗ cho các biến có Gain cao cục bộ nhưng đóng góp trung bình thấp.
 
 \begin{table}[H]
 \centering
-\caption{Tỷ trọng importance theo SHAP theo nhóm nghiệp vụ — bộ dữ liệu B}
+\caption{Tỷ trọng mức độ quan trọng theo SHAP của các nhóm nghiệp vụ — bộ dữ liệu B}
 \label{tab:shap-b-group}
 \begin{tabular}{|l|r|r|}
 \hline
@@ -422,7 +424,7 @@ Nhóm nghiệp vụ & Tỷ trọng SHAP (\%) & Tỷ trọng Gain (\%)\\
 \hline
 Dư nợ \& Thanh toán & 44,6 & 30,8\\
 Đặc trưng kỹ thuật & 38,4 & 37,2\\
-Lãi suất & 6,5 & 12,7\\
+\texttt{Lãi suất} & 6,5 & 12,7\\
 Chi nhánh & 5,5 & 15,3\\
 Hình thức \& Mục đích vay & 3,9 & 2,9\\
 Kỳ hạn \& Cơ cấu lại & 1,2 & 1,1\\
@@ -432,24 +434,24 @@ Kỳ hạn \& Cơ cấu lại & 1,2 & 1,1\\
 
 Bảng \ref{tab:shap-b-group} cho thấy hai nhóm dẫn đầu — Dư nợ \& Thanh toán và Đặc trưng kỹ thuật — hoán đổi vị trí thứ nhất/thứ hai giữa hai thước đo (Gain xếp Đặc trưng kỹ thuật trước, SHAP xếp Dư nợ \& Thanh toán trước), nhưng tổng tỷ trọng của cả hai gần như không đổi (68,0\% theo Gain, 83,0\% theo SHAP — cả hai đều áp đảo bốn nhóm còn lại). Khác biệt rõ nhất là nhóm Chi nhánh: 15,3\% theo Gain nhưng chỉ 5,5\% theo SHAP — dấu hiệu mã chi nhánh TCTD (49 giá trị) được mô hình cây dùng làm điểm chia thường xuyên (Gain cao) nhưng đóng góp trung bình theo từng dự báo lại khiêm tốn hơn (SHAP thấp hơn tương ứng), cùng cơ chế thiên lệch của Gain-importance với biến phân loại nhiều danh mục đã ghi nhận ở bộ A. Vì hai nhóm dẫn đầu giữ nguyên ở cả hai thước đo (chỉ đổi thứ tự trong nội bộ top-2), khuyến nghị ưu tiên đầu tư dữ liệu ở mục \ref{sec:priority-b} — vốn tính từ Gain — tương đối ít nhạy cảm với lựa chọn phương pháp importance, nhưng vẫn nên đối chiếu cả hai thước đo trước khi ra quyết định đầu tư dữ liệu thực tế, theo đúng khuyến nghị chung đã nêu ở bộ A.
 
-\subsection{So sánh với các nghiên cứu benchmarking trước đây}
+\subsection{Đối chiếu với các nghiên cứu so sánh mô hình trước đây}
 
 Baesens và cộng sự (2003) so sánh nhiều thuật toán phân loại trên tám bộ dữ liệu tín dụng châu Âu và Mỹ, kết luận rằng các phương pháp phi tuyến (mạng nơ-ron, SVM) không vượt trội nhất quán so với Logistic Regression, và chênh lệch hiệu năng giữa thuật toán tốt nhất và Logistic Regression trên nhiều bộ dữ liệu là không lớn \cite{baesens2003benchmarking}. Kết quả của bộ A trong Bảng \ref{tab:dataset-a-model-results} một phần phù hợp nhận định này: Logistic Regression đạt Macro-F1 0,4204 — thấp hơn rõ rệt so với XGBoost (0,6442) và LightGBM (0,6484), nhưng ROC-AUC macro của Logistic Regression (0,8059) không quá xa so với nhóm boosting (quanh 0,92), cho thấy Logistic Regression vẫn giữ được khả năng \emph{xếp hạng} rủi ro tương đối tốt dù nhãn cứng sau ngưỡng kém chính xác hơn nhiều — cùng cách phân biệt giữa Macro-F1 (đánh giá nhãn cứng) và ROC-AUC (đánh giá khả năng xếp hạng xác suất) đã dùng để đọc kết quả bộ B ở mục trước.
 
 Lessmann và cộng sự (2015) mở rộng benchmark của Baesens et al. trên nhiều bộ dữ liệu và giai đoạn thời gian mới hơn, kết luận rằng các phương pháp ensemble (Random Forest, Gradient Boosting) có xu hướng thắng thế nhất quán hơn theo thời gian so với các mô hình đơn lẻ, đồng thời khuyến nghị dùng nhiều thước đo (không chỉ Accuracy hoặc AUC) khi lớp mất cân bằng \cite{lessmann2015benchmarking}. Cả bộ A và bộ B của luận văn xác nhận nửa đầu nhận định này trên tập kiểm định: bốn phương pháp ensemble/boosting (Random Forest, XGBoost, LightGBM, CatBoost) đều vượt Decision Tree về ROC-AUC ở cả hai bộ, và LightGBM hoặc XGBoost luôn có Macro-F1 cao nhất trong sáu mô hình trên tập kiểm định (Bảng \ref{tab:dataset-a-model-results}, \ref{tab:verified-model-results}). Tuy nhiên, kết quả trên tập kiểm tra độc lập 20260507 của bộ B (Bảng \ref{tab:holdout-b-results}) cho thấy khuyến nghị ``ensemble/boosting thắng thế nhất quán theo thời gian'' của Lessmann et al. cần được hiểu cẩn trọng hơn: trên dữ liệu thực sự tách biệt theo thời gian, Random Forest — không phải một mô hình boosting — mới là mô hình có Macro-F1 cao nhất, đảo ngược thứ hạng quan sát được trên tập kiểm định cùng kỳ.
 
-Có một điểm lệch khỏi kỳ vọng ``ensemble luôn tốt hơn'' nhất quán ở cả hai bộ dữ liệu: CatBoost — cũng là một thuật toán boosting — có Macro-F1 và Accuracy thấp hơn rõ rệt so với các mô hình cây/ensemble còn lại (0,5454 ở bộ A, thấp hơn cả Decision Tree 0,5896; 0,6046 ở bộ B trên tập kiểm định, thấp hơn cả Decision Tree 0,6590 và Random Forest 0,6568). Nguyên nhân không nằm ở bản chất thuật toán mà ở cách xử lý mất cân bằng: theo mục \ref{sec:imbalance}, mọi chiến lược khác \texttt{none} được tự động chuyển thành \texttt{auto\_class\_weights=Balanced} cho CatBoost thay vì SMOTE, khiến CatBoost tối ưu hóa để tăng Recall lớp hiếm mạnh hơn nhưng đổi lại Precision và Accuracy tổng thể giảm — thể hiện rõ ở Bảng \ref{tab:verified-model-results}: Weighted-F1 của CatBoost (0,7673) thấp hơn nhiều so với bốn mô hình cây/ensemble còn lại (trên 0,91), dù ROC-AUC macro của CatBoost (0,9195) vẫn cạnh tranh — xác nhận CatBoost giữ được khả năng xếp hạng xác suất tốt dù nhãn cứng sau ngưỡng kém chính xác hơn, đúng theo cùng logic Macro-F1/ROC-AUC đã dùng xuyên suốt chương. Quan sát này củng cố khuyến nghị của Lessmann et al. rằng thứ hạng mô hình phụ thuộc thước đo được chọn và không có một kỹ thuật xử lý mất cân bằng nào luôn tối ưu cho mọi mô hình \cite{lessmann2015benchmarking,brown2012experimental} — trong dữ liệu của luận văn, hiệu ứng này rõ ràng hơn cả lựa chọn thuật toán, và bằng chứng từ tập kiểm tra độc lập của bộ B cho thấy nó còn rõ ràng hơn khi đánh giá ngoài thời gian.
+Có một điểm lệch khỏi kỳ vọng ``ensemble luôn tốt hơn'' nhất quán ở cả hai bộ dữ liệu: CatBoost — cũng là một thuật toán boosting — có Macro-F1 và Accuracy thấp hơn rõ rệt so với các mô hình cây/ensemble còn lại (0,5454 ở bộ A, thấp hơn cả Decision Tree 0,5896; 0,6046 ở bộ B trên tập kiểm định, thấp hơn cả Decision Tree 0,6590 và Random Forest 0,6568). Nguyên nhân không nằm ở bản chất thuật toán mà ở cách xử lý mất cân bằng: theo mục \ref{sec:imbalance}, mọi chiến lược khác \texttt{none} được tự động chuyển thành \mbox{\texttt{auto\_class\_weights=Balanced}} cho CatBoost thay vì SMOTE, khiến CatBoost tối ưu hóa để tăng Recall lớp hiếm mạnh hơn nhưng đổi lại Precision và Accuracy tổng thể giảm — thể hiện rõ ở Bảng \ref{tab:verified-model-results}: Weighted-F1 của CatBoost (0,7673) thấp hơn nhiều so với bốn mô hình cây/ensemble còn lại (trên 0,91), dù ROC-AUC macro của CatBoost (0,9195) vẫn cạnh tranh — xác nhận CatBoost giữ được khả năng xếp hạng xác suất tốt dù nhãn cứng sau ngưỡng kém chính xác hơn, đúng theo cùng logic Macro-F1/ROC-AUC đã dùng xuyên suốt chương. Quan sát này củng cố khuyến nghị của Lessmann et al. rằng thứ hạng mô hình phụ thuộc thước đo được chọn và không có một kỹ thuật xử lý mất cân bằng nào luôn tối ưu cho mọi mô hình \cite{lessmann2015benchmarking,brown2012experimental} — trong dữ liệu của luận văn, hiệu ứng này rõ ràng hơn cả lựa chọn thuật toán, và bằng chứng từ tập kiểm tra độc lập của bộ B cho thấy nó còn rõ ràng hơn khi đánh giá ngoài thời gian.
 
-\section{Độ nhạy siêu tham số — Grid Search}
+\section{Độ nhạy của siêu tham số}
 \label{sec:grid-search}
 
-Thiết kế lưới Grid Search (65 cấu hình bộ A, 60 cấu hình bộ B, 125 cấu hình cho cả hai bộ) đã được trình bày ở Chương 3 (mục \ref{sec:grid-search-design}, Bảng \ref{tab:grid-design}, \ref{tab:grid-design-b}). Mục này trình bày kết quả: so sánh cấu hình mặc định với cấu hình tốt nhất tìm được, và phân tích độ nhạy Macro-F1 theo mô hình trên toàn bộ lưới đã thử.
+Không gian tìm kiếm gồm 65 cấu hình cho bộ A và 60 cấu hình cho bộ B, được trình bày tại Mục \ref{sec:grid-search-design} của Chương 3. Phần này so sánh cấu hình mặc định với cấu hình đạt Macro-F1 cao nhất trong phạm vi lưới khảo sát, đồng thời phân tích mức độ nhạy của từng mô hình đối với siêu tham số.
 
 \subsection{Cấu hình mặc định so với cấu hình tốt nhất tìm được}
 
 \begin{table}[H]
 \centering
-\caption{So sánh Macro-F1: cấu hình mặc định vs. cấu hình tốt nhất theo Grid Search}
+\caption{So sánh Macro-F1 giữa cấu hình mặc định và cấu hình tốt nhất trong lưới khảo sát}
 \label{tab:grid-best-vs-default}
 \begin{tabular}{|l|l|r|r|r|}
 \hline
@@ -472,7 +474,7 @@ B & Logistic Regression & 0,4186 & 0,4397 & \textbf{+5,04\%}\\
 \end{tabular}
 \end{table}
 
-\textbf{LightGBM là mô hình tốt nhất cả trước và sau tinh chỉnh}: LightGBM đã dẫn đầu ở cấu hình mặc định (0,6954) và tiếp tục dẫn đầu sau Grid Search (0,6994, với \texttt{max\_depth=6}, \texttt{learning\_rate=0,1}, \texttt{n\_estimators=400}) — mức cải thiện rất khiêm tốn (+0,58\%). Đáng chú ý, XGBoost là mô hình duy nhất có Macro-F1 \emph{giảm nhẹ} sau Grid Search ($-0,23\%$) — lưới tham số tự thiết kế cho bộ B (Bảng \ref{tab:grid-design-b}) không bao trùm đúng tổ hợp mặc định (\texttt{learning\_rate=0,05}, nằm giữa hai mức 0,03 và 0,1 đã thử), nên không nhất thiết chứa một cấu hình tốt hơn cấu hình mặc định — một nhắc nhở rằng Grid Search tự thiết kế không phải luôn bao trùm không gian tối ưu.
+Trong phạm vi các cấu hình được khảo sát, LightGBM đạt Macro-F1 cao nhất ở cả cấu hình mặc định (0,6954) và cấu hình được lựa chọn từ lưới (0,6994, với \mbox{\texttt{max\_depth=6}}, \mbox{\texttt{learning\_rate=0,1}}, \mbox{\texttt{n\_estimators=400}}). Mức cải thiện tương ứng là 0,58\%. XGBoost có Macro-F1 giảm 0,23\% do lưới của bộ B không bao gồm chính xác cấu hình mặc định với \mbox{\texttt{learning\_rate=0,05}}. Kết quả này minh họa rằng một không gian tìm kiếm hữu hạn không bảo đảm chứa cấu hình tốt hơn giá trị mặc định.
 
 Nhìn chung, mức cải thiện sau điều chỉnh tham số ở bộ B (từ $-0,23\%$ đến $+5,04\%$) khá gần với biên độ quan sát được ở bộ A ($0,00\%$ đến $+4,08\%$). Kết quả này phù hợp với đặc điểm bộ dữ liệu: quy mô tập huấn luyện lớn (80.493 hồ sơ) khiến cấu hình mặc định ít có nguy cơ khớp quá mức với nhiễu của các lớp hiếm hơn, nên dư địa cải thiện từ việc chính quy hóa thêm (giảm độ sâu, tăng mẫu tối thiểu ở lá, giảm tốc độ học) cũng nhỏ hơn. Logistic Regression vẫn là mô hình cải thiện nhiều nhất ($+5,04\%$, từ $C=1{,}0$ mặc định lên $C=10{,}0$) — nhất quán với đặc điểm mô hình tuyến tính đơn giản, dễ hưởng lợi từ việc nới lỏng regularization khi dữ liệu đã đủ lớn.
 
@@ -503,32 +505,32 @@ B & Random Forest & 0,6271 & 0,6653 & 0,0382 & 0,0140\\
 \end{tabular}
 \end{table}
 
-Bảng \ref{tab:grid-sensitivity} xác nhận một quan sát nhất quán ở cả hai bộ dữ liệu: \textbf{Random Forest luôn là mô hình ổn định nhất} (biên độ nhỏ nhất ở cả A và B) — cơ chế lấy trung bình qua nhiều cây độc lập của bagging làm giảm phương sai so với một cây đơn hoặc một chuỗi boosting tuần tự, đúng như lý thuyết của Breiman \cite{breiman2001random}, và giữ đúng vai trò này bất kể quy mô hay đặc điểm dữ liệu.
+Bảng \ref{tab:grid-sensitivity} cho thấy Random Forest có biên độ Macro-F1 nhỏ nhất trong lưới khảo sát của cả hai bộ dữ liệu. Quan sát này phù hợp với cơ chế lấy trung bình trên nhiều cây của phương pháp bagging, vốn có tác dụng giảm phương sai so với cây đơn \cite{breiman2001random}. Tuy nhiên, kết luận về độ ổn định chỉ có giá trị trong phạm vi các siêu tham số đã khảo sát.
 
-Tuy nhiên, mô hình \emph{nhạy nhất} lại khác nhau giữa hai bộ: ở bộ A, Decision Tree nhạy nhất (biên độ 0,0460); ở bộ B, \textbf{Logistic Regression mới là mô hình nhạy nhất} (biên độ 0,1120), tiếp theo là XGBoost (0,0842) và Decision Tree (0,0787). Với cỡ mẫu huấn luyện lớn (80.493 hồ sơ), Decision Tree không còn dễ overfit/underfit cực đoan theo tham số; Logistic Regression — mô hình tuyến tính với ranh giới quyết định đơn giản — nhạy hơn hẳn với tham số điều chỉnh (\texttt{C}) khi dữ liệu có quan hệ phi tuyến mạnh (thể hiện qua Macro-F1 thấp nhất trong sáu mô hình ở mọi cấu hình, Bảng \ref{tab:grid-best-vs-default}). XGBoost nhạy hơn LightGBM trên bộ B (0,0842 so với 0,0575) — nhắc nhở rằng độ nhạy tham số của một thuật toán không phải một đặc tính cố định của bản thân thuật toán mà phụ thuộc cả vào đặc điểm cụ thể của dữ liệu đang xét.
+Tuy nhiên, mô hình \emph{nhạy nhất} lại khác nhau giữa hai bộ: ở bộ A, Decision Tree nhạy nhất (biên độ 0,0460); ở bộ B, \textbf{Logistic Regression mới là mô hình nhạy nhất} (biên độ 0,1120), tiếp theo là XGBoost (0,0842) và Decision Tree (0,0787). Với cỡ mẫu huấn luyện lớn (80.493 hồ sơ), Decision Tree không còn dễ overfit/underfit cực đoan theo tham số; Logistic Regression — mô hình tuyến tính với ranh giới quyết định đơn giản — nhạy hơn hẳn với tham số điều chỉnh (\texttt{C}) khi dữ liệu có quan hệ phi tuyến mạnh (thể hiện qua Macro-F1 thấp nhất trong sáu mô hình ở mọi cấu hình, Bảng \ref{tab:grid-best-vs-default}). XGBoost nhạy hơn LightGBM trên bộ B (0,0842 so với 0,0575), cho thấy độ nhạy tham số của một thuật toán không phải một đặc tính cố định của bản thân thuật toán mà còn phụ thuộc vào đặc điểm cụ thể của dữ liệu đang xét.
 
-Kết quả trên cần được diễn giải trong giới hạn của thiết kế thực nghiệm. Lưới tham số và cấu hình tốt nhất đều được đánh giá trên cùng tập kiểm định (20\% kỳ 20260430), thay vì trên tập kiểm tra độc lập 20260507; vì vậy, mức cải thiện trong Bảng \ref{tab:grid-best-vs-default} có thể lạc quan hơn hiệu quả thực tế trên dữ liệu mới do thiên lệch lựa chọn — bằng chứng cụ thể cho rủi ro này đã thấy rõ ở mục \ref{sec:holdout-b}, nơi thứ hạng mô hình trên tập kiểm định không giữ nguyên trên tập kiểm tra độc lập. Trước khi xem xét triển khai cấu hình LightGBM đã tinh chỉnh, cần xác nhận lại kết quả trên tập kiểm tra độc lập 20260507 hoặc quy trình \texttt{RepeatedStratifiedKFold} được trình bày tại mục \ref{sec:repeated-cv}.
+Kết quả trên cần được diễn giải trong giới hạn của thiết kế thực nghiệm. Lưới tham số và cấu hình tốt nhất đều được đánh giá trên cùng tập kiểm định (20\% kỳ 20260430), thay vì trên tập kiểm tra độc lập 20260507; vì vậy, mức cải thiện trong Bảng \ref{tab:grid-best-vs-default} có thể lạc quan hơn hiệu quả thực tế trên dữ liệu mới do thiên lệch lựa chọn — bằng chứng cụ thể cho rủi ro này đã thấy rõ ở mục \ref{sec:holdout-b}, nơi thứ hạng mô hình trên tập kiểm định không giữ nguyên trên tập kiểm tra độc lập. Trước khi xem xét triển khai cấu hình LightGBM đã tinh chỉnh, cần xác nhận lại kết quả trên tập kiểm tra độc lập 20260507 hoặc quy trình \mbox{\texttt{RepeatedStratifiedKFold}} được trình bày tại mục \ref{sec:repeated-cv}.
 
 \section{Đối chiếu bốn câu hỏi nghiên cứu}
 
 \noindent\textbf{Thứ nhất, nhiều đặc trưng hơn có luôn tốt hơn không?}
-Bằng chứng phụ thuộc bộ dữ liệu; ở bộ B, bằng chứng đi theo chiều ngược lại. Trên bộ A, 11 biến cấu hình chính cho Macro-F1 0,6442, nhỉnh hơn 0,6434 khi thêm \textit{SEX} và \textit{LOAIKH}; Top-11 cũng thấp hơn Top-9. Trên bộ B, Top-17 (0,7031) và Top-8 (0,6967) đều vượt tập đầy đủ 20 biến (0,6954) — bằng chứng trực tiếp rằng thêm đặc trưng có thể làm giảm hiệu năng, không chỉ là ``không cải thiện thêm''. Vì vậy, không thể suy ra quy tắc ``càng nhiều biến càng tốt''; biến mới chỉ có giá trị khi tạo thêm tín hiệu ngoài mẫu; ở bộ B có bằng chứng cụ thể rằng một số biến trong tập đầy đủ đã gây nhiễu nhiều hơn lợi ích.
+Kết quả phụ thuộc vào từng bộ dữ liệu. Trên bộ A, cấu hình chính gồm 11 biến đạt Macro-F1 bằng 0,6442, so với 0,6434 khi bổ sung \texttt{SEX} và \texttt{LOAIKH}. Trên bộ B, cấu hình 17 biến và 8 biến lần lượt đạt 0,7031 và 0,6967, cao hơn mức 0,6954 của tập đầy đủ. Do đó, không có đủ cơ sở để khẳng định số lượng biến lớn hơn luôn cải thiện mô hình; giá trị của biến bổ sung cần được đánh giá bằng hiệu quả ngoài mẫu.
 
 \medskip
 \noindent\textbf{Thứ hai, nhóm nào đóng góp lớn nhất?}
-Kết quả không đồng nhất máy móc giữa hai bộ. Kỳ hạn khoản vay đứng đầu bộ A với 40,1\%, còn ở bộ B, nhóm Đặc trưng kỹ thuật (37,2\% theo Gain, 38,4\% theo SHAP) và nhóm Dư nợ \& Thanh toán (30,8\% Gain, 44,6\% SHAP) cùng dẫn đầu, hoán đổi thứ tự tùy thước đo. Điểm chung với bộ A là tín hiệu mạnh nhất luôn nằm ở cấu trúc thời hạn/tuổi khoản vay và mức độ phơi nhiễm tín dụng (dư nợ), thay vì ở thông tin nhân khẩu học, sản phẩm hay kênh phân phối.
+Kết quả khác nhau giữa hai bộ dữ liệu. Nhóm Kỳ hạn khoản vay có tỷ trọng cao nhất ở bộ A với 40,1\%. Ở bộ B, nhóm Đặc trưng kỹ thuật đạt 37,2\% theo Gain và 38,4\% theo SHAP; nhóm Dư nợ \& Thanh toán đạt lần lượt 30,8\% và 44,6\%. Điểm chung là các tín hiệu về thời hạn, tuổi khoản vay và mức độ phơi nhiễm tín dụng có mức độ quan trọng cao hơn phần lớn các nhóm thông tin còn lại.
 
 \medskip
 \noindent\textbf{Thứ ba, có thể giảm còn bao nhiêu biến?}
-Đối với bộ A, Top-9 là mốc nhỏ nhất đã thử giữ ít nhất 99\% Macro-F1 của pool 13 biến; bộ 11 biến cấu hình thực còn nhỉnh hơn pool 13 biến. Đối với bộ B, ràng buộc 33 cột chung giữa hai kỳ báo cáo đã tự nhiên giảm còn 20 đặc trưng hợp lệ; trong số này, \textbf{Top-8 (40\% của 20 biến) đã đạt Macro-F1 cao hơn cả tập đầy đủ} (0,6967 so với 0,6954), nên không cần đặt điều kiện ngưỡng 95\%/99\% như hai trường hợp còn lại — Top-8 vừa gọn hơn vừa không đánh đổi hiệu năng trên tập kiểm định.
+Đối với bộ A, cấu hình 9 biến là mốc nhỏ nhất trong các giá trị đã khảo sát duy trì ít nhất 99\% Macro-F1 của tập 13 biến; cấu hình chính gồm 11 biến đạt kết quả cao hơn không đáng kể so với tập đầy đủ. Đối với bộ B, 33 cột chung giữa hai kỳ được xử lý thành 20 đặc trưng hợp lệ. Trong số này, cấu hình 8 biến đạt Macro-F1 bằng 0,6967, so với 0,6954 của tập đầy đủ, nên được xem là một cấu hình rút gọn ứng viên.
 
 \medskip
 \noindent\textbf{Thứ tư, nên ưu tiên mở rộng dữ liệu nào?}
-Ở bộ B, hai nhóm quan trọng nhất (Đặc trưng kỹ thuật, Dư nợ \& Thanh toán) đều không thiếu dữ liệu (0,00\%). Vì vậy khuyến nghị với bộ B nghiêng về \textbf{duy trì chất lượng} ghi nhận ngày giải ngân/kết thúc khế ước và các trường dư nợ/lãi hơn là ``thu thập thêm''. Ở bộ A, các trường hiện gần như đầy đủ, nên thứ hạng Kỳ hạn cũng chủ yếu gợi ý duy trì chất lượng và thu thập lịch sử biến động theo kỳ, không phải bổ sung thêm cột tĩnh cùng loại. Ưu tiên xuyên suốt ở cả hai bộ là dữ liệu snapshot theo thời gian, diễn biến dư nợ/giải ngân, lịch trả nợ và các mốc đáo hạn để có thể tạo nhãn chuyển nhóm đúng nghĩa — và bằng chứng từ tập kiểm tra độc lập 20260507 (mục \ref{sec:holdout-b}) cho thấy đây không chỉ là khuyến nghị lý thuyết: mô hình hiện tại đã thể hiện suy giảm hiệu năng thực sự khi áp dụng cho một kỳ dữ liệu mới.
+Ở bộ B, hai nhóm có mức độ quan trọng cao nhất là Đặc trưng kỹ thuật và Dư nợ \& Thanh toán đều không có giá trị thiếu. Do đó, ưu tiên là duy trì chất lượng ghi nhận ngày giải ngân, ngày kết thúc khế ước, dư nợ và các khoản lãi. Ở bộ A, các trường dữ liệu cũng tương đối đầy đủ, nên cần tập trung vào tính nhất quán và lịch sử biến động theo kỳ. Đối với cả hai bộ, dữ liệu trạng thái theo thời gian, diễn biến dư nợ, lịch trả nợ và các mốc đáo hạn là điều kiện cần để xây dựng nhãn chuyển nhóm phù hợp.
 
 \section{Ý nghĩa đối với mô hình chuyển nhóm nợ}
 
-Kết quả hiện tại chứng minh pipeline có thể phân loại nhóm 1 và một phần nhóm 2, 5, nhưng chưa chứng minh cảnh báo chuyển nhóm. Để chuyển sang mục tiêu đề tài, cần:
+Kết quả hiện tại cho thấy quy trình có khả năng phân loại nhóm 1 và nhận diện một phần các nhóm 2 và 5, nhưng chưa đủ để khẳng định năng lực cảnh báo chuyển nhóm. Để phát triển theo mục tiêu dài hạn của đề tài, cần:
 
 \begin{enumerate}
     \item tạo ảnh chụp dữ liệu ở nhiều thời điểm;
@@ -541,8 +543,8 @@ Kết quả hiện tại chứng minh pipeline có thể phân loại nhóm 1 v�
 
 \section{Tóm tắt chương}
 
-Chương 4 mở đầu bằng hệ thống thước đo đánh giá (ma trận nhầm lẫn đa lớp, Precision/Recall/F1 theo lớp, Macro-F1, Weighted-F1, Accuracy và ROC-AUC macro) làm cơ sở đọc mọi bảng kết quả tiếp theo. Trên bộ A, LightGBM đạt Macro-F1 0,6484 với 11 biến cấu hình; XGBoost đạt 0,6442. Khi phân tích XGBoost trên pool 13 biến, Top-9 giữ khoảng 99,20\% Macro-F1 và nhóm Kỳ hạn khoản vay chiếm 40,1\% importance. Trên bộ B, LightGBM đạt Macro-F1 cao nhất trên tập kiểm định (0,6954 với 20 biến và SMOTE tùy chỉnh, sát nút XGBoost 0,6941), và cả sáu mô hình đều chạy thành công. Đánh giá bổ sung trên tập kiểm tra độc lập 20260507 — hoàn toàn tách biệt khỏi huấn luyện — cho thấy \textbf{thứ hạng mô hình đảo ngược}: Random Forest (Macro-F1 0,5142) vượt LightGBM (0,4952) trên dữ liệu thực sự ngoài thời gian, và mọi mô hình đều sụt Macro-F1 20--35\% so với tập kiểm định. Trong pipeline Top-$k$, Top-8 (40\% số biến) đã vượt tập đầy đủ (0,6967 so với 0,6954); nhóm Đặc trưng kỹ thuật (37,2\% Gain) và Dư nợ \& Thanh toán (30,8\% Gain) dẫn đầu importance, và cả hai đều không thiếu dữ liệu. Hai thực nghiệm cho thấy giá trị của việc thêm biến phụ thuộc vào bối cảnh dữ liệu, và bộ B cho bằng chứng rõ ràng rằng ít biến hơn có thể tốt hơn.
+Chương 4 đã trình bày hệ thống thước đo và kết quả thực nghiệm trên hai bộ dữ liệu. Trên bộ A, LightGBM đạt Macro-F1 bằng 0,6484 và XGBoost đạt 0,6442 trong cấu hình chính. Cấu hình 9 trong tổng số 13 biến duy trì 99,20\% Macro-F1 của tập đầy đủ; nhóm Kỳ hạn khoản vay chiếm 40,1\% tổng mức độ quan trọng. Trên tập kiểm định của bộ B, LightGBM đạt Macro-F1 cao nhất, bằng 0,6954, gần với XGBoost ở mức 0,6941. Tuy nhiên, trên tập kiểm tra độc lập kỳ 20260507, Random Forest đạt Macro-F1 cao nhất với 0,5142 và Macro-F1 của tất cả mô hình đều giảm từ 15--32\%. Cấu hình 8 biến của bộ B đạt 0,6967, so với 0,6954 của tập đầy đủ 20 biến. Kết quả cho thấy hiệu quả của việc bổ sung biến phụ thuộc vào cấu trúc dữ liệu và điều kiện đánh giá.
 
-Kết quả SHAP thật cho thấy Gain-importance của LightGBM và SHAP đồng thuận khá cao — hai nhóm dẫn đầu (Đặc trưng kỹ thuật, Dư nợ \& Thanh toán) giữ nguyên ở cả hai thước đo, chỉ đổi thứ tự — nên bảng ưu tiên đầu tư dữ liệu ít nhạy cảm hơn với lựa chọn phương pháp importance. Kết quả Grid Search trên 125 cấu hình (65 bộ A, 60 bộ B) cho thấy độ nhạy tham số ở bộ B khá gần với bộ A (cải thiện tối đa +5,04\%) — phản ánh cỡ mẫu huấn luyện lớn (80.493 hồ sơ) giúp cấu hình mặc định ít khớp quá mức; LightGBM là cấu hình tốt nhất cả trước và sau tinh chỉnh. Các kết luận Top-$k$, importance nhóm, cấu hình Grid Search và class-boost vẫn cần được xác nhận trên tập kiểm tra độc lập hoặc dữ liệu ngoài thời gian trước khi triển khai — và với bộ B, phát hiện ở mục \ref{sec:holdout-b} cho thấy đây không phải một khuyến cáo lý thuyết suông.
+Gain và SHAP thống nhất về hai nhóm đặc trưng có mức độ quan trọng cao nhất ở bộ B, gồm Đặc trưng kỹ thuật và Dư nợ \& Thanh toán, mặc dù thứ tự giữa hai nhóm thay đổi theo thước đo. Kết quả khảo sát 125 cấu hình siêu tham số cho thấy mức cải thiện tối đa bằng 5,04\%; LightGBM đạt Macro-F1 cao nhất trong phạm vi lưới khảo sát. Tuy nhiên, các cấu hình lựa chọn đặc trưng, siêu tham số và hiệu chỉnh lớp hiếm đều cần được xác nhận trên dữ liệu độc lập hoặc bằng thiết kế xác thực lồng nhau trước khi xem xét triển khai.
 
 Trên cơ sở các kết quả và hạn chế đã trình bày, Chương 5 sẽ tổng kết những đóng góp chính của luận văn, trả lời trực tiếp bốn câu hỏi nghiên cứu đã đặt ra ở Chương 1, nêu rõ các hạn chế cần lưu ý và đề xuất kiến nghị đối với ngân hàng cùng hướng nghiên cứu tiếp theo.

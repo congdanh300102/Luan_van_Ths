@@ -1,6 +1,6 @@
 \chapter{CƠ SỞ LÝ THUYẾT VÀ CÁC NGHIÊN CỨU LIÊN QUAN}
 
-Kế thừa bối cảnh, phát biểu bài toán và mục tiêu nghiên cứu đã trình bày ở Chương 1, chương này hệ thống hóa cơ sở lý thuyết làm nền tảng cho phần dữ liệu và thực nghiệm ở các chương sau. Chương lần lượt trình bày: (i) khái niệm tín dụng, rủi ro tín dụng, phân loại năm nhóm nợ và tổn thất kỳ vọng; (ii) sự chuyển dịch từ các phương pháp đánh giá truyền thống sang các mô hình học máy, gồm mô hình tuyến tính, cây quyết định và các mô hình boosting được sử dụng trong luận văn; (iii) những thách thức đặc thù khi mô hình hóa dữ liệu tín dụng như mất cân bằng lớp, tính thứ tự của nhóm nợ, thay đổi theo thời gian và khả năng giải thích; (iv) hệ thống chỉ tiêu đánh giá mô hình được dùng xuyên suốt luận văn; và (v) tổng quan các nghiên cứu liên quan, từ đó xác định khoảng trống và định hướng nghiên cứu.
+Trong chương này, luận văn trình bày nền tảng lý thuyết cần thiết để làm rõ bối cảnh và nội dung của bài toán nghiên cứu. Trước hết, chương giới thiệu các khái niệm về tín dụng, rủi ro tín dụng, phân loại nhóm nợ và tổn thất kỳ vọng. Tiếp theo, chương phân tích sự chuyển dịch từ phương pháp đánh giá truyền thống sang các mô hình học máy, trong đó tập trung vào các thuật toán được sử dụng trong phần thực nghiệm. Những thách thức đặc thù của dữ liệu tín dụng, bao gồm mất cân bằng lớp, tính thứ tự của nhóm nợ, sự thay đổi phân bố theo thời gian và yêu cầu giải thích mô hình, cũng được thảo luận. Cuối cùng, chương trình bày hệ thống chỉ tiêu đánh giá, tổng quan các nghiên cứu liên quan và xác định khoảng trống mà luận văn hướng tới giải quyết. Đây là cơ sở lý luận để xây dựng quy trình nghiên cứu ở Chương 3.
 
 \section{Nền tảng tín dụng, rủi ro và phân loại nhóm nợ}
 
@@ -113,79 +113,48 @@ Trong đó $t$ là vòng boosting; $n$ là số quan sát huấn luyện; $l(\cd
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-    >=stealth,
-    font=\normalsize,
-    stepbox/.style={draw, rounded corners=2pt, align=center, minimum height=1.5cm, text width=2.5cm},
-    outbox/.style={draw, rounded corners=2pt, very thick, align=center, minimum height=1.5cm, text width=3.2cm}
-]
-    \node[stepbox] (base) at (-5.2,0)
-        {Dự báo ban đầu\\$\hat{y}^{(0)}$};
-    \node[stepbox] (tree1) at (-2.35,0)
-        {Cây hiệu chỉnh 1\\$+\eta f_1(\mathbf{x})$};
-    \node[stepbox] (tree2) at (0.5,0)
-        {Cây hiệu chỉnh 2\\$+\eta f_2(\mathbf{x})$};
-    \node (dots) at (2.45,0) {$\cdots$};
-    \node[stepbox] (treet) at (4.55,0)
-        {Cây hiệu chỉnh $T$\\$+\eta f_T(\mathbf{x})$};
-    \node[outbox] (pred) at (0,-2.35)
-        {Dự báo cuối\\$\hat{y}^{(T)}$};
-    \draw[->, thick] (base) -- (tree1);
-    \draw[->, thick] (tree1) -- (tree2);
-    \draw[->, thick] (tree2) -- (dots);
-    \draw[->, thick] (dots) -- (treet);
-    \draw[->, thick] (treet.south) |- (pred.east);
-\end{tikzpicture}
+\begin{minipage}{0.46\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/xgboost_cart_example.png}
+    \\[1mm]\small (a) Một cây CART đơn — mỗi hồ sơ nhận điểm dự báo tại lá tương ứng
+\end{minipage}
+\hfill
+\begin{minipage}{0.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/xgboost_two_trees.png}
+    \\[1mm]\small (b) Cộng dồn điểm dự báo của nhiều cây: $f(\mathbf{x})=\sum_t f_t(\mathbf{x})$
+\end{minipage}
 \caption{Cơ chế cộng dồn các cây trong XGBoost}
 \label{fig:xgboost-additive}
-\caption*{\textit{Nguồn: Tác giả khái quát và vẽ lại từ Chen và Guestrin \cite{chen2016xgboost}.}}
+\caption*{\textit{Nguồn: Tài liệu chính thức của XGBoost \cite{xgboost_docs}, giấy phép Apache 2.0; minh họa cho cơ chế mô tả trong Chen và Guestrin \cite{chen2016xgboost}; truy cập ngày 15/08/2026.}}
 \end{figure}
 
-Hình~\ref{fig:xgboost-additive} thể hiện cách dự báo được cập nhật tuần tự. Mỗi cây mới $f_t(\mathbf{x})$ hiệu chỉnh phần sai số còn lại của tổ hợp trước đó; $\eta$ là hệ số học điều chỉnh mức đóng góp của cây mới. XGBoost đồng thời đưa số hạng chính quy $\Omega(f_t)$ vào hàm mục tiêu để kiểm soát độ phức tạp.
+Hình~\ref{fig:xgboost-additive} thể hiện cách dự báo được cập nhật tuần tự. Mỗi cây mới $f_t(\mathbf{x})$ hiệu chỉnh phần sai số còn lại của tổ hợp trước đó bằng cách cộng thêm điểm số tại lá tương ứng của hồ sơ đang xét, có nhân hệ số học $\eta$; XGBoost đồng thời đưa số hạng chính quy $\Omega(f_t)$ vào hàm mục tiêu để kiểm soát độ phức tạp.
 
 \medskip
 \noindent\textbf{LightGBM.}
 
-LightGBM tối ưu tốc độ và bộ nhớ bằng các kỹ thuật như Gradient-based One-Side Sampling và Exclusive Feature Bundling. Thuật toán phát triển cây theo lá tốt nhất, tức là tại mỗi bước ưu tiên tách lá tạo ra mức giảm hàm mất mát lớn nhất. Cách phát triển này có thể hội tụ nhanh nhưng cũng làm cây mất cân đối và dễ quá khớp khi dữ liệu nhỏ; vì vậy cần kiểm soát \textit{num\_leaves}, \textit{min\_data\_in\_leaf} và \textit{max\_depth} \cite{ke2017lightgbm,lightgbm_docs}.
+LightGBM tối ưu tốc độ và bộ nhớ bằng các kỹ thuật như Gradient-based One-Side Sampling và Exclusive Feature Bundling. Thuật toán phát triển cây theo lá tốt nhất, tức là tại mỗi bước ưu tiên tách lá tạo ra mức giảm hàm mất mát lớn nhất. Cách phát triển này có thể hội tụ nhanh nhưng cũng làm cây mất cân đối và dễ quá khớp khi dữ liệu nhỏ; vì vậy cần kiểm soát \mbox{\texttt{num\_leaves}}, \mbox{\texttt{min\_data\_in\_leaf}} và \mbox{\texttt{max\_depth}} \cite{ke2017lightgbm,lightgbm_docs}.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[font=\small, every node/.style={align=center}]
-    \node[font=\bfseries] at (-3.8,2.65) {Phát triển theo tầng};
-    \node[font=\bfseries] at (3.8,2.65) {LightGBM: phát triển theo lá tốt nhất};
-
-    \node[draw, circle, minimum size=7mm] (lr) at (-3.8,1.8) {};
-    \node[draw, circle, minimum size=7mm] (ll) at (-5.15,0.65) {};
-    \node[draw, circle, minimum size=7mm] (lrr) at (-2.45,0.65) {};
-    \node[draw, circle, minimum size=7mm] (lll) at (-5.85,-0.55) {};
-    \node[draw, circle, minimum size=7mm] (llr) at (-4.45,-0.55) {};
-    \node[draw, circle, minimum size=7mm] (lrl) at (-3.15,-0.55) {};
-    \node[draw, circle, minimum size=7mm] (lrrr) at (-1.75,-0.55) {};
-    \draw (lr) -- (ll) (lr) -- (lrr);
-    \draw (ll) -- (lll) (ll) -- (llr);
-    \draw (lrr) -- (lrl) (lrr) -- (lrrr);
-    \node[text width=5.2cm] at (-3.8,-1.45)
-        {Các nút trong cùng một tầng được mở rộng đồng thời};
-
-    \node[draw, circle, minimum size=7mm] (rr) at (3.8,1.8) {};
-    \node[draw, circle, minimum size=7mm] (rl) at (2.45,0.65) {};
-    \node[draw, circle, minimum size=7mm] (rrr) at (5.15,0.65) {};
-    \node[draw, circle, very thick, minimum size=7mm] (rll) at (1.5,-0.55) {};
-    \node[draw, circle, minimum size=7mm] (rlr) at (3.4,-0.55) {};
-    \node[draw, circle, very thick, minimum size=7mm] (rlll) at (0.85,-1.75) {};
-    \node[draw, circle, minimum size=7mm] (rllr) at (2.15,-1.75) {};
-    \draw (rr) -- (rl) (rr) -- (rrr);
-    \draw[very thick] (rl) -- (rll);
-    \draw (rl) -- (rlr);
-    \draw[very thick] (rll) -- (rlll);
-    \draw[very thick] (rll) -- (rllr);
-    \node[text width=5.4cm] at (4.15,-2.45)
-        {Ưu tiên lá có mức giảm hàm mất mát lớn nhất};
-\end{tikzpicture}
-\caption{So sánh phát triển cây theo tầng và theo lá tốt nhất}
-\label{fig:lightgbm-leafwise}
-\caption*{\textit{Nguồn: Tác giả vẽ lại từ Ke và cộng sự \cite{ke2017lightgbm} và tài liệu LightGBM \cite{lightgbm_docs}.}}
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/lightgbm_level_wise.png}
+    \\[1mm]\small (a) Phát triển cây theo tầng
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/lightgbm_leaf_wise.png}
+    \\[1mm]\small (b) Phát triển cây theo lá tốt nhất
+\end{minipage}
+\caption{Minh họa hai chiến lược phát triển cây quyết định}
+\label{fig:lightgbm-official-growth}
+\caption*{\textit{Nguồn: Tài liệu chính thức của LightGBM \cite{lightgbm_docs}, giấy phép MIT; truy cập ngày 15/08/2026.}}
 \end{figure}
+
+Hình \ref{fig:lightgbm-official-growth} cho thấy sự khác biệt trực quan giữa hai chiến lược. Phương pháp theo tầng mở rộng đồng thời các nút ở cùng độ sâu và thường tạo ra cấu trúc tương đối cân đối. Ngược lại, LightGBM tiếp tục phân chia lá mang lại mức giảm hàm mất mát lớn nhất, vì vậy cây có thể phát triển không đối xứng. Cơ chế này góp phần nâng cao hiệu quả tối ưu, nhưng đồng thời đòi hỏi kiểm soát độ sâu và số lá để hạn chế hiện tượng quá khớp \cite{ke2017lightgbm,lightgbm_docs}.
 
 \medskip
 \noindent\textbf{CatBoost.}
@@ -210,14 +179,7 @@ Trong đó $N$ là số quan sát; $K$ là số lớp; $w_{y_i}$ là trọng s�
 
 \medskip
 \noindent\textbf{Tính thứ tự.}
-Năm nhóm nợ có thứ tự rủi ro từ thấp đến cao nên hai sai số lệch một bậc và lệch bốn bậc không có mức độ nghiêm trọng như nhau. Luận văn sử dụng Ordinal MAE ở phần chỉ tiêu đánh giá để lượng hóa số bậc sai lệch trung bình; chỉ tiêu này chưa được hàm \texttt{compute\_metrics()} của mã nguồn báo cáo trong kết quả chính.
-
-\medskip
-\noindent\textbf{Thay đổi theo thời gian.}
-
-\[
-\mathcal{D}_{train}<\mathcal{D}_{validation}<\mathcal{D}_{test}.
-\]
+Năm nhóm nợ có thứ tự rủi ro từ thấp đến cao nên hai sai số lệch một bậc và lệch bốn bậc không có mức độ nghiêm trọng như nhau. Luận văn sử dụng Ordinal MAE ở phần chỉ tiêu đánh giá để lượng hóa số bậc sai lệch trung bình; chỉ tiêu này chưa được hàm \mbox{\texttt{compute\_metrics()}} của mã nguồn báo cáo trong kết quả chính.
 
 \subsection{Khả năng giải thích và yêu cầu ứng dụng}
 
@@ -228,39 +190,23 @@ Trong đó $f(\mathbf{x})$ là đầu ra mô hình cần giải thích; $\phi_0$
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-    >=stealth,
-    font=\normalsize,
-    shapbox/.style={draw, rounded corners=2pt, align=center, minimum height=1.5cm, text width=2.35cm},
-    positive/.style={shapbox, fill=gray!15},
-    negative/.style={shapbox, dashed},
-    pred/.style={draw, rounded corners=2pt, very thick, align=center, minimum height=1.5cm, text width=3.2cm}
-]
-    \node[shapbox] (base) at (-5.2,0)
-        {Giá trị nền\\$\phi_0$};
-    \node[positive] (p1) at (-2.45,0)
-        {Đặc trưng 1\\$+\phi_1$};
-    \node[negative] (p2) at (0.3,0)
-        {Đặc trưng 2\\$-\lvert\phi_2\rvert$};
-    \node (dots) at (2.25,0) {$\cdots$};
-    \node[positive] (pp) at (4.35,0)
-        {Đặc trưng $p$\\$+\phi_p$};
-    \node[pred] (output) at (0,-2.35)
-        {Đầu ra mô hình\\$f(\mathbf{x})$};
-    \draw[->, thick] (base) -- (p1);
-    \draw[->, thick] (p1) -- (p2);
-    \draw[->, thick] (p2) -- (dots);
-    \draw[->, thick] (dots) -- (pp);
-    \draw[->, thick] (pp.south) |- (output.east);
-    \node[font=\small] at (0,-3.35)
-        {Khung xám: đóng góp dương; khung nét đứt: đóng góp âm.};
-\end{tikzpicture}
-\caption{Nguyên lý phân rã dự báo theo giá trị SHAP}
+\includegraphics[width=0.72\textwidth]{figures/shap_waterfall_example.png}
+\caption{Ví dụ biểu đồ waterfall minh họa nguyên lý phân rã dự báo theo giá trị SHAP}
 \label{fig:shap-additive}
-\caption*{\textit{Nguồn: Tác giả khái quát và vẽ lại từ Lundberg và Lee \cite{lundberg2017unified}.}}
+\caption*{\textit{Nguồn: Tài liệu chính thức của SHAP \cite{shap_docs}, giấy phép MIT, dựa trên phương pháp của Lundberg và Lee \cite{lundberg2017unified}; truy cập ngày 15/08/2026.}}
 \end{figure}
 
-Hình~\ref{fig:shap-additive} minh họa tính cộng của SHAP: dự báo bắt đầu từ giá trị nền $\phi_0$, sau đó được điều chỉnh tăng hoặc giảm bởi đóng góp của từng đặc trưng. Dấu của $\phi_j$ cho biết chiều tác động đối với đầu ra đang được giải thích, còn độ lớn tuyệt đối phản ánh cường độ đóng góp.
+Dự báo theo SHAP bắt đầu từ giá trị nền $\phi_0$ (ký hiệu $E[f(X)]$ trong Hình \ref{fig:shap-additive}), sau đó được điều chỉnh tăng hoặc giảm bởi đóng góp của từng đặc trưng cho tới khi đạt đầu ra $f(\mathbf{x})$ của hồ sơ đang xét. Dấu của $\phi_j$ cho biết chiều tác động đối với đầu ra đang được giải thích (thanh màu đỏ: đóng góp dương; thanh màu xanh: đóng góp âm), còn độ lớn tuyệt đối phản ánh cường độ đóng góp. Hình \ref{fig:shap-additive} chỉ minh họa nguyên lý phân rã từ tài liệu SHAP; các giá trị SHAP thực nghiệm của luận văn được tính riêng trên dữ liệu tín dụng ở Chương 4.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{figures/shap_beeswarm_example.png}
+\caption{Ví dụ biểu đồ SHAP beeswarm trong phân tích mức độ tác động của đặc trưng}
+\label{fig:shap-official-beeswarm}
+\caption*{\textit{Nguồn: Kho tài liệu chính thức của SHAP \cite{shap_docs}, dựa trên phương pháp của Lundberg và Lee \cite{lundberg2017unified}, giấy phép MIT; truy cập ngày 15/08/2026.}}
+\end{figure}
+
+Trong biểu đồ beeswarm, mỗi điểm biểu thị một quan sát; vị trí trên trục hoành phản ánh giá trị SHAP, còn màu sắc thể hiện mức độ cao hoặc thấp của giá trị đặc trưng. Các đặc trưng được sắp xếp theo tổng độ lớn ảnh hưởng, qua đó cho phép xem xét đồng thời tầm quan trọng, chiều tác động và mức độ phân tán của ảnh hưởng trên toàn bộ tập dữ liệu. Hình \ref{fig:shap-official-beeswarm} chỉ minh họa cách đọc biểu đồ từ tài liệu SHAP; các kết luận thực nghiệm của luận văn được rút ra từ dữ liệu tín dụng và các biểu đồ được tạo riêng ở Chương 4.
 
 \section{Hệ thống chỉ tiêu đánh giá mô hình}
 
@@ -331,7 +277,7 @@ Tại Việt Nam, nghiên cứu thường tập trung vào đánh giá rủi ro 
     \item Phần lớn nghiên cứu dùng mục tiêu nhị phân.
     \item Tính thứ tự của năm nhóm nợ chưa được khai thác đầy đủ.
     \item Dữ liệu thực tế tại ngân hàng Việt Nam ít được công bố.
-    \item Random split vẫn phổ biến hơn temporal split.
+    \item Phương pháp chia mẫu ngẫu nhiên vẫn được sử dụng phổ biến hơn phương pháp chia mẫu theo thời gian.
     \item Lớp rủi ro cao ít quan sát nhưng chưa được đánh giá đầy đủ.
     \item Mô hình phức tạp thường thiếu khả năng giải thích.
 \end{enumerate}
