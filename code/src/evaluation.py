@@ -6,7 +6,8 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 from sklearn.metrics import (
     classification_report, confusion_matrix,
-    roc_auc_score, f1_score,
+    roc_auc_score, f1_score, average_precision_score,
+    precision_recall_fscore_support,
 )
 from sklearn.model_selection import StratifiedKFold, RepeatedStratifiedKFold
 from copy import deepcopy
@@ -38,9 +39,10 @@ def compute_metrics(y_true, y_pred, y_proba) -> dict:
             "roc_auc": auc, "report": report}
 
 
-def plot_confusion_matrix(y_true, y_pred) -> go.Figure:
+def plot_confusion_matrix(y_true, y_pred, labels_map: dict | None = None) -> go.Figure:
     classes = sorted(np.unique(y_true))
-    labels  = [NHOMNO_LABELS.get(c, str(c)) for c in classes]
+    label_src = labels_map if labels_map is not None else NHOMNO_LABELS
+    labels  = [label_src.get(c, str(c)) for c in classes]
     cm      = confusion_matrix(y_true, y_pred, labels=classes)
     cm_pct  = cm.astype(float) / cm.sum(axis=1, keepdims=True) * 100
 
@@ -272,3 +274,130 @@ def tune_class_boost(y_true: np.ndarray, proba: np.ndarray,
         if score > best_score:
             best_score, best_boost = score, boost
     return best_boost, best_score
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Bài toán nhị phân sự kiện hiếm (VD dự báo chuyển nhóm nợ, prevalence < 1%).
+#
+# compute_metrics() ở trên không dùng được trực tiếp: roc_auc_score gọi với
+# multi_class="ovr" chỉ hợp lệ khi y_proba là ma trận nhiều lớp, không phải
+# véc-tơ xác suất lớp dương 1 chiều — gọi sai cú pháp sẽ luôn rơi vào except
+# và trả NaN một cách âm thầm. Ở prevalence < 1%, Macro/Weighted-F1 cũng
+# không còn là tiêu chí chọn mô hình phù hợp: một bộ phân loại luôn dự báo
+# "không xấu đi" đã đạt Weighted-F1 ≈ 0,997 — đúng vấn đề "số liệu rỗng"
+# committee đã cảnh báo. Các hàm dưới đây thay bằng PR-AUC/Recall/Precision
+# trên lớp dương và Recall@k, phù hợp hơn cho sự kiện hiếm.
+# ══════════════════════════════════════════════════════════════════════════════
+
+def compute_binary_metrics(y_true, y_pred, y_proba_pos) -> dict:
+    """
+    Chỉ tiêu cho bài toán nhị phân mất cân bằng cực độ.
+
+    y_proba_pos : xác suất lớp dương (1 chiều), VD pipeline.predict_proba(X)[:, 1].
+
+    Trả về dict gồm pr_auc (average_precision_score — chỉ tiêu chính, nhạy
+    với mất cân bằng hơn ROC-AUC), roc_auc (phụ, để so sánh với bài toán 5
+    lớp), và precision/recall/f1 của riêng lớp dương (không macro-average —
+    macro trên 2 lớp ở prevalence 0,27% sẽ bị lớp âm áp đảo).
+    """
+    try:
+        pr_auc = average_precision_score(y_true, y_proba_pos)
+    except Exception:
+        pr_auc = float("nan")
+    try:
+        auc = roc_auc_score(y_true, y_proba_pos)
+    except Exception:
+        auc = float("nan")
+    precision, recall, f1, _ = precision_recall_fscore_support(
+        y_true, y_pred, pos_label=1, average="binary", zero_division=0,
+    )
+    f1_macro = f1_score(y_true, y_pred, average="macro", zero_division=0)
+    f1_weighted = f1_score(y_true, y_pred, average="weighted", zero_division=0)
+    return {
+        "pr_auc": pr_auc, "roc_auc": auc,
+        "precision_pos": precision, "recall_pos": recall, "f1_pos": f1,
+        "f1_macro": f1_macro, "f1_weighted": f1_weighted,
+    }
+
+
+def recall_at_k(y_true, y_proba_pos, k_pcts=(0.01, 0.02, 0.05, 0.10)) -> pd.DataFrame:
+    """
+    Precision/Recall khi chỉ "cảnh báo" top-k% hồ sơ có xác suất cao nhất —
+    chỉ tiêu gắn trực tiếp với năng lực rà soát thực tế của ngân hàng, không
+    phụ thuộc việc chọn ngưỡng xác suất 0,5 vốn vô nghĩa ở prevalence < 1%.
+    """
+    y_true = np.asarray(y_true)
+    y_proba_pos = np.asarray(y_proba_pos)
+    order = np.argsort(y_proba_pos)[::-1]
+    n = len(y_true)
+    n_pos_total = int(y_true.sum())
+
+    rows = []
+    for k in k_pcts:
+        top_n = max(1, int(round(n * k)))
+        top_idx = order[:top_n]
+        n_pos_in_top = int(y_true[top_idx].sum())
+        rows.append({
+            "top_k_pct": k * 100,
+            "n_ho_so": top_n,
+            "n_su_kien_phat_hien": n_pos_in_top,
+            "recall_at_k": n_pos_in_top / n_pos_total if n_pos_total else float("nan"),
+            "precision_at_k": n_pos_in_top / top_n if top_n else float("nan"),
+        })
+    return pd.DataFrame(rows)
+
+
+def repeated_stratified_binary_eval(pipeline, X: pd.DataFrame, y: np.ndarray,
+                                    n_splits: int = 5, n_repeats: int = 20,
+                                    random_state: int = 42,
+                                    sample_weight_fn=None) -> tuple[pd.DataFrame, dict]:
+    """
+    Bản nhị phân của repeated_stratified_recall() — đánh giá qua nhiều lần
+    lặp Stratified K-Fold thay vì 1 lần chia, cần thiết khi lớp dương chỉ có
+    vài trăm quan sát (VD 265 sự kiện chuyển nhóm): một lần chia đơn có thể
+    dồn phần lớn hoặc gần như không có sự kiện dương vào tập test, khiến kết
+    quả quan sát được chỉ phản ánh may rủi của 1 lần chia.
+
+    n_repeats mặc định 20 (cao hơn 10 của repeated_stratified_recall) vì mỗi
+    fold ở đây chỉ có ~53 mẫu dương (5-fold trên 265 sự kiện) — tăng số lần
+    lặp là cách giảm phương sai ước lượng phù hợp hơn tăng số fold (số fold
+    cao hơn làm mẫu dương mỗi fold càng ít).
+
+    Trả về
+    -------
+    per_repeat_df : mỗi dòng là 1 lần lặp (fold), đủ raw để vẽ phân tán/box
+                    plot — không chỉ trung bình, để thấy rõ mức độ bất ổn.
+    summary       : trung bình ± độ lệch chuẩn của từng chỉ tiêu qua tất cả
+                    (n_splits × n_repeats) lần lặp.
+    """
+    rcv = RepeatedStratifiedKFold(n_splits=n_splits, n_repeats=n_repeats,
+                                  random_state=random_state)
+    X_arr = X.reset_index(drop=True) if hasattr(X, "reset_index") else X
+
+    rows = []
+    for i, (train_idx, test_idx) in enumerate(rcv.split(X_arr, y)):
+        X_tr = X_arr.iloc[train_idx] if hasattr(X_arr, "iloc") else X_arr[train_idx]
+        X_te = X_arr.iloc[test_idx] if hasattr(X_arr, "iloc") else X_arr[test_idx]
+        y_tr, y_te = y[train_idx], y[test_idx]
+
+        model = deepcopy(pipeline)
+        if sample_weight_fn is not None:
+            model.fit(X_tr, y_tr, classifier__sample_weight=sample_weight_fn(y_tr))
+        else:
+            model.fit(X_tr, y_tr)
+        y_pred = model.predict(X_te)
+        y_proba_pos = model.predict_proba(X_te)[:, 1]
+
+        m = compute_binary_metrics(y_te, y_pred, y_proba_pos)
+        m["repeat"] = i
+        m["n_pos_test"] = int(y_te.sum())
+        rows.append(m)
+
+    per_repeat_df = pd.DataFrame(rows)
+    metric_cols = ["pr_auc", "roc_auc", "precision_pos", "recall_pos", "f1_pos",
+                   "f1_macro", "f1_weighted"]
+    summary = {"n_splits": n_splits, "n_repeats": n_repeats}
+    for col in metric_cols:
+        summary[f"{col}_mean"] = float(per_repeat_df[col].mean())
+        summary[f"{col}_std"] = float(per_repeat_df[col].std())
+    return per_repeat_df, summary

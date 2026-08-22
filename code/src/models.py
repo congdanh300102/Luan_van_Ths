@@ -87,7 +87,9 @@ def build_pipeline(model_key: str,
                    random_state: int = 42,
                    imbalance_strategy: str = "smote_moderate",
                    custom_smote_strategy: dict | None = None,
-                   model_params: dict | None = None) -> ImbPipeline:
+                   model_params: dict | None = None,
+                   loss_function: str | None = None,
+                   eval_metric: str | None = None) -> ImbPipeline:
     """
     model_params: override một phần siêu tham số mặc định của classifier
     (VD {"max_depth": 8, "learning_rate": 0.1}) — dùng cho grid search / so
@@ -95,6 +97,12 @@ def build_pipeline(model_key: str,
     không truyền thì giữ giá trị mặc định đã benchmark. Không áp dụng cho
     random_state, class_weight, cat_features — các tham số cấu trúc của
     pipeline, không phải đối tượng của grid search.
+
+    loss_function, eval_metric: mặc định None giữ nguyên hành vi 5 lớp hiện
+    tại ("MultiClass" cho CatBoost, "mlogloss" cho XGBoost). Bài toán nhị
+    phân (VD dự báo chuyển nhóm nợ) truyền loss_function="Logloss" và
+    eval_metric="logloss" để dùng đúng loss/metric nhị phân của từng thư
+    viện thay vì hàm đa lớp áp cho 2 lớp.
 
     imbalance_strategy:
       "none"               — không xử lý (baseline tốt nhất về Macro F1)
@@ -124,7 +132,7 @@ def build_pipeline(model_key: str,
         cat_idx = list(range(len(numerical_cols), len(numerical_cols) + len(categorical_cols)))
         cb_params = {"iterations": 400, "depth": 6, "learning_rate": 0.05, **overrides}
         clf = CatBoostClassifier(
-            loss_function="MultiClass", random_state=random_state,
+            loss_function=loss_function or "MultiClass", random_state=random_state,
             cat_features=cat_idx,
             auto_class_weights=None if imbalance_strategy == "none" else "Balanced",
             verbose=False,
@@ -163,7 +171,7 @@ def build_pipeline(model_key: str,
             "subsample": 0.8, "colsample_bytree": 0.8, **overrides,
         }
         clf = XGBClassifier(
-            eval_metric="mlogloss", random_state=random_state,
+            eval_metric=eval_metric or "mlogloss", random_state=random_state,
             n_jobs=-1, verbosity=0,
             **xgb_params,
         )

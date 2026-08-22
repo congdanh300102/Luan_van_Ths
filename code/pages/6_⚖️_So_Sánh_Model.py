@@ -12,20 +12,19 @@ import plotly.express as px
 import streamlit as st
 from config.config import (
     DATA_RAW, MODEL_DIR,
-    TARGET_COL, DROP_COLS, SCORE_BANDS, GROUP_COLORS, NHOMNO_LABELS,
+    TARGET_COL, DROP_COLS, GROUP_COLORS, NHOMNO_LABELS,
     CREDIT_INFO_TARGET_COL, CREDIT_INFO_NUMERICAL_COLS, CREDIT_INFO_CATEGORICAL_COLS,
 )
 from src.preprocessing import parse_dates, engineer_features, clean
 from src.credit_info_preprocessing import transform_credit_info, engineer_business_features
 from src.models import available_models
-from src.scoring import proba_to_score, classify_score
 from src.evaluation import compute_metrics, plot_confusion_matrix
 
 st.set_page_config(page_title="So sánh 2 Mô hình", page_icon="⚖️", layout="wide")
 st.title("⚖️ So sánh Song Song 2 Mô hình")
 st.markdown(
     "Upload dữ liệu riêng cho từng mô hình → chạy dự báo song song → "
-    "so sánh điểm tín dụng & hiệu năng."
+    "so sánh hiệu năng."
 )
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -61,17 +60,13 @@ def _preprocess_b(df: pd.DataFrame):
 
 
 def _score_result(pipe, X, y_true=None):
-    """Chạy dự báo và tính điểm. Trả về dict kết quả."""
+    """Chạy dự báo. Trả về dict kết quả."""
     pred   = pipe.predict(X) + 1          # 1-based
     proba  = pipe.predict_proba(X)
-    scores = proba_to_score(proba)
-    grades = [classify_score(s) for s in scores]
 
     result = {
         "pred":   pred,
         "proba":  proba,
-        "scores": scores,
-        "grades": [g[0] for g in grades],
         "n":      len(pred),
     }
     if y_true is not None and len(y_true) == len(pred):
@@ -241,9 +236,8 @@ if res_a is None and res_b is None:
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("## 2️⃣  Kết quả So sánh")
 
-tab_overview, tab_score, tab_groups, tab_cm, tab_detail = st.tabs([
+tab_overview, tab_groups, tab_cm, tab_detail = st.tabs([
     "📊 Tổng quan",
-    "💳 Điểm tín dụng",
     "📋 Nhóm nợ dự báo",
     "🔢 Confusion Matrix",
     "📥 Tải kết quả",
@@ -258,10 +252,7 @@ with tab_overview:
     with col_a:
         _col_header(f"🔵 {lbl_a}", "#2980b9", "Mô hình A")
         if res_a:
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Số hồ sơ",  f"{res_a['n']:,}")
-            c2.metric("Điểm TB",   f"{res_a['scores'].mean():.0f}")
-            c3.metric("Điểm Min",  f"{res_a['scores'].min()}")
+            st.metric("Số hồ sơ",  f"{res_a['n']:,}")
 
             if "metrics" in res_a:
                 m = res_a["metrics"]
@@ -277,10 +268,7 @@ with tab_overview:
     with col_b:
         _col_header(f"🟠 {lbl_b}", "#e67e22", "Mô hình B")
         if res_b:
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Số hồ sơ",  f"{res_b['n']:,}")
-            c2.metric("Điểm TB",   f"{res_b['scores'].mean():.0f}")
-            c3.metric("Điểm Min",  f"{res_b['scores'].min()}")
+            st.metric("Số hồ sơ",  f"{res_b['n']:,}")
 
             if "metrics" in res_b:
                 m = res_b["metrics"]
@@ -343,79 +331,7 @@ with tab_overview:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Tab 2: Phân phối điểm tín dụng
-# ══════════════════════════════════════════════════════════════════════════════
-with tab_score:
-    st.subheader("Phân phối điểm tín dụng [300 – 850]")
-
-    # Histogram overlay
-    fig_hist = go.Figure()
-    if res_a:
-        fig_hist.add_trace(go.Histogram(
-            x=res_a["scores"], name=f"🔵 {lbl_a}",
-            nbinsx=40, opacity=0.70, marker_color="#2980b9",
-        ))
-    if res_b:
-        fig_hist.add_trace(go.Histogram(
-            x=res_b["scores"], name=f"🟠 {lbl_b}",
-            nbinsx=40, opacity=0.70, marker_color="#e67e22",
-        ))
-    for lo, _, grade, _, _ in SCORE_BANDS:
-        fig_hist.add_vline(x=lo, line_dash="dash", line_color="#aaa", line_width=1,
-                           annotation_text=grade, annotation_position="top right",
-                           annotation_font_size=10)
-    fig_hist.update_layout(barmode="overlay", height=400,
-                           xaxis_title="Điểm tín dụng", yaxis_title="Số hồ sơ",
-                           title="Phân phối điểm tín dụng — So sánh 2 mô hình")
-    st.plotly_chart(fig_hist, use_container_width=True)
-
-    # Stats & grade table side by side
-    col_a, col_b = st.columns(2)
-    grade_order = [b[2] for b in SCORE_BANDS]
-
-    with col_a:
-        if res_a:
-            st.markdown(f"**🔵 {lbl_a} — Thống kê điểm**")
-            st.dataframe(pd.DataFrame({
-                "": ["Trung bình", "Trung vị", "Thấp nhất", "Cao nhất"],
-                "Điểm": [f"{res_a['scores'].mean():.0f}",
-                         f"{np.median(res_a['scores']):.0f}",
-                         f"{res_a['scores'].min()}",
-                         f"{res_a['scores'].max()}"],
-            }), use_container_width=True, hide_index=True)
-
-            vc = pd.Series(res_a["grades"]).value_counts().reindex(grade_order, fill_value=0)
-            grade_tbl = pd.DataFrame({
-                "Hạng": vc.index,
-                "Mô tả": [next((b[3] for b in SCORE_BANDS if b[2] == g), "") for g in vc.index],
-                "SL": vc.values,
-                "%": (vc.values / res_a["n"] * 100).round(1),
-            })
-            st.dataframe(grade_tbl, use_container_width=True, hide_index=True)
-
-    with col_b:
-        if res_b:
-            st.markdown(f"**🟠 {lbl_b} — Thống kê điểm**")
-            st.dataframe(pd.DataFrame({
-                "": ["Trung bình", "Trung vị", "Thấp nhất", "Cao nhất"],
-                "Điểm": [f"{res_b['scores'].mean():.0f}",
-                         f"{np.median(res_b['scores']):.0f}",
-                         f"{res_b['scores'].min()}",
-                         f"{res_b['scores'].max()}"],
-            }), use_container_width=True, hide_index=True)
-
-            vc = pd.Series(res_b["grades"]).value_counts().reindex(grade_order, fill_value=0)
-            grade_tbl = pd.DataFrame({
-                "Hạng": vc.index,
-                "Mô tả": [next((b[3] for b in SCORE_BANDS if b[2] == g), "") for g in vc.index],
-                "SL": vc.values,
-                "%": (vc.values / res_b["n"] * 100).round(1),
-            })
-            st.dataframe(grade_tbl, use_container_width=True, hide_index=True)
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# Tab 3: Phân phối nhóm nợ dự báo
+# Tab 2: Phân phối nhóm nợ dự báo
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_groups:
     st.subheader("Phân phối nhóm nợ dự báo")
@@ -488,7 +404,7 @@ with tab_groups:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Tab 4: Confusion Matrix
+# Tab 3: Confusion Matrix
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_cm:
     st.subheader("Confusion Matrix (chỉ hiển thị khi có nhãn thực tế)")
@@ -522,7 +438,7 @@ with tab_cm:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Tab 5: Tải kết quả
+# Tab 4: Tải kết quả
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_detail:
     st.subheader("Tải kết quả dự báo")
@@ -532,8 +448,6 @@ with tab_detail:
         if res_a:
             df_out_a = pd.DataFrame({
                 "nhom_du_bao":   res_a["pred"],
-                "diem_tin_dung": res_a["scores"],
-                "hang":          res_a["grades"],
                 **{f"xac_suat_nhom_{i+1}": res_a["proba"][:, i].round(4) for i in range(5)},
             })
             if "y_true" in res_a:
@@ -549,8 +463,6 @@ with tab_detail:
         if res_b:
             df_out_b = pd.DataFrame({
                 "nhom_du_bao":   res_b["pred"],
-                "diem_tin_dung": res_b["scores"],
-                "hang":          res_b["grades"],
                 **{f"xac_suat_nhom_{i+1}": res_b["proba"][:, i].round(4) for i in range(5)},
             })
             if "y_true" in res_b:

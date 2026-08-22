@@ -1,0 +1,21 @@
+﻿feature,iv,level
+ENG_TENOR_ACTUAL_DAYS,0.4378,Strong
+Mô tả mục đích sử dụng tiền vay,0.434,Strong
+Mã chi nhánh TCTD,0.3418,Strong
+Lãi phải thu hạch toán nội bảng,0.2794,Medium
+ENG_DAYS_TO_MATURITY,0.2606,Medium
+Số dư nợ theo nguyên tệ,0.2336,Medium
+ENG_LOAN_AGE_DAYS,0.1521,Medium
+Lãi suất,0.1486,Medium
+Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.0921,Weak
+Phương thức cho vay,0.0248,Weak
+Mã thời hạn cấp tín dụng,0.0118,Useless
+Lãi chưa thu hạch toán ngoại bảng,0.0,Useless
+ENG_HAS_RESTRUCTURE,0.0,Useless
+Số lần cơ cấu lại thời hạn trả nợ,0.0,Useless
+Số tiền nợ gốc cơ cấu,0.0,Useless
+Số tiền nợ lãi cơ cấu,0.0,Useless
+Mã tiền tệ,0.0,Useless
+Hình thức cấp tín dụng,0.0,Useless
+Nguồn cấp tín dụng,0.0,Useless
+Hoạt động cấp tín dụng bằng phương tiện điện tử,0.0,Useless

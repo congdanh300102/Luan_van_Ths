@@ -81,17 +81,23 @@ def parse_dates(df: pd.DataFrame) -> pd.DataFrame:
 def prepare_credit_info(df: pd.DataFrame,
                         target_col: str,
                         numerical_cols: list,
-                        categorical_cols: list):
+                        categorical_cols: list,
+                        label_offset: int = 1):
     """
     Trích xuất features + target từ DataFrame Thông tin tín dụng.
+
+    label_offset : trừ đi giá trị này để có nhãn 0-based. Mặc định 1, giữ
+        nguyên hành vi hiện tại cho bài toán 5 lớp (target 1-5 → 0-4). Bài
+        toán chuyển nhóm (TRANSITION_WORSENED, đã là 0/1) gọi với
+        label_offset=0.
 
     Returns
     -------
     X : pd.DataFrame  — chứa các cột feature
-    y : np.ndarray    — 0-based label (0=N1 … 4=N5)
+    y : np.ndarray    — 0-based label
     """
     df = df.dropna(subset=[target_col]).copy()
-    y = df[target_col].astype(int).values - 1  # 1-5 → 0-4
+    y = df[target_col].astype(int).values - label_offset
 
     feature_cols = [c for c in numerical_cols + categorical_cols if c in df.columns]
     X = df[feature_cols].copy()
@@ -250,3 +256,84 @@ def engineer_business_features(df: pd.DataFrame) -> tuple[pd.DataFrame, list]:
     eng_group["numerical"] = list(dict.fromkeys(eng_group["numerical"] + new_cols))
 
     return df, new_cols
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Bài toán bổ sung: dự báo chuyển nhóm nợ trong 1 tháng (20260430 → 20260507).
+# ══════════════════════════════════════════════════════════════════════════════
+TRANSITION_LABEL_COL = "TRANSITION_WORSENED"
+TRANSITION_GRP_T1_COL = "TRANSITION_GRP_T1"
+
+
+def build_transition_dataset(df_t_raw: pd.DataFrame,
+                             df_t1_raw: pd.DataFrame,
+                             id_col: str = "Số khế ước",
+                             target_col: str = TARGET_COL) -> pd.DataFrame:
+    """
+    Ghép khoản vay giữa kỳ T (20260430) và kỳ T+1 tháng (20260507) qua khoá
+    "Số khế ước" (duy nhất tuyệt đối ở cả hai kỳ, kiểm chứng thực nghiệm —
+    0 trùng lặp) để xây nhãn chuyển nhóm nợ thật, thay vì phân loại lại nhóm
+    nợ hiện tại (điều CIC đã cho biết).
+
+    Toàn bộ cột đặc trưng trong kết quả trả về đến từ df_t_raw (kỳ T) —
+    df_t1_raw chỉ đóng góp duy nhất giá trị target để so sánh, không đưa bất
+    kỳ cột đặc trưng nào của kỳ T+1 vào — nhờ đó X xây từ DataFrame này (qua
+    build_raw_feature_pool/engineer_business_features/prepare_credit_info
+    không đổi) không thể chứa thông tin từ tương lai: cột target T+1 không
+    nằm trong FEATURE_GROUPS nên bị loại khỏi X bởi chính cơ chế whitelist.
+
+    Nhãn TRANSITION_WORSENED chỉ được định nghĩa cho các khoản vay khớp được
+    ở cả hai kỳ (inner join) — khoản vay tất toán/xoá nợ giữa hai kỳ bị loại
+    khỏi mẫu; đây là rủi ro survivorship bias cần tài liệu hoá (xem
+    transition_exclusion_summary), không phải lỗi cần sửa.
+
+    Returns
+    -------
+    df_merged : pd.DataFrame — toàn bộ cột của df_t_raw (kỳ T) + 2 cột mới:
+        TRANSITION_GRP_T1 (nhóm nợ tại T+1) và TRANSITION_WORSENED (0/1).
+    """
+    t1_target = df_t1_raw[[id_col, target_col]].rename(
+        columns={target_col: TRANSITION_GRP_T1_COL})
+    df_merged = df_t_raw.merge(t1_target, on=id_col, how="inner")
+    df_merged = df_merged.dropna(subset=[target_col, TRANSITION_GRP_T1_COL]).copy()
+    df_merged[TRANSITION_LABEL_COL] = (
+        df_merged[TRANSITION_GRP_T1_COL] > df_merged[target_col]
+    ).astype(int)
+    return df_merged
+
+
+def transition_exclusion_summary(df_t_raw: pd.DataFrame,
+                                 df_merged: pd.DataFrame,
+                                 id_col: str = "Số khế ước",
+                                 target_col: str = TARGET_COL) -> pd.DataFrame:
+    """
+    Đối chiếu phân bố nhóm nợ (tại kỳ T) giữa khoản vay bị loại khỏi mẫu
+    chuyển nhóm (không khớp được ở kỳ T+1 — có thể do tất toán hoặc xoá nợ)
+    và khoản vay được giữ lại (khớp ở cả hai kỳ). Dùng để đánh giá mức độ
+    lệch (survivorship bias) của việc loại các khoản vay không khớp, thay vì
+    ngầm định nó không đáng kể.
+    """
+    matched_ids = set(df_merged[id_col])
+    excluded = df_t_raw[~df_t_raw[id_col].isin(matched_ids)]
+
+    def _dist(df):
+        vc = df.dropna(subset=[target_col])[target_col].astype(int).value_counts().sort_index()
+        pct = (vc / vc.sum() * 100).round(2)
+        return vc, pct
+
+    vc_excl, pct_excl = _dist(excluded)
+    vc_match, pct_match = _dist(df_t_raw[df_t_raw[id_col].isin(matched_ids)])
+
+    rows = []
+    for grp in sorted(set(vc_excl.index) | set(vc_match.index)):
+        rows.append({
+            "nhom_no_tai_T": grp,
+            "so_luong_bi_loai": int(vc_excl.get(grp, 0)),
+            "ty_le_bi_loai_pct": float(pct_excl.get(grp, 0.0)),
+            "so_luong_duoc_giu": int(vc_match.get(grp, 0)),
+            "ty_le_duoc_giu_pct": float(pct_match.get(grp, 0.0)),
+        })
+    summary = pd.DataFrame(rows)
+    summary.attrs["n_excluded"] = int(len(excluded))
+    summary.attrs["n_matched"] = int(len(df_merged))
+    return summary

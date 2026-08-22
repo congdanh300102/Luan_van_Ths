@@ -4,9 +4,9 @@ Chương này trình bày thiết kế nghiên cứu và cách thức triển kh
 
 \section{Định hướng và phạm vi thực nghiệm}
 
-Nguồn dữ liệu gồm hai bộ dữ liệu chứa thông tin đã được mã hóa về các khoản vay tại ngân hàng thương mại thuộc phạm vi nghiên cứu. Bộ dữ liệu A, \path{Data_credit_rating_VN.xlsx}, gồm 27.001 quan sát và 21 biến ban đầu; biến đích \mbox{\texttt{NHOMNOMOI}} nhận giá trị từ 1 đến 5, tương ứng với năm nhóm nợ. Bộ dữ liệu B được trích xuất từ hai kỳ báo cáo liên tiếp của cùng một tổ chức tín dụng: \path{Thông tin tín dụng 20260430.xlsx} (100.617 hợp đồng và 41 cột thô, dùng để huấn luyện và kiểm định nội bộ) và \path{Thông tin tín dụng 20260507.xlsx} (100.274 hợp đồng và 33 cột thô, dùng làm \emph{tập kiểm tra độc lập}, hoàn toàn tách biệt khỏi quá trình huấn luyện). Biến đích \texttt{Nhóm nợ tự phân loại} cũng nhận giá trị từ 1 đến 5. Do tập dữ liệu kỳ 20260507 chỉ chứa 33 trong tổng số 41 cột của kỳ 20260430, tập đặc trưng của bộ B chỉ được xây dựng từ các cột hiện diện ở cả hai kỳ. Ràng buộc này bảo đảm rằng mô hình được huấn luyện trên kỳ 20260430 có thể áp dụng cho kỳ 20260507 (Mục \ref{sec:pool-a}).
+Nguồn dữ liệu gồm hai bộ dữ liệu chứa thông tin đã được mã hóa về các khoản vay tại ngân hàng thương mại thuộc phạm vi nghiên cứu. Bộ dữ liệu A, \path{Data_credit_rating_VN.xlsx}, gồm 27.001 quan sát và 21 biến ban đầu; biến đích \mbox{\texttt{NHOMNOMOI}} nhận giá trị từ 1 đến 5, tương ứng với năm nhóm nợ. Bộ dữ liệu B được trích xuất từ hai kỳ báo cáo liên tiếp của cùng một tổ chức tín dụng: \texttt{Thông tin tín dụng 20260430.xlsx} (100.617 hợp đồng và 41 cột thô, dùng để huấn luyện và kiểm định nội bộ) và \texttt{Thông tin tín dụng 20260507.xlsx} (100.274 hợp đồng và 33 cột thô, dùng làm \emph{tập kiểm tra độc lập}, hoàn toàn tách biệt khỏi quá trình huấn luyện). Biến đích \texttt{Nhóm nợ tự phân loại} cũng nhận giá trị từ 1 đến 5. Do tập dữ liệu kỳ 20260507 chỉ chứa 33 trong tổng số 41 cột của kỳ 20260430, tập đặc trưng của bộ B chỉ được xây dựng từ các cột hiện diện ở cả hai kỳ. Ràng buộc này bảo đảm rằng mô hình được huấn luyện trên kỳ 20260430 có thể áp dụng cho kỳ 20260507 (Mục \ref{sec:pool-a}).
 
-Mục tiêu dài hạn của đề tài là xây dựng mô hình học máy dự báo khả năng chuyển nhóm nợ của khách hàng nhằm hỗ trợ cảnh báo sớm rủi ro tín dụng. Tuy nhiên, do hai bộ dữ liệu hiện có chỉ phản ánh trạng thái nhóm nợ tại một thời điểm, phạm vi thực nghiệm của luận văn được giới hạn ở bài toán phân loại năm nhóm nợ. Kết quả thu được vì vậy đóng vai trò mô hình cơ sở để kiểm chứng quy trình xử lý dữ liệu và phương pháp mô hình hóa, chưa phải bằng chứng thực nghiệm về năng lực dự báo chuyển nhóm nợ trong tương lai.
+Phạm vi thực nghiệm của luận văn gồm hai bài toán có mục tiêu khác nhau. Bài toán thứ nhất phân loại trạng thái hiện tại của khoản vay vào một trong năm nhóm nợ trên hai bộ dữ liệu A và B. Bài toán thứ hai dự báo khả năng khoản vay chuyển sang nhóm nợ có mức rủi ro cao hơn trong tháng kế tiếp, được xây dựng bằng cách ghép hai kỳ báo cáo liên tiếp của bộ B. Bài toán thứ hai hướng trực tiếp tới mục tiêu hỗ trợ cảnh báo sớm, trong khi bài toán thứ nhất được sử dụng để đối sánh phương pháp mô hình hóa, đánh giá vai trò của các nhóm đặc trưng và kiểm tra khả năng tổng quát hóa ngoài mẫu.
 
 Nếu có dữ liệu bảng theo thời gian, nhãn chuyển nhóm cần được định nghĩa:
 \[
@@ -17,7 +17,7 @@ Y_{i,t}^{(h)}
 0, & G_{i,t+h}\leq G_{i,t},
 \end{cases}
 \]
-trong đó $i$ biểu thị khoản vay hoặc khách hàng; $t$ là thời điểm quan sát; $h$ là khoảng dự báo; $G_{i,t}\in\{1,2,3,4,5\}$ là nhóm nợ tại thời điểm $t$; và $Y_{i,t}^{(h)}=1$ biểu thị sự chuyển dịch sang nhóm có mức rủi ro cao hơn trong khoảng $h$. Đây là cách xác định nhãn được đề xuất cho nghiên cứu tiếp theo khi có dữ liệu theo thời gian, không phải nhãn được sử dụng trong thực nghiệm hiện tại.
+trong đó $i$ biểu thị khoản vay hoặc khách hàng; $t$ là thời điểm quan sát; $h$ là khoảng dự báo; $G_{i,t}\in\{1,2,3,4,5\}$ là nhóm nợ tại thời điểm $t$; và $Y_{i,t}^{(h)}=1$ biểu thị sự chuyển dịch sang nhóm có mức rủi ro cao hơn trong khoảng $h$. Trong thực nghiệm trên bộ B, luận văn sử dụng hai kỳ báo cáo liên tiếp và xác định $h=1$ tháng. Toàn bộ đặc trưng đầu vào được lấy tại thời điểm $t$, còn trạng thái tại $t+h$ chỉ được sử dụng để xây dựng nhãn, qua đó hạn chế nguy cơ rò rỉ thông tin từ tương lai.
 
 \section{Quy trình nghiên cứu tổng thể}
 \label{sec:pipeline-overview}
@@ -81,7 +81,7 @@ OpenPyXL, Pickle & Trao đổi và lưu trữ & Đọc--ghi tệp Excel và tu�
 
 Về kiến trúc, lớp dữ liệu được quản lý bằng pandas và NumPy; lớp mô hình hóa được triển khai trên scikit-learn, imbalanced-learn cùng ba thư viện boosting; lớp giải thích và trực quan hóa sử dụng SHAP, Plotly và Matplotlib; trong khi Streamlit đảm nhiệm lớp giao diện. Cách phân tách này giúp các bước tiền xử lý, huấn luyện và đánh giá được tái sử dụng thống nhất giữa các chức năng của ứng dụng.
 
-\section{Bước 1 — Thu thập dữ liệu}
+\section{Bước 1: Thu thập dữ liệu}
 \label{sec:step1-collect}
 
 Bước đầu tiên của quy trình gồm thu thập và kiểm tra hai tệp dữ liệu gốc, xác định biến đích và khảo sát sơ bộ phân bố nhóm nợ trước khi thực hiện các bước xử lý tiếp theo.
@@ -136,17 +136,17 @@ Tổng & 100.617 & 100,00 & 80.493 & 20.124\\
 
 Bộ dữ liệu B trong nghiên cứu này có \textbf{hai tầng đánh giá độc lập}: (i) tập kiểm định 20\% tách từ chính kỳ 20260430 (Bảng \ref{tab:split-distribution}), dùng để so sánh và chọn mô hình; và (ii) một \textbf{tập kiểm tra hoàn toàn tách biệt theo thời gian}, lấy từ kỳ báo cáo kế tiếp 20260507 (100.274 hợp đồng, phân bố lớp gần như tương đồng: nhóm 1 chiếm 88,29\%, nhóm 3 chiếm 0,99\%, nhóm 4 chiếm 1,42\%), không tham gia bất kỳ bước huấn luyện hay lựa chọn mô hình nào. Thiết kế hai tầng này cho phép phân biệt rõ hiệu năng "trong phân phối" (tập kiểm định 20\%) với hiệu năng "ngoài thời gian" (tập 20260507). Kết quả ở Chương 4 cho thấy khoảng cách giữa hai tầng này là đáng kể.
 
-\section{Bước 2 — EDA \& làm sạch dữ liệu}
+\section{Bước 2: EDA \& làm sạch dữ liệu}
 \label{sec:eda}
 
-Tiếp theo ta sẽ tiến hành khảo sát hai bộ dữ liệu gốc bằng thống kê mô tả, phát hiện giá trị ngoại lệ theo khoảng tứ phân vị (IQR), tỷ lệ giá trị thiếu và ma trận tương quan Pearson giữa các biến số. Mục tiêu của bước này là xác định biến nào cần chuẩn hóa mạnh, biến nào có nguy cơ đa cộng tuyến, và biến nào có phân phối quá lệch để lựa chọn phương pháp điền khuyết phù hợp — không chỉ mô tả mà còn làm căn cứ cho các quyết định tiền xử lý trình bày ở Bước 3 (mục \ref{sec:preprocessing-examples}).
+Hai bộ dữ liệu gốc được khảo sát bằng thống kê mô tả, tỷ lệ giá trị thiếu, phương pháp phát hiện ngoại lệ theo khoảng tứ phân vị (IQR) và ma trận tương quan Pearson giữa các biến số. Kết quả phân tích được sử dụng để nhận diện các biến cần chuẩn hóa, các cặp biến có nguy cơ đa cộng tuyến và các phân phối lệch cần lựa chọn phương pháp điền khuyết phù hợp. Vì vậy, bước phân tích này vừa cung cấp mô tả dữ liệu, vừa làm căn cứ cho các quyết định tiền xử lý tại Bước 3 (Mục \ref{sec:preprocessing-examples}).
 
 \subsection{Bộ dữ liệu A}
 
 \subsubsection{Làm sạch định dạng trường ngày}
 \label{sec:date-cleaning-a}
 
-Trước khi tính các thống kê mô tả, hai trường ngày \mbox{\texttt{OPEN\_DATE}} và \mbox{\texttt{NGAYDENHAN}} được kiểm tra định dạng. Kết quả cho thấy phần lớn bản ghi lưu ngày dưới dạng chuỗi văn bản \texttt{dd/mm/yyyy} (ví dụ ``28/12/2010''), nhưng một bộ phận đáng kể lại lưu dưới dạng số thứ tự ngày kiểu Excel (Excel serial date — ví dụ ``40490'' thay vì ``08/11/2010''), phát sinh từ lỗi định dạng ô tính khi xuất dữ liệu nguồn. Bảng \ref{tab:date-cleaning-a} thống kê số bản ghi bị ảnh hưởng.
+Trước khi tính các thống kê mô tả, hai trường ngày \mbox{\texttt{OPEN\_DATE}} và \mbox{\texttt{NGAYDENHAN}} được kiểm tra định dạng. Kết quả cho thấy phần lớn bản ghi lưu ngày dưới dạng chuỗi văn bản \texttt{dd/mm/yyyy} (ví dụ ``28/12/2010''), nhưng một bộ phận đáng kể lại lưu dưới dạng số thứ tự ngày kiểu Excel (Excel serial date, ví dụ ``40490'' thay vì ``08/11/2010''), phát sinh từ lỗi định dạng ô tính khi xuất dữ liệu nguồn. Bảng \ref{tab:date-cleaning-a} thống kê số bản ghi bị ảnh hưởng.
 
 \begin{table}[H]
 \centering
@@ -183,7 +183,7 @@ Biến & Trung bình & Độ lệch chuẩn & Nhỏ nhất & Trung vị & Lớn 
 \end{tabular}
 \end{table}
 
-Không biến số nào của bộ A có giá trị thiếu cho thấy các nhóm nghiệp vụ của bộ dữ liệu A gần như đầy đủ. Tuy nhiên, độ lệch chuẩn của \mbox{\texttt{BASE\_BAL}} và \mbox{\texttt{CURR\_BAL}} lớn hơn trung bình hàng chục lần — dấu hiệu phân phối lệch phải mạnh, điển hình của biến tiền tệ trong dữ liệu ngân hàng.
+Không biến số nào của bộ A có giá trị thiếu cho thấy các nhóm nghiệp vụ của bộ dữ liệu A gần như đầy đủ. Tuy nhiên, độ lệch chuẩn của \mbox{\texttt{BASE\_BAL}} và \mbox{\texttt{CURR\_BAL}} lớn hơn trung bình hàng chục lần, là dấu hiệu phân phối lệch phải mạnh, điển hình của biến tiền tệ trong dữ liệu ngân hàng.
 
 Bảng \ref{tab:eda-a-outlier} lượng hóa mức độ lệch bằng số quan sát nằm ngoài khoảng $[Q_1-1,5\,\mathrm{IQR},\,Q_3+1,5\,\mathrm{IQR}]$ cho năm biến gốc này.
 
@@ -206,7 +206,7 @@ Biến & Số ngoại lệ & Tỷ lệ (\%)\\
 
 Trong năm biến gốc, \mbox{\texttt{CURR\_BAL}} và \mbox{\texttt{BASE\_BAL}} có tỷ lệ ngoại lệ cao nhất (9,12\% và 7,13\%), nhất quán với độ lệch phải mạnh đã nêu ở Bảng \ref{tab:eda-a-describe}; \texttt{LAISUAT}, \texttt{ORGNBR} và \mbox{\texttt{PARENTORGNBR}} gần như không có ngoại lệ.
 
-Về biến phân loại, \mbox{\texttt{MJACCTTYPCD}} có 3 nhóm, trong đó nhóm \texttt{CNS} (vay tiêu dùng) chiếm 82,51\%, \texttt{MTG} (thế chấp) 9,26\% và \texttt{CML} (thương mại) 8,23\% — mất cân bằng nhưng không đến mức cực đoan như biến đích. \mbox{\texttt{CURRMIACCTTYPCD}} có 31 nhóm và \mbox{\texttt{MUCDICHVAY}} có 79 nhóm mục đích vay, với 5 mục đích phổ biến nhất (thẻ Visa/JCB, sửa chữa nhà, tiêu dùng sinh hoạt, nông nghiệp, mua nhượng bất động sản) chiếm 83,06\% tổng số hồ sơ. Cả hai biến có bản chất định danh (nominal) không có thứ tự tự nhiên, nhưng quy trình hiện đang dùng \mbox{\texttt{LabelEncoder}} gán số nguyên theo thứ tự xuất hiện — như đã nêu ở mục tiền xử lý, đây là hạn chế kỹ thuật cần lưu ý khi diễn giải hệ số hoặc ranh giới quyết định của Logistic Regression và Decision Tree.
+Về biến phân loại, \mbox{\texttt{MJACCTTYPCD}} có 3 nhóm, trong đó nhóm \texttt{CNS} (vay tiêu dùng) chiếm 82,51\%, \texttt{MTG} (thế chấp) 9,26\% và \texttt{CML} (thương mại) 8,23\%; đây là mức mất cân bằng nhưng không đến mức cực đoan như biến đích. \mbox{\texttt{CURRMIACCTTYPCD}} có 31 nhóm và \mbox{\texttt{MUCDICHVAY}} có 79 nhóm mục đích vay, với 5 mục đích phổ biến nhất (thẻ Visa/JCB, sửa chữa nhà, tiêu dùng sinh hoạt, nông nghiệp, mua nhượng bất động sản) chiếm 83,06\% tổng số hồ sơ. Cả hai biến có bản chất định danh (nominal) không có thứ tự tự nhiên, nhưng quy trình hiện đang dùng \mbox{\texttt{LabelEncoder}} gán số nguyên theo thứ tự xuất hiện. Như đã nêu ở mục tiền xử lý, đây là hạn chế kỹ thuật cần lưu ý khi diễn giải hệ số hoặc ranh giới quyết định của Logistic Regression và Decision Tree.
 
 \subsection{Bộ dữ liệu B}
 
@@ -249,7 +249,7 @@ Biến & Trung bình & Độ lệch chuẩn & Trung vị & Thiếu (\%)\\
 \end{tabular}
 \end{table}
 
-Độ lệch chuẩn lớn hơn trung bình nhiều lần ở hầu hết các biến — điển hình \texttt{Số dư nợ theo nguyên tệ} (độ lệch chuẩn gấp khoảng 24 lần trung bình) — là bằng chứng phân phối lệch phải mạnh, tương tự hai biến \mbox{\texttt{BASE\_BAL}} và \mbox{\texttt{CURR\_BAL}} của bộ A. Tỷ lệ ngoại lệ theo IQR (Bảng \ref{tab:eda-b-outlier}) xác nhận điều này: \texttt{Số tiền nợ gốc cơ cấu} có tới 15,36\% giá trị nằm ngoài khoảng IQR trong số các bản ghi quan sát được.
+Độ lệch chuẩn lớn hơn trung bình nhiều lần ở hầu hết các biến (điển hình \texttt{Số dư nợ theo nguyên tệ}, với độ lệch chuẩn gấp khoảng 24 lần trung bình) là bằng chứng phân phối lệch phải mạnh, tương tự hai biến \mbox{\texttt{BASE\_BAL}} và \mbox{\texttt{CURR\_BAL}} của bộ A. Tỷ lệ ngoại lệ theo IQR (Bảng \ref{tab:eda-b-outlier}) xác nhận điều này: \texttt{Số tiền nợ gốc cơ cấu} có tới 15,36\% giá trị nằm ngoài khoảng IQR trong số các bản ghi quan sát được.
 
 \begin{table}[H]
 \centering
@@ -280,9 +280,9 @@ Trong tám biến số gốc, ba cặp có tương quan lớn nhất là \texttt
 \label{fig:eda-b-box}
 \end{figure}
 
-Hình \ref{fig:eda-b-box} cho thấy trung vị lãi suất tăng dần khá rõ từ nhóm 1 đến nhóm 5. Hộp của nhóm 3 và 4 ở đây được vẽ từ 998 và 1.446 quan sát (Bảng \ref{tab:split-distribution}), đủ lớn để phản ánh phân phối tổng thể thay vì nhiễu mẫu nhỏ.
+Hình \ref{fig:eda-b-box} cho thấy trung vị lãi suất có xu hướng tăng từ nhóm 1 đến nhóm 5. Phân phối của nhóm 3 và nhóm 4 được ước lượng lần lượt từ 998 và 1.446 quan sát (Bảng \ref{tab:split-distribution}), qua đó hạn chế ảnh hưởng của biến động do cỡ mẫu nhỏ.
 
-\section{Bước 3 — Tiền xử lý \& chọn biến}
+\section{Bước 3: Tiền xử lý \& chọn biến}
 \label{sec:step3-preprocess}
 
 Bước thứ ba xây dựng tập đặc trưng dùng cho huấn luyện, bao gồm loại các trường có nguy cơ rò rỉ dữ liệu, tạo đặc trưng nghiệp vụ, tính Weight of Evidence và Information Value (WOE/IV), xác lập tập đặc trưng, xử lý giá trị thiếu, mã hóa và chuẩn hóa. Mọi tham số tiền xử lý, như trung vị, trung bình, độ lệch chuẩn và danh mục mã hóa, chỉ được ước lượng trên tập huấn luyện để tránh rò rỉ thông tin từ tập kiểm định.
@@ -292,7 +292,7 @@ Bước thứ ba xây dựng tập đặc trưng dùng cho huấn luyện, bao g
 
 Rò rỉ thông tin phát sinh khi biến đầu vào chứa dữ liệu chỉ xuất hiện sau thời điểm dự báo hoặc là phép biến đổi trực tiếp của biến đích. Đối với bộ A, các biến \mbox{\texttt{NHOMNO\_TCBS}} và \texttt{NHOMNO} được loại khỏi tập đầu vào; trong đó, \texttt{NHOMNO} có tương quan rất cao với \mbox{\texttt{NHOMNOMOI}}, nên việc giữ lại biến này có thể khiến mô hình tái tạo gần như trực tiếp quy tắc hình thành nhãn. Quá trình sàng lọc cũng loại biến \mbox{\texttt{DUNO\_QD}} bị trùng lặp, trường mô tả văn bản trùng với mã sản phẩm và các trường hằng số hoặc có lượng thông tin không đáng kể.
 
-Ở bộ B, bảy trường bị loại vì có quan hệ trực tiếp với quy tắc phân loại nhóm nợ theo quy định của Ngân hàng Nhà nước: \texttt{Nhóm nợ phân loại sau khi tham chiếu CIC} (một biến thể khác của chính biến đích); \texttt{Dư nợ gốc chậm trả thực tế}, \texttt{Ngày chậm trả nợ gốc}, \texttt{Số tiền lãi chậm trả thực tế} và \texttt{Ngày chậm trả nợ lãi} (số ngày/số tiền chậm trả là căn cứ trực tiếp để xếp nhóm nợ theo quy định phân loại nợ); và \texttt{Dự phòng cụ thể phải trích nội bảng}, \texttt{Dự phòng cụ thể đã trích nội bảng} (tỷ lệ trích lập dự phòng cụ thể được quy định là một hàm cố định của nhóm nợ — 0\%, 5\%, 20\%, 50\%, 100\% lần lượt cho nhóm 1 đến 5 — nên giữ lại hai biến này gần như lộ đáp án). Nếu giữ các trường trên, mô hình có thể học lại quy tắc tạo nhãn thay vì phát hiện tín hiệu sớm.
+Ở bộ B, bảy trường bị loại vì có quan hệ trực tiếp với quy tắc phân loại nhóm nợ theo quy định của Ngân hàng Nhà nước: \texttt{Nhóm nợ phân loại sau khi tham chiếu CIC} (một biến thể khác của biến đích); \texttt{Dư nợ gốc chậm trả thực tế}, \texttt{Ngày chậm trả nợ gốc}, \texttt{Số tiền lãi chậm trả thực tế} và \texttt{Ngày chậm trả nợ lãi} (số ngày và số tiền chậm trả là căn cứ trực tiếp để phân loại nhóm nợ); cùng với \texttt{Dự phòng cụ thể phải trích nội bảng} và \texttt{Dự phòng cụ thể đã trích nội bảng}. Tỷ lệ trích lập dự phòng cụ thể là hàm xác định theo nhóm nợ, lần lượt bằng 0\%, 5\%, 20\%, 50\% và 100\% đối với nhóm 1 đến nhóm 5. Việc giữ các trường này có thể làm phát sinh rò rỉ thông tin, khiến mô hình tái tạo quy tắc hình thành nhãn thay vì nhận diện tín hiệu dự báo.
 
 Đối với bài toán dự báo chuyển nhóm nợ, yêu cầu kiểm soát rò rỉ cần được thực hiện chặt chẽ hơn: mọi đặc trưng $X_{i,t}$ phải sẵn có tại hoặc trước thời điểm $t$, trong khi nhãn được xác định trong khoảng từ $t+1$ đến $t+h$. Phép chia mẫu ngẫu nhiên được sử dụng trong nghiên cứu hiện tại phù hợp với mục tiêu kiểm định mô hình phân loại trạng thái, nhưng chưa tối ưu cho bài toán cảnh báo sớm. Khi có dữ liệu theo thời gian, việc chia mẫu theo trình tự thời gian là cần thiết để ngăn thông tin tương lai tham gia quá trình huấn luyện.
 
@@ -320,13 +320,13 @@ A & \texttt{\seqsplit{DAYS\_TO\_MATURITY}} & \texttt{\seqsplit{NGAYDENHAN}}, ng�
 \hline
 A & \texttt{\seqsplit{UTIL\_RATE}} & \texttt{\seqsplit{CURR\_BAL}}, \texttt{\seqsplit{BASE\_BAL}} & Tỷ lệ giữa dư nợ hiện tại và dư nợ gốc. Giá trị gần 1 cho biết dư nợ hiện tại xấp xỉ dư nợ gốc; nhỏ hơn 1 phản ánh dư nợ đã giảm; lớn hơn 1 có thể phản ánh giải ngân bổ sung hoặc biến động số dư. \\
 \hline
-B & \texttt{\seqsplit{ENG\_LOAN\_AGE\_DAYS}} & \texttt{\seqsplit{ETL\_DATE}}, \texttt{\seqsplit{Ngày giải ngân}} & Số ngày đã trôi qua kể từ ngày giải ngân tới ngày chốt dữ liệu (\texttt{\seqsplit{ETL\_DATE}}) của chính hồ sơ đó — tuổi của khoản vay. Giá trị lớn biểu thị khoản vay đã tồn tại lâu hơn. \\
+B & \texttt{\seqsplit{ENG\_LOAN\_AGE\_DAYS}} & \texttt{\seqsplit{ETL\_DATE}}, \texttt{Ngày giải ngân} & Số ngày đã trôi qua kể từ ngày giải ngân tới ngày chốt dữ liệu (\texttt{\seqsplit{ETL\_DATE}}) của chính hồ sơ đó, tức tuổi của khoản vay. Giá trị lớn biểu thị khoản vay đã tồn tại lâu hơn. \\
 \hline
-B & \texttt{\seqsplit{ENG\_DAYS\_TO\_MATURITY}} & \texttt{\seqsplit{Ngày kết thúc khế ước}}, \texttt{\seqsplit{ETL\_DATE}} & Số ngày còn lại đến ngày kết thúc khế ước, tính từ \texttt{\seqsplit{ETL\_DATE}}. Giá trị âm cho biết khế ước đã qua ngày kết thúc so với ngày chốt dữ liệu. \\
+B & \texttt{\seqsplit{ENG\_DAYS\_TO\_MATURITY}} & \texttt{Ngày kết thúc khế ước}, \texttt{\seqsplit{ETL\_DATE}} & Số ngày còn lại đến ngày kết thúc khế ước, tính từ \texttt{\seqsplit{ETL\_DATE}}. Giá trị âm cho biết khế ước đã qua ngày kết thúc so với ngày chốt dữ liệu. \\
 \hline
-B & \texttt{\seqsplit{ENG\_TENOR\_ACTUAL\_DAYS}} & \texttt{\seqsplit{Ngày kết thúc khế ước}}, \texttt{\seqsplit{Ngày giải ngân}} & Kỳ hạn thực tế của khế ước, bằng chênh lệch giữa ngày kết thúc và ngày giải ngân. \\
+B & \texttt{\seqsplit{ENG\_TENOR\_ACTUAL\_DAYS}} & \texttt{Ngày kết thúc khế ước}, \texttt{Ngày giải ngân} & Kỳ hạn thực tế của khế ước, bằng chênh lệch giữa ngày kết thúc và ngày giải ngân. \\
 \hline
-B & \texttt{\seqsplit{ENG\_HAS\_RESTRUCTURE}} & \texttt{\seqsplit{Số lần cơ cấu lại thời hạn trả nợ}} & Biến nhị phân nhận giá trị 1 khi số lần cơ cấu lại thời hạn trả nợ lớn hơn 0 và nhận giá trị 0 trong trường hợp còn lại (kể cả khi thiếu dữ liệu). Biến chỉ phản ánh việc từng phát sinh cơ cấu, không cho biết mức độ. \\
+B & \texttt{\seqsplit{ENG\_HAS\_RESTRUCTURE}} & \texttt{Số lần cơ cấu lại thời hạn trả nợ} & Biến nhị phân nhận giá trị 1 khi số lần cơ cấu lại thời hạn trả nợ lớn hơn 0 và nhận giá trị 0 trong trường hợp còn lại (kể cả khi thiếu dữ liệu). Biến chỉ phản ánh việc từng phát sinh cơ cấu, không cho biết mức độ. \\
 \hline
 \end{longtable}
 }
@@ -395,7 +395,7 @@ Biến & Số ngoại lệ & Tỷ lệ (\%)\\
 \end{tabular}
 \end{table}
 
-\mbox{\texttt{DAYS\_TO\_MATURITY}} có tỷ lệ ngoại lệ cao nhất (23,08\%) vì biến này nhận cả giá trị âm (khoản vay đã quá hạn đáo hạn tính đến ngày tham chiếu $d_0$) lẫn giá trị dương lớn (khoản vay kỳ hạn dài); đây là đặc điểm nghiệp vụ thực, không phải lỗi dữ liệu, nên không bị loại hay cắt ngưỡng. Ngược lại, \mbox{\texttt{UTIL\_RATE}} có 17,21\% ngoại lệ chủ yếu do một bộ phận khách hàng có dư nợ hiện tại vượt xa dư nợ gốc ban đầu (ví dụ giải ngân bổ sung nhiều lần); đây chính là lý do công thức tính \mbox{\texttt{UTIL\_RATE}} ở trên chủ động \textbf{clip} kết quả vào đoạn $[0,10]$ — nếu không giới hạn, một số ít hồ sơ có tỷ lệ hàng trăm lần sẽ làm lệch cực đoan bước chuẩn hóa z-score của \emph{toàn bộ} biến này khi đưa vào Logistic Regression.
+\mbox{\texttt{DAYS\_TO\_MATURITY}} có tỷ lệ ngoại lệ cao nhất (23,08\%) vì biến này nhận cả giá trị âm (khoản vay đã quá hạn đáo hạn tính đến ngày tham chiếu $d_0$) lẫn giá trị dương lớn (khoản vay kỳ hạn dài); đây là đặc điểm nghiệp vụ thực, không phải lỗi dữ liệu, nên không bị loại hay cắt ngưỡng. Ngược lại, \mbox{\texttt{UTIL\_RATE}} có 17,21\% ngoại lệ chủ yếu do một bộ phận khách hàng có dư nợ hiện tại vượt xa dư nợ gốc ban đầu (ví dụ giải ngân bổ sung nhiều lần); đây chính là lý do công thức tính \mbox{\texttt{UTIL\_RATE}} ở trên chủ động \textbf{clip} kết quả vào đoạn $[0,10]$: nếu không giới hạn, một số ít hồ sơ có tỷ lệ hàng trăm lần sẽ làm lệch cực đoan bước chuẩn hóa z-score của \emph{toàn bộ} biến này khi đưa vào Logistic Regression.
 
 Trong nghiên cứu này, \textbf{clip dữ liệu} được hiểu là phép giới hạn giá trị của một biến trong một khoảng xác định, thay vì loại bỏ các quan sát nằm ngoài khoảng đó. Với $u$ là giá trị ban đầu của \mbox{\texttt{UTIL\_RATE}}, giá trị sau khi giới hạn được xác định như sau:
 \[
@@ -410,7 +410,7 @@ Theo đó, giá trị nhỏ hơn 0 được thay bằng 0, giá trị lớn hơn
 \label{fig:eda-a-hist}
 \end{figure}
 
-Hình \ref{fig:eda-a-hist} minh họa trực quan hai đặc điểm đã nêu bằng số: \mbox{\texttt{BASE\_BAL}} và \mbox{\texttt{CURR\_BAL}} lệch phải mạnh trên thang gốc nên được vẽ theo $\log_{10}$ để thấy rõ hình chuông tương đối; \mbox{\texttt{UTIL\_RATE}} có một cột dồn rõ rệt tại đúng giá trị 10 — bằng chứng trực quan cho thấy phép \textbf{clip} đã cắt và dồn một lượng đáng kể hồ sơ (khoảng 3.200, tương ứng phần vượt ngưỡng của 17,21\% ngoại lệ ở Bảng \ref{tab:eda-a-outlier-eng}) về đúng biên trên; \mbox{\texttt{DAYS\_TO\_MATURITY}} có hai đỉnh — một quanh 0 (khoản vay gần đáo hạn hoặc mới quá hạn) và một dải trải dài về phía dương (khoản vay kỳ hạn dài).
+Hình \ref{fig:eda-a-hist} minh họa trực quan hai đặc điểm đã nêu bằng số: \mbox{\texttt{BASE\_BAL}} và \mbox{\texttt{CURR\_BAL}} lệch phải mạnh trên thang gốc nên được vẽ theo $\log_{10}$ để thấy rõ hình chuông tương đối; \mbox{\texttt{UTIL\_RATE}} có một cột dồn rõ rệt tại đúng giá trị 10, bằng chứng trực quan cho thấy phép \textbf{clip} đã cắt và dồn một lượng đáng kể hồ sơ (khoảng 3.200, tương ứng phần vượt ngưỡng của 17,21\% ngoại lệ ở Bảng \ref{tab:eda-a-outlier-eng}) về đúng biên trên; \mbox{\texttt{DAYS\_TO\_MATURITY}} có hai đỉnh, một quanh 0 (khoản vay gần đáo hạn hoặc mới quá hạn) và một dải trải dài về phía dương (khoản vay kỳ hạn dài).
 
 Ma trận tương quan (Bảng \ref{tab:eda-a-corr}, minh họa trực quan ở Hình \ref{fig:eda-a-corr}) cho thấy ba cặp biến có $|r|\geq 0,7$.
 
@@ -431,7 +431,7 @@ Biến 1 & Biến 2 & Hệ số tương quan $r$\\
 \end{tabular}
 \end{table}
 
-Ba cặp tương quan mạnh nhất đều có cách giải thích nghiệp vụ trực tiếp: \mbox{\texttt{LOAN\_TENURE\_DAYS}} và \mbox{\texttt{DAYS\_TO\_MATURITY}} cùng được tính từ ngày mở và ngày đáo hạn nên gần như là hai phép biến đổi tuyến tính của cùng thông tin gốc; \mbox{\texttt{CURR\_BAL}} là dư nợ hiện tại nên tương quan cao với dư nợ gốc \mbox{\texttt{BASE\_BAL}}; \texttt{ORGNBR} và \mbox{\texttt{PARENTORGNBR}} phản ánh cấu trúc phân cấp chi nhánh--đơn vị cấp trên. Mức tương quan này không đủ cao để loại biến (không có cặp nào $|r|>0,95$), nhưng đủ để giải thích vì sao trong bảng SHAP ở Chương 4, importance của hai biến kỳ hạn thường lấn át lẫn nhau tùy ngẫu nhiên hoá của mô hình cây — một hạn chế cố hữu khi diễn giải importance trên các biến tương quan \cite{lundberg2017unified}.
+Ba cặp tương quan mạnh nhất đều có cách giải thích nghiệp vụ trực tiếp: \mbox{\texttt{LOAN\_TENURE\_DAYS}} và \mbox{\texttt{DAYS\_TO\_MATURITY}} cùng được tính từ ngày mở và ngày đáo hạn nên gần như là hai phép biến đổi tuyến tính của cùng thông tin gốc; \mbox{\texttt{CURR\_BAL}} là dư nợ hiện tại nên tương quan cao với dư nợ gốc \mbox{\texttt{BASE\_BAL}}; \texttt{ORGNBR} và \mbox{\texttt{PARENTORGNBR}} phản ánh cấu trúc phân cấp chi nhánh--đơn vị cấp trên. Mức tương quan này không đủ cao để loại biến (không có cặp nào $|r|>0,95$), nhưng đủ để giải thích vì sao trong bảng SHAP ở Chương 4, importance của hai biến kỳ hạn thường lấn át lẫn nhau tùy ngẫu nhiên hoá của mô hình cây; đây là hạn chế cố hữu khi diễn giải importance trên các biến tương quan \cite{lundberg2017unified}.
 
 \begin{figure}[H]
 \centering
@@ -447,7 +447,7 @@ Ba cặp tương quan mạnh nhất đều có cách giải thích nghiệp vụ
 \label{fig:eda-a-box}
 \end{figure}
 
-Hình \ref{fig:eda-a-box} cho thấy trung vị \mbox{\texttt{DAYS\_TO\_MATURITY}} giảm dần khá đều từ nhóm 1 đến nhóm 4 rồi đổi hướng ở nhóm 5 — phù hợp việc đây là biến SHAP xếp hạng cao nhất ở Chương 4, nhưng cũng gợi ý quan hệ giữa biến này và nhóm nợ không hoàn toàn đơn điệu, cần thận trọng khi diễn giải nhân quả.
+Hình \ref{fig:eda-a-box} cho thấy trung vị \mbox{\texttt{DAYS\_TO\_MATURITY}} giảm dần khá đều từ nhóm 1 đến nhóm 4 rồi đổi hướng ở nhóm 5, phù hợp việc đây là biến SHAP xếp hạng cao nhất ở Chương 4, nhưng cũng gợi ý quan hệ giữa biến này và nhóm nợ không hoàn toàn đơn điệu, cần thận trọng khi diễn giải nhân quả.
 
 \subsubsection{Đặc trưng thời gian của bộ dữ liệu B}
 \label{sec:eng-util-b}
@@ -474,12 +474,12 @@ trong đó $d_i^{\mathrm{disb}}$ là ngày giải ngân; $d_i^{\mathrm{end}}$ l�
 \end{cases}
 \]
 
-Trường \texttt{Thời điểm truy đòi} — ban đầu được xem xét làm nguồn cho một biến thời gian thứ năm — bị loại khỏi danh sách cột ngày sau khi kiểm tra thực nghiệm cho thấy trường này trùng khớp 100\% với \texttt{Ngày kết thúc khế ước} trên toàn bộ dữ liệu quan sát được; giữ lại sẽ chỉ tạo ra một biến kỹ thuật trùng lặp hoàn toàn với \mbox{\texttt{ENG\_DAYS\_TO\_MATURITY}}, không bổ sung thông tin mới.
+Trường \texttt{Thời điểm truy đòi}, ban đầu được xem xét làm nguồn cho một biến thời gian thứ năm, bị loại khỏi danh sách cột ngày sau khi kiểm tra thực nghiệm cho thấy trường này trùng khớp 100\% với \texttt{Ngày kết thúc khế ước} trên toàn bộ dữ liệu quan sát được; giữ lại sẽ chỉ tạo ra một biến kỹ thuật trùng lặp hoàn toàn với \mbox{\texttt{ENG\_DAYS\_TO\_MATURITY}}, không bổ sung thông tin mới.
 
 \subsubsection{Kiểm tra đặc trưng đã tạo của bộ dữ liệu B}
 \label{sec:feature-b-eda}
 
-Cả bốn biến kỹ thuật của bộ B đều \textbf{không có giá trị thiếu} (0,00\%), vì được tính trực tiếp từ \mbox{\texttt{ETL\_DATE}}, ngày giải ngân và ngày kết thúc khế ước — ba trường có mặt ở toàn bộ 100.617 hồ sơ. Bảng \ref{tab:eda-b-describe-eng} trình bày thống kê mô tả.
+Cả bốn biến kỹ thuật của bộ B đều \textbf{không có giá trị thiếu} (0,00\%), vì được tính trực tiếp từ \mbox{\texttt{ETL\_DATE}}, ngày giải ngân và ngày kết thúc khế ước, ba trường có mặt ở toàn bộ 100.617 hồ sơ. Bảng \ref{tab:eda-b-describe-eng} trình bày thống kê mô tả.
 
 \begin{table}[H]
 \centering
@@ -549,7 +549,7 @@ Biến & IV & Mức\\
 
 Kết quả cho thấy 5 trong tổng số 13 biến có $IV>1{,}0$, vượt ngưỡng mà Siddiqi xem là dấu hiệu cần thận trọng do biến có thể đại diện gián tiếp hoặc làm rò rỉ biến đích \cite{siddiqi2006credit}. Năm biến này đồng thời nằm trong nhóm có mức độ quan trọng cao nhất theo SHAP và Gain ở Chương 4. Có hai khả năng cần được phân biệt. Thứ nhất, nếu biến được tính trực tiếp từ \mbox{\texttt{NHOMNOMOI}} hoặc từ quy tắc hình thành nhãn, biến đó phải được loại tương tự \mbox{\texttt{NHOMNO}} tại Mục \ref{sec:leakage-a}. Thứ hai, nếu biến được xác lập độc lập với nhãn nhưng có quan hệ nghiệp vụ chặt chẽ với nhóm nợ, IV cao có thể phản ánh tín hiệu thực tế. Do chưa có đầy đủ thông tin về quy trình hình thành dữ liệu nguồn, kết quả này được xem là một giới hạn cần lưu ý khi diễn giải mô hình.
 
-Luận văn nghiêng về khả năng thứ hai đối với ba biến được xây dựng trong nghiên cứu. Cụ thể, \mbox{\texttt{DAYS\_TO\_MATURITY}} phản ánh số ngày còn lại đến ngày đáo hạn; \mbox{\texttt{LOAN\_TENURE\_DAYS}} biểu thị thời hạn khoản vay; và \mbox{\texttt{UTIL\_RATE}} đo lường tỷ lệ sử dụng dư nợ. Cả ba biến đều được tính từ ngày mở khoản vay, ngày đáo hạn hoặc số dư nợ. Các trường dữ liệu nguồn này tồn tại độc lập với quy trình xếp nhóm nợ và không phải là biến phái sinh của \mbox{\texttt{NHOMNOMOI}}. Tuy nhiên, với hai biến phân loại nhiều danh mục \mbox{\texttt{CURRMIACCTTYPCD}} (31 nhóm) và \mbox{\texttt{MUCDICHVAY}} (79 nhóm), IV cao một phần có thể là hiện tượng thống kê: biến định danh có rất nhiều danh mục dễ đạt IV cao giả tạo vì mỗi danh mục nhỏ đóng góp lệch xác suất riêng, ngay cả khi không có quan hệ nhân quả mạnh — một hạn chế đã biết của công thức IV khi áp dụng cho biến nhiều danh mục \cite{siddiqi2006credit}. Vì vậy, luận văn khuyến nghị: (a) giữ nguyên 5 biến này trong mô hình vì không tìm thấy bằng chứng chúng được tính trực tiếp từ nhãn, nhưng (b) nêu rõ đây là hạn chế cần rà soát cùng đơn vị nghiệp vụ trước khi triển khai thực tế, đặc biệt với hai biến phân loại nhiều danh mục.
+Luận văn nghiêng về khả năng thứ hai đối với ba biến được xây dựng trong nghiên cứu. Cụ thể, \mbox{\texttt{DAYS\_TO\_MATURITY}} phản ánh số ngày còn lại đến ngày đáo hạn; \mbox{\texttt{LOAN\_TENURE\_DAYS}} biểu thị thời hạn khoản vay; và \mbox{\texttt{UTIL\_RATE}} đo lường tỷ lệ sử dụng dư nợ. Cả ba biến đều được tính từ ngày mở khoản vay, ngày đáo hạn hoặc số dư nợ. Các trường dữ liệu nguồn này tồn tại độc lập với quy trình xếp nhóm nợ và không phải là biến phái sinh của \mbox{\texttt{NHOMNOMOI}}. Tuy nhiên, với hai biến phân loại nhiều danh mục \mbox{\texttt{CURRMIACCTTYPCD}} (31 nhóm) và \mbox{\texttt{MUCDICHVAY}} (79 nhóm), IV cao một phần có thể là hiện tượng thống kê: biến định danh có rất nhiều danh mục dễ đạt IV cao giả tạo vì mỗi danh mục nhỏ đóng góp lệch xác suất riêng, ngay cả khi không có quan hệ nhân quả mạnh; đây là hạn chế đã biết của công thức IV khi áp dụng cho biến nhiều danh mục \cite{siddiqi2006credit}. Vì vậy, luận văn khuyến nghị: (a) giữ nguyên 5 biến này trong mô hình vì không tìm thấy bằng chứng chúng được tính trực tiếp từ nhãn, nhưng (b) nêu rõ đây là hạn chế cần rà soát cùng đơn vị nghiệp vụ trước khi triển khai thực tế, đặc biệt với hai biến phân loại nhiều danh mục.
 
 \subsubsection{Bảng Information Value của bộ dữ liệu B}
 \label{sec:iv-b}
@@ -610,7 +610,7 @@ Biến & IV & Mức\\
 
 Bảng \ref{tab:iv-b-full} cho thấy \mbox{\texttt{ENG\_LOAN\_AGE\_DAYS}}, biến kỹ thuật được xây dựng trong nghiên cứu, có IV cao nhất (1,1170), vượt ngưỡng mà Siddiqi xem là dấu hiệu cần thận trọng \cite{siddiqi2006credit}. Biến này được tính hoàn toàn từ \mbox{\texttt{ETL\_DATE}} và \texttt{Ngày giải ngân}, là hai trường tồn tại độc lập với quy tắc xếp nhóm nợ. Do đó, IV cao có thể phản ánh hiệu ứng tuổi khoản vay (\emph{seasoning effect}): khoản vay tồn tại lâu hơn có nhiều thời gian phát sinh chậm trả, trong khi khoản vay mới giải ngân thường chưa đủ thời gian để phát sinh quá hạn. Nghiên cứu giữ lại biến này nhưng không diễn giải mối liên hệ quan sát được như bằng chứng nhân quả.
 
-Bảy trên hai mươi đặc trưng (35,0\%) có $IV<0,02$ — ``vô dụng'' theo ngưỡng đơn biến — nhưng vẫn được giữ trong tập huấn luyện vì quy tắc lọc ở mục \ref{sec:eng-util-b} chỉ loại theo tiêu chí leakage/trùng lặp/hằng số, không lọc theo IV. Tỷ lệ này khá thấp vì bể đặc trưng đã nhỏ và tập trung (20 biến), nên ít cột dư thừa/gần hằng số.
+Bảy trên hai mươi đặc trưng (35,0\%) có $IV<0,02$, tức ``vô dụng'' theo ngưỡng đơn biến, nhưng vẫn được giữ trong tập huấn luyện vì quy tắc lọc ở mục \ref{sec:eng-util-b} chỉ loại theo tiêu chí leakage/trùng lặp/hằng số, không lọc theo IV. Tỷ lệ này khá thấp vì bể đặc trưng đã nhỏ và tập trung (20 biến), nên ít cột dư thừa/gần hằng số.
 
 \subsection{Xây dựng tập đặc trưng huấn luyện}
 \label{sec:pool-a}
@@ -638,12 +638,12 @@ trong đó 21 là số cột thô; 1 là biến đích; 10 là số trường tr
 
 \subsubsection{Bộ dữ liệu B: từ 33 cột chung tới 20 đặc trưng mô hình}
 
-Con số 33 là số cột có mặt ở cả hai kỳ báo cáo (20260430 và 20260507), không phải số biến thực tế đưa vào bộ phân loại — tám cột chỉ có ở kỳ 20260430 (gồm hạn mức tín dụng trên hợp đồng, trạng thái tài sản bảo đảm và các trường ngày hiệu lực/kết thúc hợp đồng) không được dùng làm đặc trưng vì tập kiểm tra độc lập 20260507 không có các cột này. Bước xây dựng bể đặc trưng từ 33 cột chung thực hiện bốn lớp lọc:
+Con số 33 là số cột có mặt ở cả hai kỳ báo cáo (20260430 và 20260507), không phải số biến thực tế đưa vào bộ phân loại. Tám cột chỉ có ở kỳ 20260430 (gồm hạn mức tín dụng trên hợp đồng, trạng thái tài sản bảo đảm và các trường ngày hiệu lực/kết thúc hợp đồng) không được dùng làm đặc trưng vì tập kiểm tra độc lập 20260507 không có các cột này. Bước xây dựng bể đặc trưng từ 33 cột chung thực hiện bốn lớp lọc:
 
 \begin{enumerate}
     \item loại biến đích;
     \item loại 4 trường định danh (mã/tên khách hàng, số hợp đồng, số khế ước) và 7 trường gây rò rỉ đã nêu ở mục \ref{sec:leakage-a} (nhóm nợ đối chiếu CIC, dư nợ/lãi chậm trả thực tế và ngày chậm trả, dự phòng cụ thể phải trích và đã trích);
-    \item không đưa trực tiếp 3 trường ngày (\mbox{\texttt{ETL\_DATE}}, ngày giải ngân, ngày kết thúc khế ước) vào mô hình — các trường này chỉ dùng để tạo 4 biến thời gian ở mục \ref{sec:eng-util-b}; loại thêm 1 trường ngày trùng lặp hoàn toàn (\texttt{Thời điểm truy đòi}) và 1 cột hằng số (\texttt{Số tiền đã thanh toán} — toàn bộ giá trị bằng 0 trong dữ liệu quan sát được).
+    \item không đưa trực tiếp 3 trường ngày (\mbox{\texttt{ETL\_DATE}}, ngày giải ngân, ngày kết thúc khế ước) vào mô hình; các trường này chỉ dùng để tạo 4 biến thời gian ở mục \ref{sec:eng-util-b}. Loại thêm 1 trường ngày trùng lặp hoàn toàn (\texttt{Thời điểm truy đòi}) và 1 cột hằng số (\texttt{Số tiền đã thanh toán}, toàn bộ giá trị bằng 0 trong dữ liệu quan sát được).
 \end{enumerate}
 
 Sau quá trình sàng lọc, tập dữ liệu còn 8 biến số và 8 biến phân loại. Bước xây dựng đặc trưng nghiệp vụ bổ sung 4 biến số, đưa tổng số biến đầu vào lên:
@@ -738,7 +738,7 @@ Biến & Hồ sơ \#5944 & Hồ sơ \#7333 & Hồ sơ \#12595\\
 \end{tabular}
 \end{table}
 
-Vì bộ A không có giá trị thiếu, bước điền khuyết không làm thay đổi số liệu — bảng chỉ còn ý nghĩa với các bộ dữ liệu khác có \textit{NaN}. Điểm đáng chú ý là hồ sơ \#7333 có \mbox{\texttt{UTIL\_RATE}} thô bằng 1,8368 (dư nợ hiện tại đã vượt 183,7\% dư nợ gốc), sau chuẩn hóa cho z-score $-0,1923$ — âm dù bản thân tỷ lệ sử dụng cao hơn hai hồ sơ còn lại, vì \mbox{\texttt{UTIL\_RATE}} trung bình toàn mẫu huấn luyện xấp xỉ 2,46 (Bảng \ref{tab:eda-a-describe-eng}); đây là lý do luận văn nhấn mạnh z-score chỉ có ý nghĩa \emph{tương đối} trong phân phối đã lệch, không nên diễn giải như một chỉ số rủi ro tuyệt đối.
+Vì bộ A không có giá trị thiếu, bước điền khuyết không làm thay đổi số liệu; bảng chỉ còn ý nghĩa với các bộ dữ liệu khác có \textit{NaN}. Điểm đáng chú ý là hồ sơ \#7333 có \mbox{\texttt{UTIL\_RATE}} thô bằng 1,8368 (dư nợ hiện tại đã vượt 183,7\% dư nợ gốc), sau chuẩn hóa cho z-score $-0,1923$, âm dù bản thân tỷ lệ sử dụng cao hơn hai hồ sơ còn lại, vì \mbox{\texttt{UTIL\_RATE}} trung bình toàn mẫu huấn luyện xấp xỉ 2,46 (Bảng \ref{tab:eda-a-describe-eng}); đây là lý do luận văn nhấn mạnh z-score chỉ có ý nghĩa \emph{tương đối} trong phân phối đã lệch, không nên diễn giải như một chỉ số rủi ro tuyệt đối.
 
 Bảng \ref{tab:example-b} minh họa ba hồ sơ thực tế của bộ B có giá trị thiếu tại biến \texttt{Phương thức cho vay}. Trong dữ liệu gốc, biến này thiếu ở 46 trong tổng số 100.617 hồ sơ, tương ứng 0,05\%.
 
@@ -769,7 +769,7 @@ Biến & Hồ sơ \#22771 & Hồ sơ \#26934 & Hồ sơ \#26961\\
 \end{tabular}
 \end{table}
 
-Cả ba hồ sơ trong ví dụ đều thuộc nhóm nợ 5 và có \texttt{Phương thức cho vay} thiếu — cỡ mẫu nhỏ nên chưa đủ để khẳng định giá trị thiếu ở biến này tương quan với nhóm nợ, nhưng là điểm cần theo dõi thêm khi có nhiều dữ liệu hơn. Với \mbox{\texttt{SimpleImputer(strategy="most\_frequent")}}, giá trị thiếu được thay bằng danh mục xuất hiện nhiều nhất trên tập huấn luyện — mã \texttt{11} (chiếm 76,9\% trong ba giá trị hợp lệ \texttt{11}/\texttt{14}/\texttt{16} của biến này) — trước khi đưa qua \mbox{\texttt{LabelEncoder}} như các mô hình còn lại; với CatBoost, giá trị thiếu được giữ dạng chuỗi \texttt{UNKNOWN} thay vì điền most\_frequent, theo đúng preprocessor riêng đã mô tả ở mục sau. Ba biến số trong bảng minh họa rõ đặc điểm phân phối lệch phải đã nêu ở Bảng \ref{tab:eda-b-describe}: dù \texttt{Số dư nợ theo nguyên tệ} của hồ sơ \#26934 (13.700) lớn gấp hơn 40 lần hồ sơ \#22771 (338), z-score tương ứng chỉ chênh lệch khoảng 0,11 — vì độ lệch chuẩn toàn mẫu (121.908,73) lớn hơn rất nhiều so với trung bình (5.092,31), khiến phần lớn biến thiên ở thang gốc bị nén lại sau chuẩn hóa; đây là lý do luận văn nhấn mạnh z-score chỉ có ý nghĩa \emph{tương đối} trong phân phối đã lệch mạnh, không nên diễn giải như một chỉ số rủi ro tuyệt đối.
+Cả ba hồ sơ trong ví dụ đều thuộc nhóm nợ 5 và có \texttt{Phương thức cho vay} thiếu; cỡ mẫu nhỏ nên chưa đủ để khẳng định giá trị thiếu ở biến này tương quan với nhóm nợ, nhưng là điểm cần theo dõi thêm khi có nhiều dữ liệu hơn. Với \mbox{\texttt{SimpleImputer(strategy="most\_frequent")}}, giá trị thiếu được thay bằng danh mục xuất hiện nhiều nhất trên tập huấn luyện, mã \texttt{11} (chiếm 76,9\% trong ba giá trị hợp lệ \texttt{11}/\texttt{14}/\texttt{16} của biến này), trước khi đưa qua \mbox{\texttt{LabelEncoder}} như các mô hình còn lại; với CatBoost, giá trị thiếu được giữ dạng chuỗi \texttt{UNKNOWN} thay vì điền most\_frequent, theo đúng preprocessor riêng đã mô tả ở mục sau. Ba biến số trong bảng cũng cho thấy cùng hiệu ứng nén biến thiên sau chuẩn hóa đã nêu ở ví dụ bộ A: dù \texttt{Số dư nợ theo nguyên tệ} của hồ sơ \#26934 (13.700) lớn gấp hơn 40 lần hồ sơ \#22771 (338), z-score tương ứng chỉ chênh lệch khoảng 0,11, do độ lệch chuẩn toàn mẫu (121.908,73) lớn hơn nhiều so với trung bình (5.092,31).
 
 \subsection{Phân tích số lượng và nhóm đặc trưng}
 
@@ -787,6 +787,7 @@ S_g=\frac{I_g}{\sum_{r}I_r}\times100\%,
 trong đó $g(j)$ ánh xạ đặc trưng $j$ vào nhóm nghiệp vụ tương ứng; $I_g$ là tổng mức độ quan trọng và $S_g$ là tỷ trọng của nhóm.
 
 Chỉ số ưu tiên dữ liệu được xác định như sau:
+\label{sec:priority-formula}
 \[
 \mathrm{Priority}_g=S_g\left(\frac{M_g}{100}+0,1\right),
 \]
@@ -794,12 +795,12 @@ trong đó $M_g$ là tỷ lệ thiếu trung bình của nhóm $g$ và 0,1 là h
 
 Phương pháp lựa chọn biến có hai giới hạn cần lưu ý. Thứ nhất, nhiều giá trị $k$ được khảo sát trên cùng một tập kiểm định trước khi lựa chọn cấu hình có kết quả cao nhất, do đó có thể phát sinh thiên lệch lựa chọn. Các đường cong hiệu quả theo $k$ chỉ được sử dụng cho mục đích phân tích khám phá, không được xem là kết quả của một quy trình lựa chọn biến đã kiểm định độc lập. Thứ hai, tổng mức độ quan trọng theo nhóm không thể thay thế thực nghiệm loại bỏ lần lượt từng nhóm đặc trưng.
 
-\section{Bước 4 — Chia dữ liệu \& cân bằng lớp}
+\section{Bước 4: Chia dữ liệu \& cân bằng lớp}
 \label{sec:step4-split-balance}
 
 Bước thứ tư chia dữ liệu thành tập huấn luyện và kiểm định theo nguyên tắc phân tầng, sau đó xử lý mất cân bằng lớp chỉ trên tập huấn luyện.
 
-\subsection{Chia tập huấn luyện — kiểm định}
+\subsection{Chia tập huấn luyện--kiểm định}
 
 Mã nguồn đặt tham số \mbox{\texttt{RANDOM\_STATE=42}}, tỷ lệ kiểm định bằng 0,2 và thực hiện phép chia ngẫu nhiên có phân tầng theo nhãn. Bộ dữ liệu A được chia thành 21.600 quan sát huấn luyện và 5.401 quan sát kiểm định. Bộ dữ liệu B (kỳ 20260430) được chia thành 80.493 quan sát huấn luyện và 20.124 quan sát kiểm định (Bảng \ref{tab:split-distribution}); ngoài ra, toàn bộ 100.274 quan sát của kỳ 20260507 được giữ lại làm tập kiểm tra độc lập, không tham gia bước chia phân tầng này (mục \ref{sec:dataset-b-structure}).
 
@@ -837,10 +838,10 @@ trong đó $N$ là số quan sát huấn luyện, $K$ là số lớp và $n_c$ l
 
 Hai lưu ý cần nêu rõ. Thứ nhất, biến phân loại đã label-encode được SMOTE nội suy như biến số, có thể sinh giá trị không tương ứng danh mục thực. Thứ hai, trang phân tích Top-$k$ của bộ B gọi chiến lược \mbox{\texttt{smote\_moderate}}, khác với chiến lược tùy chỉnh của bảng mô hình đầy đủ. Do đó, so sánh số tuyệt đối giữa hai bảng còn chịu ảnh hưởng của chiến lược lấy mẫu. Tài liệu cho thấy xử lý mất cân bằng có thể làm thay đổi thứ hạng mô hình và không có một kỹ thuật luôn tốt nhất \cite{brown2012experimental}.
 
-\section{Bước 5 — Huấn luyện mô hình}
+\section{Bước 5: Huấn luyện mô hình}
 \label{sec:step5-train}
 
-Bước thứ năm huấn luyện và tinh chỉnh các mô hình phân loại, đồng thời mô tả cách mô hình được lưu trữ, chuyển hóa thành điểm tín dụng phục vụ ứng dụng, và định hướng giám sát vận hành sau này.
+Bước thứ năm huấn luyện và tinh chỉnh các mô hình phân loại, đồng thời mô tả cách mô hình được lưu trữ, triển khai phục vụ ứng dụng, và định hướng giám sát vận hành sau này.
 
 \subsection{Xây dựng mô hình}
 \label{sec:models}
@@ -855,7 +856,7 @@ Mã nguồn cài đặt Logistic Regression, Decision Tree, Random Forest, XGBoo
     \item CatBoost: 400 vòng lặp, độ sâu 6, learning rate 0,05 và hàm mất mát đa lớp \cite{prokhorenkova2018catboost}.
 \end{itemize}
 
-Các giá trị trên được thiết lập cố định trong mã nguồn và không phải kết quả của quá trình tìm kiếm theo lưới. Vì vậy, luận văn không xem các cấu hình này là siêu tham số tối ưu. Đối với bộ A, môi trường tái lập hiện tại khiến Logistic Regression phát sinh lỗi tương thích giao diện lập trình ứng dụng liên quan đến tham số \mbox{\texttt{multi\_class}}; do đó, mô hình này chưa được đưa vào bảng kết quả xác nhận chính của bộ A ở Chương 4. Đối với bộ B, cả sáu mô hình — kể cả Logistic Regression — đều chạy thành công trong môi trường dùng để tái lập kết quả của luận văn, nên bảng so sánh chính của bộ B có đầy đủ sáu mô hình.
+Các giá trị trên được thiết lập cố định trong mã nguồn và không phải kết quả của quá trình tìm kiếm theo lưới. Vì vậy, luận văn không xem các cấu hình này là siêu tham số tối ưu. Đối với bộ A, môi trường tái lập hiện tại khiến Logistic Regression phát sinh lỗi tương thích giao diện lập trình ứng dụng liên quan đến tham số \mbox{\texttt{multi\_class}}; do đó, mô hình này chưa được đưa vào bảng kết quả xác nhận chính của bộ A ở Chương 4. Đối với bộ B, cả sáu mô hình, kể cả Logistic Regression, đều chạy thành công trong môi trường dùng để tái lập kết quả của luận văn, nên bảng so sánh chính của bộ B có đầy đủ sáu mô hình.
 
 \subsection{Hiệu chỉnh mô hình}
 
@@ -935,44 +936,100 @@ Không gian tìm kiếm được xác lập trước dựa trên các giá trị
 
 \subsection{Triển khai mô hình}
 
-Sau khi huấn luyện, mô hình được lưu trữ bằng \texttt{pickle} trong các tệp có mẫu tên \path{model_key.pkl}; mô hình có ROC-AUC cao nhất được ghi vào \path{best_model.txt} để ứng dụng lựa chọn mặc định. Hai chức năng sử dụng mô hình đã lưu gồm: \textit{Chấm điểm}, áp dụng mô hình cho tập kiểm định đã tách sẵn; và \textit{Dự báo}, tiếp nhận danh sách khách hàng mới ở định dạng Excel hoặc CSV, sau đó trả về nhóm nợ dự báo cùng điểm tín dụng.
+Sau khi huấn luyện, mô hình được lưu trữ bằng \texttt{pickle} trong các tệp có mẫu tên \path{model_key.pkl}; mô hình có ROC-AUC cao nhất được ghi vào \path{best_model.txt} để ứng dụng lựa chọn mặc định. Chức năng \textit{Dự báo} sử dụng mô hình đã lưu để tiếp nhận danh sách khách hàng mới ở định dạng Excel hoặc CSV, sau đó trả về nhóm nợ dự báo cùng xác suất thuộc từng nhóm.
 
-Xác suất dự báo $\hat{p}_i=(\hat p_{i1},\ldots,\hat p_{i5})$ được quy đổi thành điểm tín dụng trong thang $[300,850]$ bằng công thức tuyến tính theo trọng số rủi ro:
-\[
-\mathrm{score}_i = 850 - \left(\sum_{k=1}^{5} \hat p_{ik}\, \omega_k\right)\times(850-300),
-\]
-trong đó $\boldsymbol{\omega}=(0;\,0{,}25;\,0{,}50;\,0{,}75;\,1{,}0)$ là trọng số rủi ro tăng dần theo nhóm nợ — nhóm 1 (rủi ro thấp nhất) có $\omega_1=0$, nhóm 5 (rủi ro cao nhất) có $\omega_5=1$; điểm càng cao thể hiện rủi ro càng thấp. Điểm số sau đó được phân vào 8 hạng tín dụng từ A+ đến E theo bảng ngưỡng cố định (Bảng \ref{tab:score-bands}), mỗi hạng gắn một mô tả và một màu hiển thị phục vụ trực quan hóa.
-
-\begin{table}[H]
-\centering
-\caption{Thang điểm và hạng tín dụng dùng trong ứng dụng chấm điểm}
-\label{tab:score-bands}
-\begin{tabular}{|c|c|l|}
-\hline
-Hạng & Khoảng điểm & Mô tả\\
-\hline
-A+ & 750--850 & Xuất sắc\\
-A  & 700--749 & Tốt\\
-B+ & 650--699 & Khá\\
-B  & 600--649 & Trung bình khá\\
-C+ & 550--599 & Trung bình\\
-C  & 500--549 & Trung bình yếu\\
-D  & 450--499 & Yếu\\
-E  & 300--449 & Rất yếu / Từ chối\\
-\hline
-\end{tabular}
-\end{table}
-
-Công thức trên là quy đổi tuyến tính đơn giản theo trọng số rủi ro tự chọn, chưa phải phép hiệu chỉnh xác suất (calibration) hay thang điểm được kiểm định thống kê như các mô hình scorecard chuẩn hóa theo \textit{Points to Double the Odds} \cite{siddiqi2006credit}; mục đích chính là tạo đầu ra trực quan, dễ diễn giải cho người dùng không chuyên về mô hình, không phải một thang đo rủi ro đã được đối chiếu với tổn thất thực tế.
+Luận văn không quy đổi xác suất dự báo thành một thang điểm số kiểu scorecard (300--850) do chưa có dữ liệu để đối chiếu, kiểm định thang điểm đó với tổn thất thực tế; đầu ra của mô hình được giữ nguyên ở dạng nhóm nợ và xác suất theo từng nhóm, đúng với mục tiêu phân loại đã xác lập ở Chương 1.
 
 \subsection{Giám sát và bảo trì mô hình}
 
 Hệ thống hiện tại chưa triển khai cơ chế giám sát và bảo trì mô hình tự động. Cụ thể, phân bố dữ liệu đầu vào chưa được theo dõi định kỳ, lịch tái huấn luyện chưa được thiết lập và phiên bản dữ liệu, mô hình chưa được lưu vết một cách hệ thống ngoài các tệp mô hình cục bộ. Đây là yêu cầu cần được hoàn thiện trước khi triển khai thực tế. Các nội dung về giám sát Macro-F1, Recall của lớp rủi ro, hiệu chỉnh xác suất, phát hiện thay đổi phân bố và tái huấn luyện được đề xuất tại phần Quản trị mô hình ở Chương 5.
 
+\section{Bài toán bổ sung: dự báo chuyển nhóm nợ trong 1 tháng (bộ B)}
+\label{sec:transition-method}
+
+Mục này trình bày phương pháp cho bài toán bổ sung đã xác lập ở Mục~\ref{sec:scope-transition} Chương 1: dự báo khả năng một khoản vay chuyển sang nhóm nợ cao hơn trong một tháng, sử dụng đặc trưng tại kỳ báo cáo 20260430 để dự báo nhóm nợ tại kỳ 20260507. Bài toán này chỉ áp dụng cho bộ B vì đây là bộ duy nhất có hai kỳ báo cáo liên tiếp.
+
+\subsection{Ghép hai kỳ báo cáo và xây dựng nhãn}
+
+Hai tệp dữ liệu của bộ B đều chứa trường \texttt{Số khế ước}, xác nhận thực nghiệm là khóa duy nhất tuyệt đối ở từng kỳ (không có giá trị trùng lặp ở cả 100.617 dòng của kỳ 20260430 lẫn 100.274 dòng của kỳ 20260507). Ghép hai tệp theo khóa này (inner join) thu được 98.968 khoản vay xuất hiện ở cả hai kỳ, tương ứng 98,4\% số khoản vay của kỳ 20260430. Với mỗi khoản vay khớp được, nhãn chuyển nhóm được xác định bởi công thức:
+\[
+Y_i=\mathbb{I}(G_{i,T+1}>G_{i,T}),
+\]
+đã được nêu ở mục Mục~\ref{sec:scope-transition}. Toàn bộ cột đặc trưng của $\mathbf{x}_{i,T}$ trong bước ghép này lấy từ tệp kỳ 20260430; tệp kỳ 20260507 chỉ đóng góp duy nhất giá trị nhóm nợ dùng để so sánh, không có cột đặc trưng nào của kỳ 20260507 được đưa vào bước ghép.
+
+Bảng~\ref{tab:transition-matrix} trình bày ma trận chuyển nhóm đầy đủ trên 98.968 khoản vay khớp được.
+
+\begin{table}[H]
+\centering
+\caption{Ma trận chuyển nhóm nợ từ kỳ 20260430 (T) sang kỳ 20260507 (T+1 tháng)}
+\label{tab:transition-matrix}
+\begin{tabular}{|c|r|r|r|r|r|}
+\hline
+\multirow{2}{*}{Nhóm tại T} & \multicolumn{5}{c|}{Nhóm tại T+1 tháng}\\
+\cline{2-6}
+ & 1 & 2 & 3 & 4 & 5\\
+\hline
+1 & 87.057 & 214 & 0 & 0 & 0\\
+2 & 159 & 6.123 & 10 & 0 & 0\\
+3 & 5 & 0 & 981 & 10 & 0\\
+4 & 0 & 0 & 0 & 1.411 & 31\\
+5 & 2 & 0 & 0 & 0 & 2.965\\
+\hline
+\end{tabular}
+\end{table}
+
+Trong 98.968 khoản vay, 265 khoản (0,268\%) chuyển sang nhóm rủi ro cao hơn, gồm 214 khoản 1$\to$2, 10 khoản 2$\to$3, 10 khoản 3$\to$4 và 31 khoản 4$\to$5; 166 khoản (0,168\%) cải thiện nhóm; phần còn lại (99,56\%) giữ nguyên nhóm. Đây là bài toán sự kiện hiếm, khác về bản chất thống kê so với bài toán phân loại 5 nhóm đã trình bày ở các mục trước; thiết kế đánh giá riêng được trình bày ở Mục~\ref{sec:transition-rare-eval}.
+
+\subsection{Vì sao đây không phải rò rỉ nhãn}
+\label{sec:transition-leakage}
+
+Tập đặc trưng của bài toán chuyển nhóm được xây dựng bằng đúng các hàm đã dùng cho bài toán phân loại tại một thời điểm (Mục~\ref{sec:pool-a}), áp dụng lên khung dữ liệu đã ghép: lọc theo phân loại nghiệp vụ \mbox{\texttt{FEATURE\_GROUPS}}, sau đó sinh bốn đặc trưng kỹ thuật từ ngày giải ngân, ngày kết thúc khế ước và \mbox{\texttt{ETL\_DATE}}. Vì cột nhóm nợ của kỳ 20260507 không nằm trong danh mục \mbox{\texttt{FEATURE\_GROUPS}}, cơ chế lọc theo danh sách cho phép (whitelist) loại trừ cột này khỏi tập đặc trưng một cách cấu trúc, không phụ thuộc vào việc người thực hiện có nhớ loại bỏ hay không. Nhờ đó, toàn bộ 20 đặc trưng đưa vào mô hình (12 biến số gồm 4 biến kỹ thuật, và 8 biến phân loại) đều xác định được tại thời điểm $T$, trước khi kết quả tại $T+1$ được biết.
+
+Đây là điểm khác biệt căn bản so với việc dùng số ngày quá hạn hiện tại để phân loại lại nhóm nợ hiện tại đã phân tích ở Mục~\ref{sec:cic-limits}: trường hợp đó là vòng lặp tuần hoàn vì biến đầu vào và nhãn cùng mô tả một thời điểm, biến đầu vào gần như là căn cứ trực tiếp hình thành nhãn. Ở bài toán chuyển nhóm, biến đầu vào mô tả trạng thái tại $T$ còn nhãn mô tả diễn biến đến $T+1$ tháng sau đó; quan hệ thời gian một chiều này bảo đảm không có thông tin tương lai lọt vào $\mathbf{x}_{i,T}$.
+
+Tuy vậy, cần lưu ý hai điểm khi diễn giải mức độ quan trọng của đặc trưng ở Chương 4. Thứ nhất, các biến phản ánh trạng thái dư nợ và lãi tại $T$ (\texttt{Số dư nợ theo nguyên tệ}, \texttt{Lãi phải thu hạch toán nội bảng}, \texttt{Lãi chưa thu hạch toán ngoại bảng}) có thể đã mang dấu hiệu sớm của suy giảm chất lượng tín dụng; đây chính là tín hiệu dự báo mà bài toán cảnh báo sớm cần khai thác, không phải rò rỉ. Thứ hai, \texttt{Số lần cơ cấu lại thời hạn trả nợ} có thể phản ánh phản ứng của ngân hàng trước dấu hiệu khó khăn đã nhận biết từ trước, nên tương quan giữa biến này và nhãn chuyển nhóm cần được diễn giải thận trọng, không suy diễn quan hệ nhân quả một chiều.
+
+\subsection{Rủi ro sai lệch do loại khoản vay không khớp}
+\label{sec:transition-exclusion}
+
+Nhãn chuyển nhóm chỉ xác định được cho khoản vay khớp ở cả hai kỳ; 1.649 khoản vay của kỳ 20260430 không còn xuất hiện ở kỳ 20260507 (có thể do tất toán hoặc xóa nợ, hai file không phân biệt được nguyên nhân) bị loại khỏi mẫu. Bảng~\ref{tab:transition-exclusion} đối chiếu phân bố nhóm nợ tại $T$ giữa nhóm bị loại và nhóm được giữ lại.
+
+\begin{table}[H]
+\centering
+\caption{Phân bố nhóm nợ tại T của khoản vay bị loại so với khoản vay được giữ lại}
+\label{tab:transition-exclusion}
+\begin{tabular}{|c|r|r|r|r|}
+\hline
+Nhóm tại T & Bị loại & Tỷ lệ trong nhóm bị loại (\%) & Được giữ & Tỷ lệ loại trong nhóm (\%)\\
+\hline
+1 & 1.604 & 97,27 & 87.271 & 1,81\\
+2 & 29 & 1,76 & 6.292 & 0,46\\
+3 & 2 & 0,12 & 996 & 0,20\\
+4 & 4 & 0,24 & 1.442 & 0,28\\
+5 & 10 & 0,61 & 2.967 & 0,34\\
+\hline
+\end{tabular}
+\end{table}
+
+Hai cách đọc bảng cho cùng một kết luận. Theo cột thứ ba, 97,27\% khoản vay bị loại thuộc nhóm 1 tại $T$; nếu việc loại bỏ chủ yếu do xóa nợ đối với khoản vay chất lượng kém, tỷ lệ này phải nghiêng về nhóm 4--5, không phải nhóm 1. Theo cột cuối, tỷ lệ bị loại tính trên từng nhóm cao nhất ở nhóm 1 (1,81\%), không tăng dần theo mức độ rủi ro của nhóm. Cả hai quan sát cùng gợi ý nguyên nhân loại bỏ chủ yếu là tất toán khoản vay lành mạnh trước hạn, không phải xóa nợ tập trung ở nhóm rủi ro cao; nếu đúng như vậy, việc loại các khoản vay không khớp sẽ không làm mất đi phần lớn các trường hợp chuyển nhóm nghiêm trọng nhất. Tuy nhiên, do không có trường phân biệt trực tiếp nguyên nhân tất toán trong dữ liệu hiện có, đây vẫn là suy luận gián tiếp từ phân bố quan sát được, không phải bằng chứng trực tiếp, và được xác định là hạn chế cần lưu ý ở Chương 5.
+
+\subsection{Thiết kế đánh giá cho sự kiện hiếm}
+\label{sec:transition-rare-eval}
+
+Với tỷ lệ sự kiện dương 0,268\% (265/98.968), các chỉ tiêu và cách chia mẫu đã dùng cho bài toán 5 lớp cần điều chỉnh trên ba điểm.
+
+Thứ nhất, Macro-F1 và ngưỡng quyết định mặc định 0,5 không còn phù hợp làm tiêu chí chọn mô hình: một bộ phân loại luôn dự báo ``không xấu đi'' đã đạt Weighted-F1 xấp xỉ 0,997 mà không mang lại giá trị cảnh báo nào, đúng vấn đề số liệu không phản ánh đúng năng lực mô hình đã nêu ở Mục~\ref{sec:cic-limits}. Luận văn dùng PR-AUC (\textit{average precision}) làm tiêu chí chính vì nhạy với mất cân bằng hơn ROC-AUC, đồng thời báo cáo Precision/Recall của riêng lớp dương (không lấy trung bình macro) và Recall tại top-$k$\% hồ sơ có xác suất cao nhất; đây là chỉ tiêu gắn trực tiếp với năng lực rà soát thực tế của ngân hàng, không phụ thuộc việc chọn ngưỡng xác suất.
+
+Thứ hai, đánh giá chính dựa trên kiểm định chéo phân tầng lặp lại (\mbox{\texttt{RepeatedStratifiedKFold}}, $5$ phần $\times$ $10$ lần lặp, cùng thiết kế với Mục~\ref{sec:repeated-cv}), không dựa trên một lần chia 80/20 duy nhất: mỗi phần kiểm định trong 5 phần chỉ chứa khoảng 53 sự kiện dương, nên một lần chia đơn có thể phản ánh may rủi của riêng lần chia đó hơn là năng lực thật của mô hình. Một lần chia 80/20 minh họa vẫn được thực hiện để tạo ma trận nhầm lẫn, đường cong Precision-Recall và giải thích SHAP, nhưng bằng chứng chính về hiệu năng là kết quả kiểm định chéo lặp lại.
+
+Thứ ba, khác với bài toán phân loại tại một thời điểm, nơi kỳ 20260507 đóng vai trò tập kiểm tra độc lập ngoài thời gian (Mục~\ref{sec:holdout-b}), bài toán chuyển nhóm chỉ có đúng một cặp $(T,T+1)$ vì đã dùng cả hai kỳ báo cáo để ghép nhãn. Do đó, luận văn chưa có tầng đánh giá ngoài thời gian thứ ba cho riêng bài toán này; khả năng tổng quát hóa sang các cặp kỳ báo cáo khác chưa được kiểm định và được xác định là hạn chế ở Chương 5.
+
+Ba chiến lược xử lý mất cân bằng được so sánh: không xử lý, trọng số lớp nghịch đảo tần suất (\texttt{class\_weight}), và SMOTE với mục tiêu oversample vừa phải cho lớp thiểu số. Do CatBoost ánh xạ mọi chiến lược khác \texttt{none} về cùng cơ chế \mbox{\texttt{auto\_class\_weights=Balanced}} (Mục~\ref{sec:imbalance}), chiến lược SMOTE không tạo thêm khác biệt so với \texttt{class\_weight} đối với riêng mô hình này nên chỉ hai chiến lược được so sánh cho CatBoost. Kết quả đối sánh được trình bày tại Chương 4.
+
 \section{Tóm tắt chương}
 
-Chương 3 đã trình bày dữ liệu, công nghệ và các bước phương pháp được sử dụng trong nghiên cứu. Bộ A gồm 27.001 hồ sơ và 21 biến ban đầu; bộ B gồm 100.617 hồ sơ của kỳ 20260430 dùng cho huấn luyện và kiểm định nội bộ, cùng 100.274 hồ sơ của kỳ 20260507 dùng làm tập kiểm tra độc lập theo thời gian. Trên từng bộ dữ liệu, nghiên cứu thực hiện phân tích khám phá, làm sạch, kiểm soát rò rỉ, xây dựng đặc trưng, tính IV, xử lý giá trị thiếu, mã hóa và chuẩn hóa. Tập đặc trưng cuối cùng gồm 11 biến trong cấu hình chính và 13 biến trong cấu hình mở rộng của bộ A, cùng 20 biến của bộ B. Dữ liệu được chia có phân tầng theo tỷ lệ 80/20; hiện tượng mất cân bằng lớp được xử lý bằng SMOTE hoặc trọng số lớp tùy theo cấu hình. Sáu thuật toán được xây dựng và đánh giá, kết hợp kiểm định chéo phân tầng lặp lại và khảo sát 125 cấu hình siêu tham số.
+Chương 3 đã trình bày dữ liệu, công nghệ và các bước phương pháp được sử dụng trong nghiên cứu, gồm phân tích khám phá, làm sạch, kiểm soát rò rỉ, xây dựng đặc trưng, tính IV, xử lý giá trị thiếu, mã hóa, chuẩn hóa, chia mẫu có phân tầng và xử lý mất cân bằng lớp bằng SMOTE hoặc trọng số lớp. Tập đặc trưng cuối cùng gồm 11 biến (cấu hình chính) hoặc 13 biến (cấu hình mở rộng) đối với bộ A, và 20 biến đối với bộ B; sáu thuật toán được xây dựng và đánh giá, kết hợp kiểm định chéo phân tầng lặp lại và khảo sát 125 cấu hình siêu tham số. Các lựa chọn kỹ thuật then chốt, gồm điền khuyết bằng trung vị, giới hạn \mbox{\texttt{UTIL\_RATE}} trong khoảng $[0,10]$, ngưỡng IV bằng 0,02 và mốc \mbox{\texttt{ETL\_DATE}} cho các biến thời gian của bộ B, đều được xác lập trên cơ sở đặc điểm thống kê và ý nghĩa nghiệp vụ của dữ liệu đã trình bày ở trên.
 
-Các lựa chọn kỹ thuật, bao gồm điền khuyết bằng trung vị, giới hạn \mbox{\texttt{UTIL\_RATE}} trong khoảng $[0,10]$, sử dụng ngưỡng IV bằng 0,02 và lựa chọn \mbox{\texttt{ETL\_DATE}} làm mốc tính toán các biến thời gian của bộ B, đều được xác lập trên cơ sở đặc điểm thống kê và ý nghĩa nghiệp vụ của dữ liệu.
+Chương cũng trình bày phương pháp cho bài toán bổ sung dự báo chuyển nhóm nợ trong 1 tháng trên bộ B: ghép 98.968 khoản vay khớp giữa hai kỳ báo cáo qua khóa \texttt{Số khế ước}, xây nhãn từ diễn biến nhóm nợ $T\to T+1$ tháng (265 sự kiện dương, 0,268\%), lập luận vì sao thiết kế này không rò rỉ nhãn, và điều chỉnh thiết kế đánh giá phù hợp với sự kiện hiếm (PR-AUC, Recall@k, kiểm định chéo lặp lại).
 
-Trên cơ sở quy trình phương pháp nêu trên, Chương 4 trình bày hệ thống thước đo, kết quả đối sánh mô hình, hiệu quả theo số lượng đặc trưng, mức đóng góp của các nhóm đặc trưng, kết quả giải thích bằng SHAP và độ nhạy của siêu tham số. Các kết quả này được sử dụng để trả lời bốn câu hỏi nghiên cứu và thảo luận khả năng phát triển mô hình cảnh báo chuyển nhóm nợ.
+Trên cơ sở quy trình phương pháp nêu trên, Chương 4 trình bày hệ thống thước đo, kết quả đối sánh mô hình, hiệu quả theo số lượng đặc trưng, mức đóng góp của các nhóm đặc trưng, kết quả giải thích bằng SHAP, độ nhạy của siêu tham số, và kết quả của bài toán dự báo chuyển nhóm nợ.

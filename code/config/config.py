@@ -1,9 +1,34 @@
+import unicodedata
 from pathlib import Path
 
 ROOT_DIR  = Path(__file__).resolve().parent.parent
-DATA_RAW  = ROOT_DIR / "data" / "raw" / "Data_credit_rating_VN.xlsx"
 MODEL_DIR = ROOT_DIR / "models"
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def _resolve_raw(filename: str) -> Path:
+    """
+    Trả về đường dẫn tới file trong data/raw, chịu được lệch chuẩn hoá Unicode
+    giữa tên file trên đĩa và chuỗi literal trong code. Một số file được sao
+    chép từ máy macOS lưu tên ở dạng NFD (tổ hợp ký tự, VD "ô" = "o" +
+    U+0302), trong khi chuỗi Python thông thường ở dạng NFC (ký tự dựng sẵn)
+    — so sánh trực tiếp hai dạng này luôn sai lệch dù nhìn "giống hệt nhau",
+    khiến pandas.read_excel báo FileNotFoundError dù `ls`/File Explorer vẫn
+    thấy file. Ưu tiên khớp trực tiếp (đường thông thường); nếu không thấy,
+    quét thư mục và so khớp theo dạng NFC đã chuẩn hoá.
+    """
+    raw_dir = ROOT_DIR / "data" / "raw"
+    direct = raw_dir / filename
+    if direct.exists():
+        return direct
+    target_nfc = unicodedata.normalize("NFC", filename)
+    for p in raw_dir.iterdir():
+        if unicodedata.normalize("NFC", p.name) == target_nfc:
+            return p
+    return direct  # giữ nguyên hành vi cũ (báo lỗi rõ ràng khi thực sự không có file)
+
+
+DATA_RAW  = _resolve_raw("Data_credit_rating_VN.xlsx")
 
 # ── Dataset 1: Data_credit_rating_VN.xlsx ─────────────────────────────────────
 TARGET_COL = "NHOMNOMOI"
@@ -52,21 +77,6 @@ RANDOM_STATE = 42
 TEST_SIZE    = 0.2
 CV_FOLDS     = 5
 
-SCORE_MIN = 300
-SCORE_MAX = 850
-RISK_WEIGHTS = [0.0, 0.25, 0.50, 0.75, 1.0]
-
-SCORE_BANDS = [
-    (750, 850, "A+", "Xuất sắc",            "#1a9850"),
-    (700, 749, "A",  "Tốt",                  "#66bd63"),
-    (650, 699, "B+", "Khá",                  "#a6d96a"),
-    (600, 649, "B",  "Trung bình khá",        "#fee08b"),
-    (550, 599, "C+", "Trung bình",            "#fdae61"),
-    (500, 549, "C",  "Trung bình yếu",        "#f46d43"),
-    (450, 499, "D",  "Yếu",                  "#d73027"),
-    (300, 449, "E",  "Rất yếu / Từ chối",    "#a50026"),
-]
-
 MODEL_OPTIONS = {
     "Logistic Regression": "logistic",
     "Random Forest":       "random_forest",
@@ -75,8 +85,8 @@ MODEL_OPTIONS = {
 }
 
 # ── Dataset 2: Thông tin tín dụng (train 20260430 / test 20260507) ───────────
-DATA_CREDIT_INFO_TRAIN = ROOT_DIR / "data" / "raw" / "Thông tin tín dụng 20260430.xlsx"
-DATA_CREDIT_INFO_TEST  = ROOT_DIR / "data" / "raw" / "Thông tin tín dụng 20260507.xlsx"
+DATA_CREDIT_INFO_TRAIN = _resolve_raw("Thông tin tín dụng 20260430.xlsx")
+DATA_CREDIT_INFO_TEST  = _resolve_raw("Thông tin tín dụng 20260507.xlsx")
 
 CREDIT_INFO_TARGET_COL = "Nhóm nợ tự phân loại"
 
@@ -121,3 +131,18 @@ CREDIT_INFO_SMOTE_STRATEGY = {
 }
 
 CREDIT_INFO_NHOMNO_LABELS = NHOMNO_LABELS
+
+# ── Bài toán bổ sung: dự báo chuyển nhóm nợ trong 1 tháng (bộ B) ──────────────
+# Ghép 20260430 (T) với 20260507 (T+1 tháng) qua "Số khế ước" — 98.968/100.617
+# khoản vay khớp được (98,4%); trong đó chỉ 265 khoản vay (0,27%) chuyển sang
+# nhóm nợ cao hơn — sự kiện hiếm, không dùng lại CREDIT_INFO_SMOTE_STRATEGY
+# (thiết kế cho bài toán 5 lớp với tỉ lệ mất cân bằng ~1-3%, không phải 0,27%).
+TRANSITION_ID_COL = "Số khế ước"
+
+# 0-based, minority class = 1 (TRANSITION_WORSENED=1). Áp dụng trên phần train
+# (80% của ~98.968 dòng, ~212 sự kiện dương) khi imbalance_strategy="custom".
+# Mục tiêu nâng vừa phải, tránh SMOTE áp đảo mẫu dương gốc quá thưa.
+TRANSITION_SMOTE_STRATEGY = {1: 1200}
+
+TRANSITION_CV_SPLITS = 5
+TRANSITION_CV_REPEATS = 10  # đồng bộ 5x10 với repeated_stratified_recall() của bài toán 5 lớp

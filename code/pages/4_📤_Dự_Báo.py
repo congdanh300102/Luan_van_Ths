@@ -1,4 +1,4 @@
-"""Trang 4 — Import dữ liệu & Dự báo nhóm nợ + Chấm điểm tín dụng"""
+"""Trang 4 — Import dữ liệu & Dự báo nhóm nợ"""
 import sys, io
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -13,38 +13,16 @@ import streamlit as st
 from config.config import (
     DATA_RAW, MODEL_DIR, TARGET_COL, DROP_COLS,
     CATEGORICAL_COLS, NUMERICAL_COLS,
-    NHOMNO_LABELS, GROUP_COLORS, SCORE_BANDS,
+    NHOMNO_LABELS, GROUP_COLORS,
 )
 from src.preprocessing import parse_dates, engineer_features, clean
 from src.models import available_models
-from src.scoring import proba_to_score, classify_score, build_score_df, plot_score_distribution
-
-
-def gradient_style(series):
-    """Tô màu RdYlGn không cần matplotlib."""
-    _stops = [(0,(165,0,38)),(0.25,(244,109,67)),(0.5,(255,255,191)),(0.75,(166,217,106)),(1,(26,152,80))]
-    lo, hi = series.min(), series.max()
-    if lo == hi:
-        return [""] * len(series)
-    def _color(v):
-        if not pd.notna(v):
-            return ""
-        t = (v - lo) / (hi - lo)
-        for i in range(len(_stops) - 1):
-            t0, c0 = _stops[i]; t1, c1 = _stops[i+1]
-            if t0 <= t <= t1:
-                f = (t-t0)/(t1-t0)
-                r,g,b = int(c0[0]+f*(c1[0]-c0[0])), int(c0[1]+f*(c1[1]-c0[1])), int(c0[2]+f*(c1[2]-c0[2]))
-                fg = "#000" if 0.299*r+0.587*g+0.114*b > 140 else "#fff"
-                return f"background-color:rgb({r},{g},{b});color:{fg}"
-        return ""
-    return [_color(v) for v in series]
 
 st.set_page_config(page_title="Dự báo", page_icon="📤", layout="wide")
 st.title("📤 Import dữ liệu & Dự báo")
 st.markdown(
     "Upload file danh sách khách hàng (Excel/CSV) → hệ thống tự động dự báo "
-    "**nhóm nợ** và **điểm tín dụng** cho toàn bộ danh sách. "
+    "**nhóm nợ** cho toàn bộ danh sách. "
     "Không cần hiểu về mô hình — chỉ cần đúng định dạng file."
 )
 
@@ -148,7 +126,7 @@ st.markdown(f"**{len(df_input):,} hàng × {df_input.shape[1]} cột**")
 st.dataframe(df_input.head(10), use_container_width=True)
 
 # ── Tiền xử lý & Dự báo ──────────────────────────────────────────────────────
-st.subheader("3️⃣  Dự báo nhóm nợ & Chấm điểm")
+st.subheader("3️⃣  Dự báo nhóm nợ")
 
 run_btn = st.button("🚀 Chạy dự báo", type="primary")
 
@@ -166,17 +144,12 @@ if run_btn:
 
             proba   = pipe.predict_proba(df_feat)
             pred    = pipe.predict(df_feat) + 1   # 1-based
-            scores  = proba_to_score(proba)
-            grades  = [classify_score(s) for s in scores]
 
             df_result = df_input.copy()
             df_result["nhom_du_bao"]   = pred
             df_result["ten_nhom"]      = [NHOMNO_LABELS.get(p, str(p)) for p in pred]
             for i in range(5):
                 df_result[f"xac_suat_nhom_{i+1}"] = proba[:, i].round(4)
-            df_result["diem_tin_dung"] = scores
-            df_result["hang"]          = [g[0] for g in grades]
-            df_result["mo_ta"]         = [g[1] for g in grades]
 
             st.session_state["df_result"] = df_result
             st.session_state["y_true"]    = y_true
@@ -205,8 +178,8 @@ for i, (col, g) in enumerate([(c2, 1), (c3, 2), (c4, 4), (c5, 5)]):
     cnt = (pred == g).sum()
     col.metric(f"Nhóm {g}", f"{cnt:,}", f"{cnt/len(pred)*100:.1f}%")
 
-tab_dist, tab_score, tab_table, tab_acc = st.tabs(
-    ["📊 Phân phối nhóm", "💳 Điểm tín dụng", "📋 Bảng kết quả", "🎯 Độ chính xác"]
+tab_dist, tab_table, tab_acc = st.tabs(
+    ["📊 Phân phối nhóm", "📋 Bảng kết quả", "🎯 Độ chính xác"]
 )
 
 # ── Tab 1: Phân phối nhóm dự báo ─────────────────────────────────────────────
@@ -232,42 +205,18 @@ with tab_dist:
     fig_proba.update_layout(height=380, showlegend=False)
     st.plotly_chart(fig_proba, use_container_width=True)
 
-# ── Tab 2: Điểm tín dụng ─────────────────────────────────────────────────────
-with tab_score:
-    scores_arr = df_result["diem_tin_dung"].values
-    c_s1, c_s2, c_s3 = st.columns(3)
-    c_s1.metric("Điểm TB", f"{scores_arr.mean():.0f}")
-    c_s2.metric("Thấp nhất", f"{scores_arr.min()}")
-    c_s3.metric("Cao nhất", f"{scores_arr.max()}")
-
-    df_sc = build_score_df(proba, pred, y_true)
-    fig_sc = plot_score_distribution(df_sc)
-    st.plotly_chart(fig_sc, use_container_width=True)
-
-    # Bảng phân bổ hạng
-    grade_order  = [b[2] for b in SCORE_BANDS]
-    grade_colors = {b[2]: b[4] for b in SCORE_BANDS}
-    vc_g = df_result["hang"].value_counts().reindex(grade_order, fill_value=0)
-    grade_tbl = pd.DataFrame({
-        "Hạng": vc_g.index,
-        "Mô tả": [next((b[3] for b in SCORE_BANDS if b[2] == g), "") for g in vc_g.index],
-        "Số lượng": vc_g.values,
-        "Tỷ lệ (%)": (vc_g.values / len(df_result) * 100).round(1),
-    })
-    st.dataframe(grade_tbl, use_container_width=True, hide_index=True)
-
-# ── Tab 3: Bảng kết quả đầy đủ ───────────────────────────────────────────────
+# ── Tab 2: Bảng kết quả đầy đủ ────────────────────────────────────────────────
 with tab_table:
     result_cols = (
         [TARGET_COL] if TARGET_COL in df_result.columns else []
-    ) + ["nhom_du_bao", "ten_nhom", "diem_tin_dung", "hang", "mo_ta",
+    ) + ["nhom_du_bao", "ten_nhom",
          "xac_suat_nhom_1", "xac_suat_nhom_2", "xac_suat_nhom_3",
          "xac_suat_nhom_4", "xac_suat_nhom_5"]
 
     result_cols = [c for c in result_cols if c in df_result.columns]
 
     st.dataframe(
-        df_result[result_cols].style.apply(gradient_style, subset=["diem_tin_dung"]),
+        df_result[result_cols],
         use_container_width=True, height=420,
     )
 
@@ -289,7 +238,7 @@ with tab_table:
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
-# ── Tab 4: Độ chính xác (nếu có nhãn thực tế) ────────────────────────────────
+# ── Tab 3: Độ chính xác (nếu có nhãn thực tế) ────────────────────────────────
 with tab_acc:
     if y_true is None:
         st.info("File không có cột `NHOMNOMOI` (nhãn thực tế) nên không thể tính độ chính xác.")

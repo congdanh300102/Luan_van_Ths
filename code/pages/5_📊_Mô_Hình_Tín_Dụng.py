@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 
 from config.config import (
-    MODEL_DIR, RANDOM_STATE, TEST_SIZE, CV_FOLDS, SCORE_BANDS,
+    MODEL_DIR, RANDOM_STATE, TEST_SIZE, CV_FOLDS,
     DATA_CREDIT_INFO_TRAIN, DATA_CREDIT_INFO_TEST,
     CREDIT_INFO_TARGET_COL, CREDIT_INFO_NUMERICAL_COLS, CREDIT_INFO_CATEGORICAL_COLS,
     CREDIT_INFO_SMOTE_STRATEGY, CREDIT_INFO_NHOMNO_LABELS, GROUP_COLORS,
@@ -29,10 +29,6 @@ from src.models import build_pipeline, available_models, IMBALANCE_OPTIONS, comp
 from src.evaluation import (
     compute_metrics, plot_confusion_matrix, plot_feature_importance,
     repeated_stratified_recall, predict_with_class_weights, tune_class_boost,
-)
-from src.scoring import (
-    build_score_df, plot_score_distribution,
-    plot_score_by_group, proba_to_score, classify_score,
 )
 from src.imbalance_benchmark import benchmark_strategies, plot_imbalance_comparison, plot_recall_by_group
 from src.explainability import compute_shap_values, plot_shap_global, plot_shap_group_importance, plot_shap_local
@@ -141,9 +137,9 @@ def _resolve_feature_set(df: pd.DataFrame):
 df_features, num_p, cat_p, feature_info = _resolve_feature_set(df_raw)
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
-tab_eda, tab_train, tab_test, tab_imbalance, tab_shap, tab_score = st.tabs(
+tab_eda, tab_train, tab_test, tab_imbalance, tab_shap = st.tabs(
     ["📋 Tổng quan dữ liệu", "🤖 Huấn luyện & Đánh giá", "🧪 Test độc lập (20260507)",
-     "⚖️ So sánh xử lý mất cân bằng", "🧭 Giải thích SHAP", "💳 Chấm điểm tín dụng"]
+     "⚖️ So sánh xử lý mất cân bằng", "🧭 Giải thích SHAP"]
 )
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -629,56 +625,3 @@ with tab_shap:
                             use_container_width=True)
         else:
             st.caption("Bấm nút phía trên để tính SHAP values cho mô hình hiện tại.")
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# Tab 6: Chấm điểm tín dụng
-# ══════════════════════════════════════════════════════════════════════════════
-with tab_score:
-    if "credit_info_y_proba" not in st.session_state:
-        st.info("👈 Huấn luyện mô hình trước để xem kết quả chấm điểm.")
-    else:
-        y_true  = st.session_state["credit_info_y_true"]
-        y_pred  = st.session_state["credit_info_y_pred"]
-        y_proba = st.session_state["credit_info_y_proba"]
-
-        df_scores = build_score_df(y_proba, y_pred, y_true)
-
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Số hồ sơ",        f"{len(df_scores):,}")
-        c2.metric("Điểm trung bình", f"{df_scores['diem_tin_dung'].mean():.0f}")
-        c3.metric("Điểm thấp nhất",  f"{df_scores['diem_tin_dung'].min()}")
-        c4.metric("Điểm cao nhất",   f"{df_scores['diem_tin_dung'].max()}")
-
-        fig_dist = plot_score_distribution(df_scores)
-        st.plotly_chart(fig_dist, use_container_width=True)
-
-        fig_box_s = plot_score_by_group(df_scores)
-        if fig_box_s:
-            st.plotly_chart(fig_box_s, use_container_width=True)
-
-        st.markdown("#### Điểm trung bình theo nhóm nợ thực tế")
-        tbl = (df_scores.groupby("nhom_thuc_te")["diem_tin_dung"]
-                        .agg(["mean", "median", "std", "min", "max"])
-                        .round(1))
-        tbl.index = [f"Nhóm {i}" for i in tbl.index]
-        st.dataframe(tbl, use_container_width=True)
-
-        st.markdown("#### Phân bổ hạng tín dụng")
-        grade_order = [b[2] for b in SCORE_BANDS]
-        vc_g = df_scores["hang"].value_counts().reindex(grade_order, fill_value=0)
-        grade_tbl = pd.DataFrame({
-            "Hạng":      vc_g.index,
-            "Mô tả":     [next((b[3] for b in SCORE_BANDS if b[2] == g), "") for g in vc_g.index],
-            "Số lượng":  vc_g.values,
-            "Tỷ lệ (%)": (vc_g.values / len(df_scores) * 100).round(1),
-        })
-        st.dataframe(grade_tbl, use_container_width=True, hide_index=True)
-
-        csv = df_scores.to_csv(index=False, encoding="utf-8-sig").encode("utf-8-sig")
-        st.download_button(
-            "⬇️ Tải kết quả CSV",
-            data=csv,
-            file_name=f"credit_scores_{st.session_state.get('credit_info_model_key','model')}.csv",
-            mime="text/csv",
-        )

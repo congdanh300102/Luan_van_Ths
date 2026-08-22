@@ -303,4 +303,4 @@ else:
         st.markdown(f"**Mô hình đã lưu** ({len(saved)} file):")
         for p in saved:
             st.markdown(f"- `{p.name}`")
-        st.markdown("Bạn có thể chuyển sang **Trang 3 — Chấm điểm** để dùng các mô hình này.")
+        st.markdown("Bạn có thể chuyển sang **Trang Dự báo** để dùng các mô hình này.")

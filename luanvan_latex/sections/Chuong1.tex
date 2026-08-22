@@ -18,6 +18,17 @@ Chuyển đổi số trong ngân hàng không chỉ là số hóa kênh giao d�
 
 Trong tín dụng, ngân hàng có thể khai thác nhiều nhóm dữ liệu như thông tin định danh, lịch sử hợp đồng, dư nợ, hạn mức, số ngày quá hạn, thời hạn khoản vay, mục đích vay, nhóm nợ, trạng thái cơ cấu lại và dữ liệu hành vi. Khi dữ liệu được làm sạch và quản trị phù hợp, các mô hình học máy có thể hỗ trợ nhận diện quy luật mà quy tắc thủ công khó phát hiện. Tuy nhiên, dữ liệu ngân hàng cũng có những thách thức như giá trị thiếu, sai lệch nghiệp vụ, mất cân bằng lớp, thay đổi theo thời gian và nguy cơ rò rỉ thông tin.
 
+\subsection{Giới hạn của thông tin CIC và yêu cầu về công cụ cảnh báo sớm nội bộ}
+\label{sec:cic-limits}
+
+Trung tâm Thông tin tín dụng Quốc gia (CIC) tổng hợp và cung cấp thông tin nhóm nợ của khách hàng dựa trên báo cáo định kỳ của các tổ chức tín dụng. Tuy nhiên, thông tin CIC mang tính hồi cứu: nhóm nợ chỉ được ghi nhận sau khi khoản vay đã thực sự phát sinh quá hạn theo ngưỡng quy định, tức phản ánh trạng thái đã xảy ra chứ không dự báo trước. Vì vậy, việc xây dựng mô hình chỉ để phân loại lại nhóm nợ hiện tại của một khoản vay dựa trên chính các biến đã xác định nhóm nợ đó (điển hình là số ngày quá hạn hiện tại) có giá trị gia tăng hạn chế: kết quả gần như tái tạo quy tắc xếp nhóm đã có theo quy định, không tạo ra thông tin mới so với những gì CIC đã cho biết.
+
+Bên cạnh tính hồi cứu, việc phụ thuộc vào CIC còn có một số hạn chế thực tiễn đối với hoạt động giám sát danh mục: dữ liệu được cập nhật theo chu kỳ báo cáo giữa các tổ chức tín dụng, tạo ra độ trễ giữa thời điểm rủi ro thực sự phát sinh và thời điểm được phản ánh trên hệ thống; mỗi lượt tra cứu phát sinh chi phí, khó áp dụng để rà soát định kỳ toàn bộ danh mục có quy mô hàng trăm nghìn khoản vay; và khách hàng vay lần đầu, chưa từng phát sinh quan hệ tín dụng, không có lịch sử CIC để tham chiếu.
+
+Về căn cứ pháp lý, Thông tư số 11/2021/TT-NHNN quy định tổ chức tín dụng có thể được Ngân hàng Nhà nước chấp thuận áp dụng chính sách phân loại nợ theo phương pháp định tính, trên cơ sở hệ thống xếp hạng tín dụng nội bộ tự xây dựng, thay vì chỉ phân loại định lượng theo số ngày quá hạn \cite{sbv2021tt11}. Quy định này cho thấy việc phát triển công cụ đánh giá rủi ro nội bộ, hoạt động độc lập với CIC và có khả năng nhận diện sớm dấu hiệu suy giảm chất lượng tín dụng, phù hợp với định hướng chính sách hiện hành, không chỉ là một lựa chọn kỹ thuật đơn thuần.
+
+Nhu cầu thực sự có giá trị đối với ngân hàng, do đó, không nằm ở việc phân loại lại một nhóm nợ đã biết, mà ở việc dự báo khả năng một khoản vay sẽ chuyển sang nhóm rủi ro cao hơn trong thời gian tới, dựa trên thông tin đã có tại thời điểm đánh giá, qua đó cho phép can thiệp sớm (đôn đốc thu hồi, cơ cấu lại, siết hạn mức) trước khi CIC ghi nhận sự suy giảm. Luận văn xác lập đây là hướng tiếp cận bổ sung, được cụ thể hóa thành bài toán riêng ở Mục~\ref{sec:scope-transition} trong phạm vi mà dữ liệu hiện có cho phép.
+
 \section{Sự phát triển của các phương pháp đánh giá tín dụng}
 
 \subsection{Từ đánh giá chuyên gia đến mô hình thống kê}
@@ -123,6 +134,19 @@ Do năm nhóm có quan hệ về mức độ rủi ro:
 \]
 bài toán cần vừa đạt hiệu quả tổng thể, vừa nhận diện nhóm rủi ro cao, giảm khoảng cách sai lệch, hạn chế đánh giá thấp rủi ro, duy trì khả năng tổng quát hóa theo thời gian và bảo đảm khả năng giải thích.
 
+\subsection{Bài toán bổ sung: dự báo chuyển nhóm nợ trong ngắn hạn}
+\label{sec:scope-transition}
+
+Bên cạnh bài toán phân loại nhóm nợ tại một thời điểm nêu trên, luận văn xác lập một bài toán bổ sung nhằm trực tiếp trả lời yêu cầu về công cụ cảnh báo sớm đã nêu ở Mục~\ref{sec:cic-limits}: dự báo khả năng một khoản vay chuyển sang nhóm rủi ro cao hơn trong một khoảng thời gian ngắn, sử dụng duy nhất thông tin sẵn có tại thời điểm đánh giá.
+
+Gọi $G_{i,T}\in\{1,\dots,5\}$ là nhóm nợ của khoản vay $i$ tại thời điểm $T$ và $G_{i,T+1}$ là nhóm nợ của cùng khoản vay đó tại thời điểm $T+1$ tháng. Nhãn dự báo được xác định:
+\[
+Y_i=\mathbb{I}(G_{i,T+1}>G_{i,T}),
+\]
+trong đó $\mathbb{I}(\cdot)$ là hàm chỉ thị, nhận giá trị 1 nếu khoản vay chuyển sang nhóm nợ cao hơn tại $T+1$ và 0 trong trường hợp còn lại (giữ nguyên hoặc cải thiện). Đặc trưng đầu vào $\mathbf{x}_{i,T}$ chỉ được lấy từ thông tin tại thời điểm $T$, không bao gồm bất kỳ thông tin nào phát sinh sau $T$; đây là khác biệt căn bản so với việc dùng số ngày quá hạn hiện tại để phân loại lại nhóm nợ hiện tại, vốn chỉ tái tạo quy tắc xếp nhóm đã có (Mục~\ref{sec:cic-limits}) chứ không tạo ra giá trị dự báo.
+
+Bài toán bổ sung này chỉ áp dụng được cho bộ dữ liệu B, do đây là bộ duy nhất có hai kỳ báo cáo liên tiếp của cùng một danh mục khoản vay (20260430 và 20260507, cách nhau một tháng), cho phép ghép cặp $(G_{i,T},G_{i,T+1})$ theo từng khoản vay bằng khóa định danh khế ước. Bộ dữ liệu A chỉ phản ánh trạng thái tại một mốc thời gian duy nhất nên tiếp tục được sử dụng cho bài toán phân loại tại một thời điểm như đã trình bày, không hỗ trợ bài toán chuyển nhóm.
+
 \subsection{Đóng góp dự kiến của nghiên cứu}
 
 Trên cơ sở kế thừa các công trình trước, luận văn dự kiến đóng góp ở các khía cạnh sau:
@@ -134,7 +158,8 @@ Trên cơ sở kế thừa các công trình trước, luận văn dự kiến �
     \item xem mất cân bằng lớp là thành phần trung tâm;
     \item đối chiếu, so sánh sáu mô hình học máy; trong đó năm mô hình được thực thi thành công trên bộ dữ liệu A và sáu mô hình được thực thi thành công trên bộ dữ liệu B;
     \item kết hợp đánh giá hiệu quả dự báo với mức độ quan trọng của đặc trưng và SHAP;
-    \item lựa chọn mô hình theo hiệu quả, nhận diện rủi ro, sai lệch thứ tự và khả năng giải thích.
+    \item lựa chọn mô hình theo hiệu quả, nhận diện rủi ro, sai lệch thứ tự và khả năng giải thích;
+    \item xây dựng và đánh giá bài toán bổ sung dự báo chuyển nhóm nợ trong một tháng trên bộ dữ liệu B, bằng cách ghép hai kỳ báo cáo liên tiếp theo khóa định danh khế ước, trực tiếp trả lời yêu cầu về công cụ cảnh báo sớm hoạt động độc lập với CIC đã nêu ở Mục~\ref{sec:cic-limits}.
 \end{enumerate}
 
 Đóng góp của luận văn không tập trung vào việc đề xuất thuật toán mới, mà thể hiện ở cách thiết kế bài toán, tổ chức thực nghiệm và đánh giá mô hình phù hợp với đặc điểm của dữ liệu tín dụng thực tế tại ngân hàng được nghiên cứu.
@@ -158,6 +183,7 @@ Xây dựng và đánh giá các mô hình học máy nhằm hỗ trợ phân lo
     \item Đánh giá ảnh hưởng của mất cân bằng lớp.
     \item Phân tích tính thứ tự và mức độ nghiêm trọng của sai số.
     \item Giải thích kết quả bằng các phương pháp phù hợp.
+    \item Xây dựng và đánh giá bài toán dự báo chuyển nhóm nợ trong một tháng trên bộ dữ liệu B (Mục~\ref{sec:scope-transition}).
 \end{enumerate}
 
 \subsection{Câu hỏi nghiên cứu}
@@ -167,16 +193,19 @@ Xây dựng và đánh giá các mô hình học máy nhằm hỗ trợ phân lo
     \item Nhóm đặc trưng nghiệp vụ nào có đóng góp lớn nhất đối với kết quả phân loại nhóm nợ?
     \item Có thể rút gọn tập đặc trưng đến mức nào mà vẫn duy trì hiệu quả dự báo ngoài mẫu?
     \item Ngân hàng nên ưu tiên hoàn thiện và duy trì chất lượng đối với những nhóm thông tin nào để phục vụ mô hình phân loại nhóm nợ và định hướng cảnh báo sớm?
+    \item Mô hình học máy có thể dự báo khả năng một khoản vay chuyển sang nhóm nợ cao hơn trong một tháng tới hay không, chỉ dựa trên thông tin sẵn có tại thời điểm đánh giá, khác với việc phân loại lại nhóm nợ hiện tại đã được CIC ghi nhận?
 \end{enumerate}
 
 \subsection{Phương pháp nghiên cứu}
 
 Luận văn kết hợp phương pháp nghiên cứu định tính trong tổng quan tài liệu với phương pháp định lượng trong xử lý dữ liệu, xây dựng mô hình và đánh giá thực nghiệm. Quy trình thực nghiệm được triển khai độc lập trên \path{Data_credit_rating_VN.xlsx} (bộ A) và dữ liệu Thông tin tín dụng (bộ B), bao gồm làm sạch dữ liệu, xây dựng đặc trưng, phân tích khám phá dữ liệu, chia mẫu ngẫu nhiên có phân tầng, xử lý mất cân bằng lớp, huấn luyện, đánh giá và giải thích mô hình. Riêng bộ B được đánh giá bổ sung trên một tập kiểm tra độc lập theo thời gian thuộc kỳ báo cáo kế tiếp. Do khác biệt về cấu trúc và phân bố dữ liệu, kết quả của hai bộ chỉ được đối chiếu về xu hướng, không được so sánh trực tiếp như các mẫu đồng nhất.
 
+Riêng đối với bộ B, do có hai kỳ báo cáo liên tiếp của cùng một danh mục khoản vay, luận văn còn xây dựng bài toán bổ sung dự báo chuyển nhóm nợ trong một tháng (Mục~\ref{sec:scope-transition}) bằng cách ghép các khoản vay giữa hai kỳ theo khóa định danh khế ước. Quy trình xây dựng nhãn và tập đặc trưng cho bài toán này tách biệt hoàn toàn với quy trình phân loại tại một thời điểm, được trình bày chi tiết ở Chương 3.
+
 Về khoa học, luận văn bổ sung bằng chứng thực nghiệm về phân loại năm nhóm nợ, kết hợp mất cân bằng và khả năng giải thích. Về thực tiễn, kết quả có thể hỗ trợ chuẩn hóa đánh giá, nhận diện khoản vay suy giảm và xây dựng cảnh báo sớm. Mô hình chỉ đóng vai trò hỗ trợ, không thay thế hoàn toàn quyết định của cán bộ tín dụng.
 
 \section{Tóm tắt chương}
 
-Chương 1 đã trình bày bối cảnh và động lực nghiên cứu xuất phát từ vai trò của hoạt động tín dụng và rủi ro tín dụng trong ngân hàng thương mại; khái quát sự phát triển của các phương pháp đánh giá tín dụng từ cách tiếp cận chuyên gia, mô hình thống kê đến các nghiên cứu học máy; đồng thời xác lập bài toán phân loại năm nhóm nợ, mục tiêu, câu hỏi và phương pháp nghiên cứu. Các đóng góp dự kiến và giới hạn của phạm vi thực nghiệm cũng được xác định nhằm bảo đảm rằng những kết luận của luận văn phù hợp với bằng chứng thu được.
+Chương 1 đã trình bày bối cảnh và động lực nghiên cứu xuất phát từ vai trò của hoạt động tín dụng và rủi ro tín dụng trong ngân hàng thương mại; đồng thời phân tích giới hạn hồi cứu của thông tin CIC và căn cứ pháp lý cho yêu cầu về công cụ cảnh báo sớm nội bộ (Mục~\ref{sec:cic-limits}). Chương cũng khái quát sự phát triển của các phương pháp đánh giá tín dụng từ cách tiếp cận chuyên gia, mô hình thống kê đến các nghiên cứu học máy; xác lập bài toán phân loại năm nhóm nợ và bài toán bổ sung dự báo chuyển nhóm nợ trong ngắn hạn trên bộ dữ liệu B (Mục~\ref{sec:scope-transition}), cùng mục tiêu, câu hỏi và phương pháp nghiên cứu. Các đóng góp dự kiến và giới hạn của phạm vi thực nghiệm cũng được xác định nhằm bảo đảm rằng những kết luận của luận văn phù hợp với bằng chứng thu được.
 
 Trên cơ sở đó, Chương 2 sẽ hệ thống hóa cơ sở lý thuyết về tín dụng, rủi ro và phân loại nhóm nợ, trình bày các mô hình học máy được sử dụng, những thách thức đặc thù của dữ liệu tín dụng, hệ thống chỉ tiêu đánh giá và tổng quan các nghiên cứu liên quan, làm nền tảng lý thuyết cho phần dữ liệu và phương pháp thực nghiệm ở Chương 3.
