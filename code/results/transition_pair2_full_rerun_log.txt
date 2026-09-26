@@ -1,0 +1,61 @@
+﻿[16:54:31] Đang tải dữ liệu kỳ T (20260531) và T+1 (20260630, THẬT)…
+[16:57:03] Kỳ T: (100274, 33), Kỳ T+1: (98620, 33)
+[16:57:03] Số khoản vay khớp được ở cả hai kỳ: 98,620 / 100,274 (98.4%)
+[16:57:04] Đối chiếu khoản vay bị loại (n=1654) vs. được giữ (n=98620):
+   nhom_no_tai_T  so_luong_bi_loai  ...  so_luong_duoc_giu  ty_le_duoc_giu_pct
+0              1              1602  ...              86925               88.14
+1              2                37  ...               6302                6.39
+2              3                 4  ...                987                1.00
+3              4                 0  ...               1421                1.44
+4              5                11  ...               2985                3.03
+
+[5 rows x 5 columns]
+[16:57:04] Phân bố nhãn: 258/98620 (0.262%) chuyển sang nhóm cao hơn.
+[16:57:04] Ma trận chuyển nhóm (cặp 2):
+Nhóm nợ tại T+1      1     2    3     4     5
+Nhóm nợ tại T                                
+1                86719   206    0     0     0
+2                  143  6151    8     0     0
+3                    5     0  970    12     0
+4                    0     0    0  1389    32
+5                    3     0    0     0  2982
+[16:57:04] Tập đặc trưng: 12 numerical (gồm 4 engineered) + 8 categorical = 20 tổng.
+[16:57:05] X_all: (98620, 20), positive rate: 0.262%
+[16:57:05] Đang đánh giá 4 chiến lược x 6 mô hình bằng RepeatedStratifiedKFold (5x10)…
+[17:01:02]   [none] Logistic Regression: PR-AUC=0.0027±0.0004 | ROC-AUC=0.4783 | Recall(+)=0.000 (237.5s)
+[17:10:54]   [class_weight] Logistic Regression: PR-AUC=0.0026±0.0003 | ROC-AUC=0.4749 | Recall(+)=0.333 (591.6s)
+[17:15:25]   [custom] Logistic Regression: PR-AUC=0.0028±0.0004 | ROC-AUC=0.4843 | Recall(+)=0.000 (271.5s)
+[17:27:00]   [smote_class_weight] Logistic Regression: PR-AUC=0.0027±0.0004 | ROC-AUC=0.4823 | Recall(+)=0.364 (694.7s)
+[17:28:13]   [none] Decision Tree: PR-AUC=0.0039±0.0017 | ROC-AUC=0.4735 | Recall(+)=0.000 (73.0s)
+[17:29:25]   [class_weight] Decision Tree: PR-AUC=0.0035±0.0007 | ROC-AUC=0.4938 | Recall(+)=0.293 (72.6s)
+[17:30:42]   [custom] Decision Tree: PR-AUC=0.0040±0.0017 | ROC-AUC=0.5025 | Recall(+)=0.002 (76.2s)
+[17:32:11]   [smote_class_weight] Decision Tree: PR-AUC=0.0037±0.0011 | ROC-AUC=0.5086 | Recall(+)=0.235 (89.3s)
+[17:36:07]   [none] Random Forest: PR-AUC=0.0042±0.0012 | ROC-AUC=0.4781 | Recall(+)=0.000 (235.9s)
+[17:39:54]   [class_weight] Random Forest: PR-AUC=0.0047±0.0022 | ROC-AUC=0.4728 | Recall(+)=0.084 (227.3s)
+[17:44:51]   [custom] Random Forest: PR-AUC=0.0049±0.0018 | ROC-AUC=0.5092 | Recall(+)=0.000 (296.8s)
+[17:49:43]   [smote_class_weight] Random Forest: PR-AUC=0.0059±0.0038 | ROC-AUC=0.4921 | Recall(+)=0.075 (292.2s)
+[17:54:06]   [none] XGBoost: PR-AUC=0.0053±0.0049 | ROC-AUC=0.4890 | Recall(+)=0.000 (262.7s)
+[17:56:47]   [class_weight] XGBoost: PR-AUC=0.0044±0.0040 | ROC-AUC=0.4805 | Recall(+)=0.050 (161.3s)
+[17:59:49]   [custom] XGBoost: PR-AUC=0.0049±0.0031 | ROC-AUC=0.4949 | Recall(+)=0.000 (181.9s)
+[18:02:39]   [smote_class_weight] XGBoost: PR-AUC=0.0057±0.0044 | ROC-AUC=0.4893 | Recall(+)=0.043 (170.0s)
+[18:05:00]   [none] LightGBM: PR-AUC=0.0034±0.0017 | ROC-AUC=0.4874 | Recall(+)=0.000 (140.8s)
+[18:07:24]   [class_weight] LightGBM: PR-AUC=0.0042±0.0045 | ROC-AUC=0.4803 | Recall(+)=0.045 (144.4s)
+[18:10:39]   [custom] LightGBM: PR-AUC=0.0044±0.0029 | ROC-AUC=0.4913 | Recall(+)=0.000 (195.0s)
+[18:13:08]   [smote_class_weight] LightGBM: PR-AUC=0.0057±0.0053 | ROC-AUC=0.4867 | Recall(+)=0.035 (149.3s)
+[19:14:18]   [none] CatBoost: PR-AUC=0.0060±0.0023 | ROC-AUC=0.5521 | Recall(+)=0.000 (3669.5s)
+[20:41:51]   [class_weight] CatBoost: PR-AUC=0.0054±0.0047 | ROC-AUC=0.5005 | Recall(+)=0.146 (5253.5s)
+[20:41:52] Mô hình tốt nhất trên cặp 2 theo PR-AUC trung bình (CV): CatBoost — chiến lược none (PR-AUC=0.0060±0.0023)
+[20:41:52] Đã ghi transition_pairs_stability.csv (22 cấu hình đối chiếu được).
+[20:41:52] Cấu hình tốt nhất của CẶP 1 (XGBoost-none) trên CẶP 2: PR-AUC=0.0053±0.0049 (cặp 1: 0.1806±0.0491)
+[20:41:52] Đang huấn luyện lại mô hình tốt nhất của CẶP 2 trên 1 lần chia 80/20 để minh hoạ…
+[20:42:38] Kết quả minh hoạ cặp 2 (tập kiểm định 20%, n_pos=52): PR-AUC=0.0058, ROC-AUC=0.5873, Recall(+)=0.000, Precision(+)=0.000
+[20:42:38] Recall@k (cặp 2):
+   top_k_pct  n_ho_so  n_su_kien_phat_hien  recall_at_k  precision_at_k
+0        1.0      197                    3     0.057692        0.015228
+1        2.0      394                    5     0.096154        0.012690
+2        5.0      986                    8     0.153846        0.008114
+3       10.0     1972                   11     0.211538        0.005578
+[20:42:39] Đang thực hiện kiểm tra chuyển giao ngoài thời gian (train cặp 1 -> test cặp 2)…
+[20:44:45] Chuyển giao ngoài thời gian (huấn luyện cặp 1, chấm điểm TOÀN BỘ cặp 2, không huấn luyện lại): PR-AUC=0.0032, ROC-AUC=0.5639, Recall(+)=0.000, Precision(+)=0.000
+[20:44:45] HOÀN TẤT. Bảng số liệu đã lưu vào code/results/transition_pair2_*.csv, transition_pairs_stability.csv, transition_oot_transfer.csv
+[20:44:45] Hình đã lưu vào luanvan_latex/figures/eda_transition_pair2_*.png

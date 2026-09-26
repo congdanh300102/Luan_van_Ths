@@ -1,0 +1,12 @@
+Total folds: 15 (5-fold x 3-repeat)
+LightGBM + none          macroF1 = 0.6177 +/- 0.0117   (57.3s)
+LightGBM + balanced      macroF1 = 0.5689 +/- 0.0109   (116.1s)
+CatBoost + none          macroF1 = 0.5936 +/- 0.0083   (655.5s)
+CatBoost + balanced      macroF1 = 0.5200 +/- 0.0107   (574.0s)
+
+=== Corrected resampled paired t-test (baseline = LightGBM + none) ===
+LightGBM+none vs LightGBM + balanced      mean_diff=+0.0488  t=8.107  p=0.0000
+LightGBM+none vs CatBoost + none          mean_diff=+0.0241  t=4.831  p=0.0003
+LightGBM+none vs CatBoost + balanced      mean_diff=+0.0977  t=13.647  p=0.0000
+
+Done.

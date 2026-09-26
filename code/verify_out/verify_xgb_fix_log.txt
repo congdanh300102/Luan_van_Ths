@@ -1,0 +1,4 @@
+Total folds: 25 (5-fold x 5-repeat)
+xgboost_balanced (fixed)  macroF1 = 0.5547 +/- 0.0081   (70.3s)
+
+Done.

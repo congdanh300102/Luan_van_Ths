@@ -1,10 +1,10 @@
 """Script tái lập kết quả cho luận văn — Bài toán bổ sung: dự báo chuyển
-nhóm nợ trong 1 tháng (bộ B, ghép 20260430 → 20260507).
+nhóm nợ trong 31 ngày (bộ B, ghép 20260430 → 20260531).
 
 Khác với generate_credit_info_report.py (phân loại NHÓM NỢ HIỆN TẠI tại mỗi
 kỳ báo cáo), script này ghép hai kỳ báo cáo của cùng một danh mục khoản vay
 qua khoá "Số khế ước" để xây nhãn CHUYỂN NHÓM thật: đặc trưng lấy tại kỳ T
-(20260430), nhãn xác định từ kỳ T+1 tháng (20260507) — đúng thiết kế "dùng
+(20260430), nhãn xác định từ kỳ T+31 ngày (20260531) — đúng thiết kế "dùng
 thông tin hiện có để dự báo diễn biến tương lai" mà phân loại nhóm nợ hiện
 tại (đã được CIC báo cáo) không làm được.
 
@@ -56,7 +56,7 @@ FIG_DIR = Path(__file__).parent.parent.parent / "luanvan_latex" / "figures"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 
-STRATEGIES = ["none", "class_weight", "custom"]
+STRATEGIES = ["none", "class_weight", "custom", "smote_class_weight"]
 BINARY_LABELS = {0: "Không xấu đi", 1: "Xấu đi"}
 
 
@@ -66,7 +66,7 @@ def log(msg):
 
 def _build_kwargs(strategy: str, model_key: str) -> dict:
     kwargs = {"random_state": RANDOM_STATE, "imbalance_strategy": strategy}
-    if strategy == "custom":
+    if strategy in ("custom", "smote_class_weight"):
         kwargs["custom_smote_strategy"] = TRANSITION_SMOTE_STRATEGY
     if model_key == "catboost":
         kwargs["loss_function"] = "Logloss"
@@ -78,8 +78,9 @@ def _build_kwargs(strategy: str, model_key: str) -> dict:
 def _strategies_for(model_key: str) -> list:
     # Với CatBoost, mọi imbalance_strategy khác "none" đều ánh xạ về
     # auto_class_weights="Balanced" (không resample — xem models.py) nên
-    # "class_weight" và "custom" cho ra đúng 1 pipeline giống hệt nhau; chạy
-    # cả hai là lãng phí ~27s/fit × 100 lần lặp mà không thêm thông tin.
+    # "class_weight", "custom" và "smote_class_weight" cho ra đúng 1 pipeline
+    # giống hệt nhau; chạy cả ba là lãng phí ~27s/fit × 100 lần lặp mà không
+    # thêm thông tin — chỉ giữ lại "none" và "class_weight" làm đại diện.
     if model_key == "catboost":
         return ["none", "class_weight"]
     return STRATEGIES
@@ -95,7 +96,7 @@ def _sample_weight_fn(strategy: str, model_key: str):
 
 def main():
     # ── 1. Load + ghép 2 kỳ báo cáo ─────────────────────────────────────────
-    log("Đang tải dữ liệu kỳ T (20260430) và T+1 tháng (20260507)…")
+    log("Đang tải dữ liệu kỳ T (20260430) và T+31 ngày (20260531)…")
     df_t_raw = load_credit_info(DATA_CREDIT_INFO_TRAIN)
     df_t1_raw = load_credit_info(DATA_CREDIT_INFO_TEST)
     log(f"Kỳ T: {df_t_raw.shape}, Kỳ T+1: {df_t1_raw.shape}")
@@ -155,7 +156,7 @@ def main():
     iv_table.to_csv(RESULTS_DIR / "transition_iv_table.csv", index=False, encoding="utf-8-sig")
     log(f"IV top 10:\n{iv_table.head(10)}")
 
-    # ── 5. So sánh 6 mô hình × 3 chiến lược mất cân bằng (Repeated CV) ──────
+    # ── 5. So sánh 6 mô hình × 4 chiến lược mất cân bằng (Repeated CV) ──────
     log(f"Đang đánh giá {len(STRATEGIES)} chiến lược × 6 mô hình bằng "
         f"RepeatedStratifiedKFold ({TRANSITION_CV_SPLITS}×{TRANSITION_CV_REPEATS})…")
     models = available_models()
@@ -192,7 +193,7 @@ def main():
     log(f"Mô hình tốt nhất theo PR-AUC trung bình (CV): {best_label} — chiến lược {best_strategy} "
         f"(PR-AUC={best_row['pr_auc_mean']:.4f}±{best_row['pr_auc_std']:.4f})")
 
-    # So sánh riêng 3 chiến lược mất cân bằng (đối với mô hình tốt nhất về model_key)
+    # So sánh riêng các chiến lược mất cân bằng (đối với mô hình tốt nhất về model_key)
     strat_compare = cv_summary_df[cv_summary_df["model_key"] == best_key].sort_values(
         "pr_auc_mean", ascending=False)
     strat_compare.to_csv(RESULTS_DIR / "transition_imbalance_strategy_comparison.csv",
@@ -262,7 +263,7 @@ def main():
     data = [plot_models.loc[plot_models["model"] == m, "pr_auc"].values for m in order]
     ax.boxplot(data, labels=order, showmeans=True)
     ax.set_ylabel("PR-AUC")
-    ax.set_title(f"Phân tán PR-AUC qua {TRANSITION_CV_SPLITS}×{TRANSITION_CV_REPEATS} lần lặp CV "
+    ax.set_title(f"Phân tán PR-AUC qua {TRANSITION_CV_SPLITS} phần, lặp {TRANSITION_CV_REPEATS} lần "
                 f"— chiến lược {best_strategy}")
     plt.xticks(rotation=20)
     plt.tight_layout()

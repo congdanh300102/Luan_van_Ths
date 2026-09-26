@@ -1,0 +1,24 @@
+SHAP values shape: (5401, 11, 5)
+
+XGBoost SHAP importance (mean |phi_j| across all classes):
+  DAYS_TO_MATURITY     0.6072
+  LAISUAT              0.3902
+  UTIL_RATE            0.3020
+  CURRMIACCTTYPCD      0.2864
+  ORGNBR               0.2242
+  PARENTORGNBR         0.2185
+  CURR_BAL             0.1893
+  LOAN_TENURE_DAYS     0.1592
+  BASE_BAL             0.1405
+  MUCDICHVAY           0.1141
+  MJACCTTYPCD          0.0394
+
+XGBoost SHAP group importance:
+                  group  importance       pct
+       Kỳ hạn khoản vay    0.766439 28.700001
+Dư nợ & Hạn mức sử dụng    0.631777 23.700001
+     Đơn vị / Chi nhánh    0.442718 16.600000
+Sản phẩm & Mục đích vay    0.439833 16.500000
+               Lãi suất    0.390233 14.600000
+
+Stage E complete.

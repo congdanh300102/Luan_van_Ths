@@ -1,0 +1,171 @@
+=== 1) DAYS_TO_MATURITY ablation (11 -> 10 features) ===
+  xgboost   balanced  11f=0.5966  10f=0.4995  delta=-0.0971 (-16.3%)  auc10=0.8693
+  xgboost   none      11f=0.6197  10f=0.4776  delta=-0.1421 (-22.9%)  auc10=0.8892
+  lightgbm  balanced  11f=0.6044  10f=0.5052  delta=-0.0992 (-16.4%)  auc10=0.8673
+  lightgbm  none      11f=0.6248  10f=0.4823  delta=-0.1424 (-22.8%)  auc10=0.8826
+
+=== 2) Reference-date (d0) sensitivity, LightGBM ===
+  d0=2020-12-31  balanced  macroF1=0.6044  auc=0.9128
+  d0=2020-12-31  none      macroF1=0.6248  auc=0.9246
+  d0=2021-06-30  balanced  macroF1=0.6044  auc=0.9128
+  d0=2021-06-30  none      macroF1=0.6248  auc=0.9246
+  d0=2021-12-31  balanced  macroF1=0.6044  auc=0.9128
+  d0=2021-12-31  none      macroF1=0.6248  auc=0.9246
+  d0=2022-06-30  balanced  macroF1=0.6044  auc=0.9128
+  d0=2022-06-30  none      macroF1=0.6248  auc=0.9246
+  d0=2023-12-31  balanced  macroF1=0.6044  auc=0.9128
+  d0=2023-12-31  none      macroF1=0.6248  auc=0.9246
+
+=== 3) Top-k curve and Gain group importance (13-variable pool) ===
+
+  xgboost / balanced Gain ranking: ['DAYS_TO_MATURITY', 'LOAN_TENURE_DAYS', 'CURRMIACCTTYPCD', 'LAISUAT', 'UTIL_RATE', 'BASE_BAL', 'ORGNBR', 'PARENTORGNBR', 'MUCDICHVAY', 'CURR_BAL', 'LOAIKH', 'SEX', 'MJACCTTYPCD']
+ k  accuracy  f1_macro  f1_weighted  roc_auc
+ 3  0.680244  0.481899     0.751566 0.876494
+ 5  0.775227  0.551602     0.817963 0.898592
+ 7  0.818922  0.590326     0.849169 0.916229
+ 9  0.827995  0.594381     0.854550 0.916993
+11  0.828365  0.589947     0.855170 0.916058
+13  0.833549  0.603635     0.858260 0.917433
+                  group  importance       pct
+       Kỳ hạn khoản vay    0.317071 31.700001
+Sản phẩm & Mục đích vay    0.216842 21.700001
+Dư nợ & Hạn mức sử dụng    0.167578 16.799999
+     Đơn vị / Chi nhánh    0.111541 11.200000
+Nhân khẩu học (IV thấp)    0.096567  9.700000
+               Lãi suất    0.090400  9.000000
+  (27s)
+
+  xgboost / none Gain ranking: ['DAYS_TO_MATURITY', 'LOAN_TENURE_DAYS', 'CURRMIACCTTYPCD', 'LAISUAT', 'UTIL_RATE', 'MUCDICHVAY', 'PARENTORGNBR', 'ORGNBR', 'BASE_BAL', 'MJACCTTYPCD', 'CURR_BAL', 'LOAIKH', 'SEX']
+ k  accuracy  f1_macro  f1_weighted  roc_auc
+ 3  0.903536  0.604300     0.884341 0.888523
+ 5  0.906128  0.606078     0.888165 0.912052
+ 7  0.912424  0.624094     0.895666 0.922729
+ 9  0.911498  0.613859     0.893843 0.928719
+11  0.911313  0.619707     0.894201 0.928224
+13  0.912609  0.619419     0.895031 0.928804
+                  group  importance       pct
+       Kỳ hạn khoản vay    0.431438 43.099998
+Sản phẩm & Mục đích vay    0.247457 24.700001
+Dư nợ & Hạn mức sử dụng    0.112139 11.200000
+               Lãi suất    0.077019  7.700000
+     Đơn vị / Chi nhánh    0.076368  7.600000
+Nhân khẩu học (IV thấp)    0.055578  5.600000
+  (26s)
+
+  lightgbm / balanced Gain ranking: ['DAYS_TO_MATURITY', 'UTIL_RATE', 'ORGNBR', 'BASE_BAL', 'CURR_BAL', 'LAISUAT', 'LOAN_TENURE_DAYS', 'PARENTORGNBR', 'CURRMIACCTTYPCD', 'MUCDICHVAY', 'SEX', 'MJACCTTYPCD', 'LOAIKH']
+ k  accuracy  f1_macro  f1_weighted  roc_auc
+ 3  0.775227  0.532443     0.812304 0.887947
+ 5  0.825958  0.572374     0.849051 0.903899
+ 7  0.842437  0.591086     0.861287 0.909108
+ 9  0.848176  0.596596     0.866917 0.910655
+11  0.853360  0.606469     0.870427 0.912647
+13  0.854657  0.607742     0.871185 0.912737
+                  group    importance  pct
+       Kỳ hạn khoản vay 312735.434613 49.3
+Dư nợ & Hạn mức sử dụng 156424.237671 24.6
+     Đơn vị / Chi nhánh  79379.284251 12.5
+               Lãi suất  39552.560058  6.2
+Sản phẩm & Mục đích vay  36428.691375  5.7
+Nhân khẩu học (IV thấp)  10468.202410  1.6
+  (27s)
+
+  lightgbm / none Gain ranking: ['DAYS_TO_MATURITY', 'UTIL_RATE', 'LOAN_TENURE_DAYS', 'ORGNBR', 'BASE_BAL', 'CURR_BAL', 'LAISUAT', 'CURRMIACCTTYPCD', 'PARENTORGNBR', 'MUCDICHVAY', 'SEX', 'MJACCTTYPCD', 'LOAIKH']
+ k  accuracy  f1_macro  f1_weighted  roc_auc
+ 3  0.899278  0.590861     0.882603 0.900819
+ 5  0.909646  0.620542     0.893102 0.921095
+ 7  0.907054  0.611872     0.890642 0.921549
+ 9  0.909646  0.614711     0.892792 0.924521
+11  0.911128  0.623367     0.895026 0.925973
+13  0.911128  0.616712     0.893857 0.926426
+                  group    importance  pct
+       Kỳ hạn khoản vay 185393.236139 60.0
+Dư nợ & Hạn mức sử dụng  56570.028441 18.3
+     Đơn vị / Chi nhánh  28096.386390  9.1
+Sản phẩm & Mục đích vay  21965.154186  7.1
+               Lãi suất  13738.032386  4.4
+Nhân khẩu học (IV thấp)   3341.786604  1.1
+  (23s)
+
+=== 4) SHAP (11-feature main configuration) ===
+
+  xgboost / balanced SHAP mean |phi|:
+DAYS_TO_MATURITY    0.9731
+UTIL_RATE           0.3600
+CURR_BAL            0.2672
+LAISUAT             0.2350
+ORGNBR              0.2302
+LOAN_TENURE_DAYS    0.2169
+BASE_BAL            0.1642
+PARENTORGNBR        0.1635
+CURRMIACCTTYPCD     0.1453
+MUCDICHVAY          0.0582
+MJACCTTYPCD         0.0172
+                  group  importance  pct
+       Kỳ hạn khoản vay    1.189954 42.0
+Dư nợ & Hạn mức sử dụng    0.791380 28.0
+     Đơn vị / Chi nhánh    0.393687 13.9
+               Lãi suất    0.235033  8.3
+Sản phẩm & Mục đích vay    0.220693  7.8
+
+  xgboost / none SHAP mean |phi|:
+DAYS_TO_MATURITY    0.8665
+UTIL_RATE           0.3134
+LAISUAT             0.2599
+CURR_BAL            0.2302
+ORGNBR              0.2209
+LOAN_TENURE_DAYS    0.2178
+PARENTORGNBR        0.1728
+CURRMIACCTTYPCD     0.1520
+BASE_BAL            0.1508
+MUCDICHVAY          0.0598
+MJACCTTYPCD         0.0146
+                  group  importance       pct
+       Kỳ hạn khoản vay    1.084275 40.799999
+Dư nợ & Hạn mức sử dụng    0.694414 26.100000
+     Đơn vị / Chi nhánh    0.393701 14.800000
+               Lãi suất    0.259882  9.800000
+Sản phẩm & Mục đích vay    0.226398  8.500000
+
+  lightgbm / balanced SHAP mean |phi|:
+DAYS_TO_MATURITY    1.2607
+UTIL_RATE           0.4698
+ORGNBR              0.3053
+CURR_BAL            0.3018
+LOAN_TENURE_DAYS    0.2686
+BASE_BAL            0.2527
+LAISUAT             0.2396
+CURRMIACCTTYPCD     0.1881
+PARENTORGNBR        0.1838
+MUCDICHVAY          0.0865
+MJACCTTYPCD         0.0141
+                  group  importance  pct
+       Kỳ hạn khoản vay    1.529279 42.8
+Dư nợ & Hạn mức sử dụng    1.024320 28.7
+     Đơn vị / Chi nhánh    0.489080 13.7
+Sản phẩm & Mục đích vay    0.288778  8.1
+               Lãi suất    0.239568  6.7
+
+  lightgbm / none SHAP mean |phi|:
+DAYS_TO_MATURITY    1.1694
+UTIL_RATE           0.4065
+CURR_BAL            0.3146
+LAISUAT             0.3019
+ORGNBR              0.3009
+LOAN_TENURE_DAYS    0.2424
+BASE_BAL            0.2353
+CURRMIACCTTYPCD     0.1806
+PARENTORGNBR        0.1803
+MUCDICHVAY          0.0756
+MJACCTTYPCD         0.0158
+                  group  importance  pct
+       Kỳ hạn khoản vay    1.411814 41.2
+Dư nợ & Hạn mức sử dụng    0.956434 27.9
+     Đơn vị / Chi nhánh    0.481194 14.1
+               Lãi suất    0.301943  8.8
+Sản phẩm & Mục đích vay    0.271965  7.9
+
+=== 5) Embedded in-fold feature selection (LightGBM, k = 9, 13-variable pool) ===
+  balanced  embedded k=9: 0.5878 +/- 0.0104   fixed 11: 0.5917 +/- 0.0089   (327s)
+  none      embedded k=9: 0.6147 +/- 0.0102   fixed 11: 0.6183 +/- 0.0095   (324s)
+
+Done.

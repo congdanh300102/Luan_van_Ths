@@ -1,0 +1,145 @@
+11-feature config: 5 cat + 6 num = 11
+Train 21600  Test 5401
+
+=== F.1: Table 3 refresh (class_weight) ===
+  logistic         acc=0.6091  macroF1=0.3946  weightedF1=0.6886  rocauc=0.7744
+  decision_tree    acc=0.6441  macroF1=0.4962  weightedF1=0.7243  rocauc=0.8647
+  random_forest    acc=0.7784  macroF1=0.5699  weightedF1=0.8229  rocauc=0.9071
+  xgboost          acc=0.8298  macroF1=0.5966  weightedF1=0.8556  rocauc=0.9147
+  lightgbm         acc=0.8548  macroF1=0.6044  weightedF1=0.8713  rocauc=0.9128
+  catboost         acc=0.7730  macroF1=0.5460  weightedF1=0.8192  rocauc=0.9062
+
+=== F.2: Confusion matrix + per-class metrics ===
+
+lightgbm confusion matrix (rows=true, cols=pred), labels 1..5:
+[[3755  323   54   47   15]
+ [  99  121   21   15    1]
+ [  24   27   50   18    2]
+ [  31   13   14   86   13]
+ [  11    9    4   43  605]]
+
+lightgbm per-class report:
+              precision    recall  f1-score      support
+1              0.957908  0.895327  0.925561  4194.000000
+2              0.245436  0.470817  0.322667   257.000000
+3              0.349650  0.413223  0.378788   121.000000
+4              0.411483  0.547771  0.469945   157.000000
+5              0.951258  0.900298  0.925076   672.000000
+accuracy       0.854842  0.854842  0.854842     0.854842
+macro avg      0.583147  0.645487  0.604407  5401.000000
+weighted avg   0.893668  0.854842  0.871319  5401.000000
+
+xgboost confusion matrix (rows=true, cols=pred), labels 1..5:
+[[3602  428   79   73   12]
+ [  91  133   24    7    2]
+ [  17   25   58   18    3]
+ [  25   14   15   91   12]
+ [  13   10    5   46  598]]
+
+xgboost per-class report:
+              precision    recall  f1-score      support
+1              0.961046  0.858846  0.907076  4194.000000
+2              0.218033  0.517510  0.306805   257.000000
+3              0.320442  0.479339  0.384106   121.000000
+4              0.387234  0.579618  0.464286   157.000000
+5              0.953748  0.889881  0.920708   672.000000
+accuracy       0.829846  0.829846  0.829846     0.829846
+macro avg      0.568101  0.665039  0.596596  5401.000000
+weighted avg   0.893751  0.829846  0.855622  5401.000000
+
+=== F.3: CatBoost ablation (re-check under class_weight base) ===
+  strategy=class_weight   auto_cw=Balanced  acc=0.7730 macroF1=0.5460 weightedF1=0.8192 rocauc=0.9062
+  strategy=none           auto_cw=None      acc=0.9093 macroF1=0.6074 weightedF1=0.8911 rocauc=0.9235
+
+=== F.4: DAYS_TO_MATURITY ablation (remove from 11-feature config) ===
+  xgboost    with=0.5966  without=0.4995  delta=0.0971  rocauc_without=0.8693
+  lightgbm   with=0.6044  without=0.5052  delta=0.0992  rocauc_without=0.8673
+
+=== F.5: Reference-date (d0) sensitivity ===
+  d0=2021-06-30  macroF1=0.6044  rocauc=0.9128
+  d0=2021-12-31  macroF1=0.6044  rocauc=0.9128
+  d0=2022-06-30  macroF1=0.6044  rocauc=0.9128
+  d0=2020-12-31  macroF1=0.6044  rocauc=0.9128
+  d0=2023-12-31  macroF1=0.6044  rocauc=0.9128
+
+=== F.6: Top-k curve (class_weight, 13-variable pool) ===
+
+xgboost importance ranking (13-pool, class_weight): ['DAYS_TO_MATURITY', 'LOAN_TENURE_DAYS', 'CURRMIACCTTYPCD', 'LAISUAT', 'UTIL_RATE', 'BASE_BAL', 'ORGNBR', 'PARENTORGNBR', 'MUCDICHVAY', 'CURR_BAL', 'LOAIKH', 'SEX', 'MJACCTTYPCD']
+xgboost top-k curve (class_weight):
+ k  accuracy  f1_macro  f1_weighted  roc_auc
+ 3  0.680244  0.481899     0.751566 0.876494
+ 5  0.775227  0.551602     0.817963 0.898592
+ 7  0.818922  0.590326     0.849169 0.916229
+ 9  0.827995  0.594381     0.854550 0.916993
+11  0.828365  0.589947     0.855170 0.916058
+13  0.833549  0.603635     0.858260 0.917433
+xgboost group importance (Gain, class_weight):
+                  group  importance       pct
+       Kỳ hạn khoản vay    0.317071 31.700001
+Sản phẩm & Mục đích vay    0.216842 21.700001
+Dư nợ & Hạn mức sử dụng    0.167578 16.799999
+     Đơn vị / Chi nhánh    0.111541 11.200000
+Nhân khẩu học (IV thấp)    0.096567  9.700000
+               Lãi suất    0.090400  9.000000
+
+lightgbm importance ranking (13-pool, class_weight): ['DAYS_TO_MATURITY', 'UTIL_RATE', 'ORGNBR', 'BASE_BAL', 'CURR_BAL', 'LAISUAT', 'LOAN_TENURE_DAYS', 'PARENTORGNBR', 'CURRMIACCTTYPCD', 'MUCDICHVAY', 'SEX', 'MJACCTTYPCD', 'LOAIKH']
+lightgbm top-k curve (class_weight):
+ k  accuracy  f1_macro  f1_weighted  roc_auc
+ 3  0.775227  0.532443     0.812304 0.887947
+ 5  0.825958  0.572374     0.849051 0.903899
+ 7  0.842437  0.591086     0.861287 0.909108
+ 9  0.848176  0.596596     0.866917 0.910655
+11  0.853360  0.606469     0.870427 0.912647
+13  0.854657  0.607742     0.871185 0.912737
+lightgbm group importance (Gain, class_weight):
+                  group    importance  pct
+       Kỳ hạn khoản vay 312735.434613 49.3
+Dư nợ & Hạn mức sử dụng 156424.237671 24.6
+     Đơn vị / Chi nhánh  79379.284251 12.5
+               Lãi suất  39552.560058  6.2
+Sản phẩm & Mục đích vay  36428.691375  5.7
+Nhân khẩu học (IV thấp)  10468.202410  1.6
+
+=== F.8: SHAP (class_weight, 11-feature main config) ===
+
+xgboost SHAP (class_weight):
+DAYS_TO_MATURITY    0.973078
+UTIL_RATE           0.360046
+CURR_BAL            0.267176
+LAISUAT             0.235033
+ORGNBR              0.230179
+LOAN_TENURE_DAYS    0.216877
+BASE_BAL            0.164157
+PARENTORGNBR        0.163507
+CURRMIACCTTYPCD     0.145295
+MUCDICHVAY          0.058182
+MJACCTTYPCD         0.017217
+xgboost SHAP group importance (class_weight):
+                  group  importance  pct
+       Kỳ hạn khoản vay    1.189954 42.0
+Dư nợ & Hạn mức sử dụng    0.791380 28.0
+     Đơn vị / Chi nhánh    0.393687 13.9
+               Lãi suất    0.235033  8.3
+Sản phẩm & Mục đích vay    0.220693  7.8
+
+lightgbm SHAP (class_weight):
+DAYS_TO_MATURITY    1.260700
+UTIL_RATE           0.469755
+ORGNBR              0.305322
+CURR_BAL            0.301817
+LOAN_TENURE_DAYS    0.268579
+BASE_BAL            0.252748
+LAISUAT             0.239568
+CURRMIACCTTYPCD     0.188139
+PARENTORGNBR        0.183757
+MUCDICHVAY          0.086542
+MJACCTTYPCD         0.014098
+lightgbm SHAP group importance (class_weight):
+                  group  importance  pct
+       Kỳ hạn khoản vay    1.529279 42.8
+Dư nợ & Hạn mức sử dụng    1.024320 28.7
+     Đơn vị / Chi nhánh    0.489080 13.7
+Sản phẩm & Mục đích vay    0.288778  8.1
+               Lãi suất    0.239568  6.7
+
+Stage F complete.

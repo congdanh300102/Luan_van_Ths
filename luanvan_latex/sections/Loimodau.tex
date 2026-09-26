@@ -1,5 +1,5 @@
-\chapter*{LỜI MỞ ĐẦU}
-\addcontentsline{toc}{chapter}{Lời mở đầu}
+\chapter*{MỞ ĐẦU}
+\addcontentsline{toc}{chapter}{Mở đầu}
 
 \section*{Lý do lựa chọn đề tài}
 
@@ -7,9 +7,24 @@ Tín dụng là hoạt động cốt lõi của ngân hàng thương mại, đ�
 
 Sự gia tăng về quy mô và mức độ đa dạng của dữ liệu ngân hàng đặt ra yêu cầu đổi mới phương pháp đánh giá rủi ro. Các phương pháp truyền thống có ưu điểm về tính minh bạch, nhưng có thể gặp hạn chế trước quan hệ phi tuyến, tương tác phức tạp và tình trạng mất cân bằng giữa các nhóm nợ. Trí tuệ nhân tạo và học máy vì vậy mở ra khả năng khai thác dữ liệu hiệu quả hơn, đồng thời hỗ trợ chuẩn hóa và tự động hóa một phần quy trình đánh giá.
 
-Trong bối cảnh đó, đề tài \textit{``Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam''} được thực hiện nhằm đánh giá khả năng áp dụng các mô hình học máy vào phân loại năm nhóm nợ trên dữ liệu thực tế. Nghiên cứu đồng thời xem xét vai trò của các nhóm thông tin nghiệp vụ và khả năng rút gọn đặc trưng, qua đó tạo cơ sở cho việc phát triển hệ thống cảnh báo sớm rủi ro tín dụng.
+Trong bối cảnh đó, đề tài \textit{``Ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng: nghiên cứu từ một ngân hàng thương mại ở Việt Nam''} được thực hiện nhằm đánh giá khả năng áp dụng các mô hình học máy vào phân loại năm nhóm nợ trên dữ liệu thực tế, đồng thời xem xét vai trò của các nhóm thông tin nghiệp vụ và khả năng rút gọn đặc trưng, tạo cơ sở cho việc phát triển hệ thống cảnh báo sớm rủi ro tín dụng. Việc ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng, vì vậy, được thúc đẩy bởi ba yêu cầu chính: khai thác tốt hơn nguồn dữ liệu ngân hàng ngày càng đa dạng, nâng cao tính nhất quán và hiệu quả của quy trình đánh giá, và hỗ trợ nhận diện sớm các khoản vay có dấu hiệu suy giảm — trong đó hiệu quả dự báo cần đi cùng khả năng giải thích, kiểm soát và giám sát để mô hình có thể được sử dụng như một công cụ hỗ trợ quyết định.
 
-Phần thực nghiệm tập trung vào hai nội dung. Thứ nhất, luận văn xây dựng và đánh giá ngoài mẫu các mô hình phân loại năm nhóm nợ trên hai bộ dữ liệu. Thứ hai, trên cơ sở hai kỳ báo cáo liên tiếp của bộ dữ liệu B, nghiên cứu xây dựng bài toán dự báo khả năng khoản vay chuyển sang nhóm nợ có mức rủi ro cao hơn trong tháng kế tiếp. Thiết kế này cho phép bước đầu đánh giá khả năng cảnh báo sớm, đồng thời làm rõ những giới hạn phát sinh từ số kỳ quan sát và mức độ mất cân bằng của sự kiện chuyển nhóm.
+Phần thực nghiệm của luận văn tập trung vào hai nội dung: xây dựng và đánh giá ngoài mẫu các mô hình phân loại năm nhóm nợ trên hai bộ dữ liệu, và xây dựng bài toán dự báo khả năng khoản vay chuyển sang nhóm nợ có mức rủi ro cao hơn trong các tháng tiếp theo trên bộ dữ liệu B. Thiết kế này cho phép bước đầu đánh giá khả năng cảnh báo sớm và kiểm tra độ ổn định của kết quả theo thời gian, đồng thời làm rõ những giới hạn phát sinh từ mức độ mất cân bằng của sự kiện chuyển nhóm; chi tiết về dữ liệu và phương pháp thực hiện được trình bày tại Mục Phương pháp nghiên cứu dưới đây và tại Chương 2.
+
+\section*{Mục tiêu nghiên cứu}
+
+\noindent\textbf{Mục tiêu tổng quát.} Xây dựng và đánh giá các mô hình học máy nhằm hỗ trợ phân loại năm nhóm nợ trên hai bộ dữ liệu thực tế của một ngân hàng thương mại tại Việt Nam, đồng thời xác định cấu hình đặc trưng có giá trị cho định hướng cảnh báo sớm.
+
+\medskip
+\noindent\textbf{Mục tiêu cụ thể.}
+\begin{enumerate}
+    \item Hệ thống hóa cơ sở lý thuyết và tổng quan nghiên cứu liên quan.
+    \item Làm sạch dữ liệu, xây dựng đặc trưng nghiệp vụ và xử lý mất cân bằng lớp.
+    \item Xây dựng và so sánh sáu mô hình phân loại — Logistic Regression làm mô hình cơ sở, đối chiếu với Decision Tree, Random Forest, XGBoost, LightGBM và CatBoost — đồng thời phân tích hiệu năng theo từng nhóm nợ.
+    \item Xác định các nhóm thông tin nghiệp vụ có đóng góp quan trọng thông qua phân tích số lượng đặc trưng và mức độ quan trọng của đặc trưng.
+    \item Đánh giá độ tin cậy của kết quả giải thích mô hình bằng cách đối chiếu hai thước đo mức độ quan trọng (Gain và SHAP) trên cùng mô hình, đồng thời đối chiếu kết quả SHAP giữa hai bộ dữ liệu độc lập.
+    \item Xây dựng và đánh giá bài toán dự báo chuyển nhóm nợ trong ngắn hạn trên bộ dữ liệu B, kiểm tra độ ổn định của kết quả trên nhiều cặp kỳ báo cáo thật.
+\end{enumerate}
 
 \section*{Đối tượng và phạm vi nghiên cứu}
 
@@ -17,8 +32,35 @@ Phần thực nghiệm tập trung vào hai nội dung. Thứ nhất, luận vă
 
 Nghiên cứu sử dụng hai bộ dữ liệu tín dụng đã được ẩn danh từ một ngân hàng thương mại tại Việt Nam. Phạm vi dữ liệu bao gồm thông tin khách hàng, khoản vay và các yếu tố nghiệp vụ liên quan; tên ngân hàng và thông tin định danh trực tiếp không được công bố.
 
-Các mô hình được đánh giá theo quy trình huấn luyện và kiểm định thống nhất trên từng bộ dữ liệu. Kết quả giữa hai bộ chỉ được đối chiếu về xu hướng do khác biệt về quy mô, cấu trúc biến và phân bố nhóm nợ. Các thông số dữ liệu, cấu hình tiền xử lý và thiết kế thực nghiệm được trình bày chi tiết tại Chương 3.
+Các mô hình được đánh giá theo quy trình huấn luyện và kiểm định thống nhất trên từng bộ dữ liệu. Kết quả giữa hai bộ chỉ được đối chiếu về xu hướng do khác biệt về quy mô, cấu trúc biến và phân bố nhóm nợ. Các thông số dữ liệu, cấu hình tiền xử lý và thiết kế thực nghiệm được trình bày chi tiết tại Chương 2.
 
-\section*{Động lực ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng}
+\section*{Câu hỏi nghiên cứu}
 
-Việc ứng dụng trí tuệ nhân tạo trong xếp hạng tín dụng được thúc đẩy bởi ba yêu cầu chính: khai thác tốt hơn dữ liệu ngày càng đa dạng; nâng cao tính nhất quán và hiệu quả của quy trình đánh giá; và hỗ trợ nhận diện sớm các khoản vay có dấu hiệu suy giảm. Trong lĩnh vực ngân hàng, hiệu quả dự báo cần đi cùng khả năng giải thích, kiểm soát và giám sát để mô hình có thể được sử dụng như một công cụ hỗ trợ quyết định.
+\begin{enumerate}
+    \item Các chiến lược xử lý mất cân bằng lớp khác nhau ảnh hưởng như thế nào đến hiệu năng của các mô hình phân loại nhóm nợ, và mô hình nào phù hợp nhất trên từng bộ dữ liệu?
+    \item Việc có nhiều đặc trưng/dữ liệu hơn có luôn cải thiện hiệu quả phân loại nhóm nợ hay không, và những nhóm thông tin nghiệp vụ nào có đóng góp quan trọng nhất mà ngân hàng nên ưu tiên hoàn thiện, duy trì chất lượng?
+    \item Kết luận về mức độ quan trọng của đặc trưng có ổn định hay không khi thay đổi thước đo giải thích (Gain và SHAP) và khi chuyển sang một bộ dữ liệu độc lập?
+    \item Mô hình học máy có thể dự báo khả năng một khoản vay chuyển sang nhóm nợ cao hơn trong ngắn hạn hay không, chỉ dựa trên thông tin sẵn có tại thời điểm đánh giá, và khả năng dự báo này có ổn định giữa các kỳ quan sát khác nhau hay không?
+\end{enumerate}
+
+\section*{Phương pháp nghiên cứu}
+
+Luận văn kết hợp phương pháp nghiên cứu định tính trong tổng quan tài liệu với phương pháp định lượng trong xử lý dữ liệu, xây dựng mô hình và đánh giá thực nghiệm. Quy trình thực nghiệm được triển khai độc lập trên \path{Data_credit_rating_VN.xlsx} (bộ A) và dữ liệu Thông tin tín dụng (bộ B), bao gồm làm sạch dữ liệu, xây dựng đặc trưng, phân tích khám phá dữ liệu, chia mẫu ngẫu nhiên có phân tầng, xử lý mất cân bằng lớp, huấn luyện, đánh giá và giải thích mô hình. Do khác biệt về cấu trúc và phân bố dữ liệu, kết quả của hai bộ chỉ được đối chiếu về xu hướng, không được so sánh trực tiếp như các mẫu đồng nhất.
+
+Đối với bộ B, ngân hàng đã cung cấp ba kỳ báo cáo liên tiếp của cùng một danh mục khoản vay (20260430, 20260531 và 20260630). Kỳ 20260531 được dùng làm tập kiểm tra ở kỳ sau cho bài toán phân loại năm nhóm nợ; đồng thời, ba kỳ này được ghép thành hai cặp kỳ độc lập theo khóa định danh khế ước để xây dựng bài toán bổ sung dự báo chuyển nhóm nợ trong ngắn hạn. Việc có hai cặp kỳ, thay vì chỉ một, cho phép kiểm tra độ ổn định của kết quả dự báo theo thời gian — một yêu cầu quan trọng khi đánh giá công cụ cảnh báo sớm. Quy trình xây dựng nhãn và tập đặc trưng cho bài toán chuyển nhóm tách biệt hoàn toàn với quy trình phân loại tại một thời điểm, được trình bày chi tiết ở Chương 2.
+
+\section*{Ý nghĩa khoa học và thực tiễn}
+
+Về khoa học, luận văn bổ sung bằng chứng thực nghiệm về phân loại năm nhóm nợ có thứ tự trên dữ liệu ngân hàng Việt Nam, kết hợp xử lý mất cân bằng lớp theo cả hai hướng (thuật toán và dữ liệu), đối chiếu vai trò của các nhóm đặc trưng bằng SHAP giữa hai bộ dữ liệu độc lập, và đánh giá trung thực khả năng dự báo chuyển nhóm nợ trên hai cặp kỳ báo cáo thật thay vì chỉ một cặp. Luận văn không đề xuất thuật toán mới; đóng góp nằm ở thiết kế bài toán và tổ chức thực nghiệm trên dữ liệu tín dụng thực tế (Chương 1, Mục~\ref{sec:ch1-gaps}).
+
+Về thực tiễn, kết quả có thể hỗ trợ ngân hàng chuẩn hóa đánh giá, nhận diện khoản vay suy giảm và định hướng xây dựng công cụ cảnh báo sớm nội bộ, đồng thời gợi ý các nhóm thông tin nghiệp vụ cần được ưu tiên hoàn thiện và duy trì chất lượng. Mô hình trong luận văn chỉ đóng vai trò hỗ trợ, không thay thế quyết định của cán bộ tín dụng và chưa phải căn cứ để thay thế quy trình phân loại nợ theo quy định hiện hành.
+
+\section*{Kết cấu luận văn}
+
+Ngoài phần Mở đầu và Tài liệu tham khảo, nội dung luận văn được kết cấu thành bốn chương:
+\begin{itemize}
+    \item \textbf{Chương 1: Tổng quan nghiên cứu và cơ sở lý luận.} Trình bày bối cảnh và động lực nghiên cứu, cơ sở lý thuyết về tín dụng, rủi ro và phân loại nhóm nợ, các mô hình học máy và hệ thống chỉ tiêu đánh giá được sử dụng, cùng tổng quan các nghiên cứu liên quan và khoảng trống nghiên cứu.
+    \item \textbf{Chương 2: Dữ liệu và phương pháp nghiên cứu.} Phát biểu hình thức hai bài toán nghiên cứu; mô tả hai bộ dữ liệu, quy trình tiền xử lý và xây dựng đặc trưng, phương pháp xử lý mất cân bằng lớp, thiết kế thực nghiệm và phương pháp cho bài toán dự báo chuyển nhóm nợ trên hai cặp kỳ báo cáo độc lập.
+    \item \textbf{Chương 3: Kết quả nghiên cứu và thảo luận.} Trình bày kết quả trên từng bộ dữ liệu, thảo luận theo bốn câu hỏi nghiên cứu, và báo cáo kết quả bài toán dự báo chuyển nhóm nợ trên hai cặp kỳ quan sát kèm kiểm tra độ ổn định.
+    \item \textbf{Chương 4: Kết luận và kiến nghị.} Tổng hợp các kết quả chủ yếu, làm rõ đóng góp và hạn chế của nghiên cứu, đề xuất kiến nghị đối với ngân hàng và định hướng nghiên cứu tiếp theo.
+\end{itemize}

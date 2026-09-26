@@ -27,7 +27,24 @@ from imblearn.under_sampling import RandomUnderSampler
 from src.preprocessing import CreditPreprocessor, CatBoostPreprocessor
 
 try:
-    from xgboost import XGBClassifier
+    from xgboost import XGBClassifier as _XGBClassifier
+
+    class XGBClassifier(_XGBClassifier):
+        """XGBClassifier không có class_weight built-in như các classifier
+        sklearn khác (LogisticRegression/DecisionTree/RandomForest/LightGBM);
+        cost-sensitive learning chỉ có hiệu lực qua fit(sample_weight=...).
+        balance_class_weight=True tự tính trọng số nghịch tần suất lớp tại
+        fit() nếu caller chưa truyền sample_weight, để imbalance_strategy=
+        "class_weight" thực sự có tác dụng thay vì no-op ngầm."""
+        def __init__(self, balance_class_weight: bool = False, **kwargs):
+            self.balance_class_weight = balance_class_weight
+            super().__init__(**kwargs)
+
+        def fit(self, X, y, sample_weight=None, **kwargs):
+            if self.balance_class_weight and sample_weight is None:
+                sample_weight = compute_sample_weights(y)
+            return super().fit(X, y, sample_weight=sample_weight, **kwargs)
+
     _HAS_XGB = True
 except Exception:
     _HAS_XGB = False
@@ -110,6 +127,14 @@ def build_pipeline(model_key: str,
       "smote_full"         — SMOTE full balance (không khuyến khích)
       "custom"             — SMOTE theo custom_smote_strategy do người gọi truyền vào
       "class_weight"       — trọng số lớp nghịch đảo tần suất (không resample)
+      "smote_class_weight" — kết hợp: SMOTE (custom_smote_strategy nếu có, ngược lại
+                              _SMOTE_MODERATE) CÙNG LÚC với trọng số lớp nghịch đảo tần
+                              suất trên dữ liệu đã oversample. Benchmark ban đầu (xem
+                              docstring module, "SMOTE full + class_weight (cũ)") từng
+                              cho kết quả tệ nhất trên Random Forest do double-counting
+                              tín hiệu lớp hiếm; chiến lược này được giữ lại như một
+                              phương án so sánh tường minh, không phải cấu hình khuyến
+                              nghị mặc định.
       "borderline_smote"   — BorderlineSMOTE (chỉ oversample điểm biên, giảm nhiễu so với SMOTE thường)
       "smote_tomek"        — SMOTE + loại cặp Tomek link (hybrid over/under-sampling)
       "adasyn"             — ADASYN (oversample thích ứng theo độ khó phân loại)
@@ -120,9 +145,10 @@ def build_pipeline(model_key: str,
     Vì SMOTE/BorderlineSMOTE/ADASYN nội suy khoảng cách nên yêu cầu dữ liệu số,
     không tương thích với categorical dạng chuỗi — với CatBoost, mọi
     imbalance_strategy khác "none" được ánh xạ sang auto_class_weights="Balanced"
-    (cơ chế cân bằng lớp tích hợp sẵn của CatBoost) thay vì resampling.
+    (cơ chế cân bằng lớp tích hợp sẵn của CatBoost) thay vì resampling; do đó
+    "smote_class_weight" và "class_weight" cho cùng một pipeline đối với CatBoost.
     """
-    use_class_weight = imbalance_strategy == "class_weight"
+    use_class_weight = imbalance_strategy in ("class_weight", "smote_class_weight")
     overrides = model_params or {}
 
     if model_key == "catboost":
@@ -136,6 +162,12 @@ def build_pipeline(model_key: str,
             cat_features=cat_idx,
             auto_class_weights=None if imbalance_strategy == "none" else "Balanced",
             verbose=False,
+            # allow_writing_files=False: tắt hẳn thư mục catboost_info/ (log
+            # huấn luyện không dùng đến trong pipeline tự động). Trên Windows,
+            # các lượt fit liên tiếp trong Repeated CV (50 lần) có thể tranh
+            # chấp quyền ghi catboost_training.json (Error 1224: "file với
+            # user-mapped section đang mở"), làm crash toàn bộ vòng lặp.
+            allow_writing_files=False,
             **cb_params,
         )
         return ImbPipeline([("preprocessor", preprocessor), ("classifier", clf)])
@@ -173,6 +205,7 @@ def build_pipeline(model_key: str,
         clf = XGBClassifier(
             eval_metric=eval_metric or "mlogloss", random_state=random_state,
             n_jobs=-1, verbosity=0,
+            balance_class_weight=use_class_weight,
             **xgb_params,
         )
     elif model_key == "lightgbm":
@@ -180,7 +213,10 @@ def build_pipeline(model_key: str,
             raise ImportError("LightGBM không khả dụng")
         lgb_params = {
             "n_estimators": 400, "max_depth": 8, "learning_rate": 0.05,
-            "subsample": 0.8, "colsample_bytree": 0.8, **overrides,
+            "subsample": 0.8, "colsample_bytree": 0.8,
+            # Make sklearn's feature_importances_ comparable with XGBoost's
+            # gain importance. LightGBM otherwise defaults to split counts.
+            "importance_type": "gain", **overrides,
         }
         clf = LGBMClassifier(
             random_state=random_state, n_jobs=-1, verbose=-1,
@@ -190,7 +226,9 @@ def build_pipeline(model_key: str,
     else:
         raise ValueError(f"Unknown model key: {model_key}")
 
-    # Chọn sampler (bỏ qua nếu dùng class_weight — tránh double-counting)
+    # Chọn sampler (bỏ qua nếu dùng riêng class_weight — tránh double-counting;
+    # "smote_class_weight" thì CỐ Ý dùng cả hai để so sánh tường minh với các
+    # chiến lược đơn lẻ, xem docstring build_pipeline)
     sampler = None
     if imbalance_strategy in ("none", "class_weight"):
         sampler = None
@@ -198,6 +236,9 @@ def build_pipeline(model_key: str,
         sampler = SMOTE(random_state=random_state, k_neighbors=3)
     elif imbalance_strategy == "custom" and custom_smote_strategy is not None:
         sampler = SMOTE(sampling_strategy=custom_smote_strategy,
+                        random_state=random_state, k_neighbors=3)
+    elif imbalance_strategy == "smote_class_weight":
+        sampler = SMOTE(sampling_strategy=custom_smote_strategy or _SMOTE_MODERATE,
                         random_state=random_state, k_neighbors=3)
     elif imbalance_strategy == "borderline_smote":
         sampler = BorderlineSMOTE(random_state=random_state, k_neighbors=3)
@@ -240,6 +281,7 @@ IMBALANCE_OPTIONS = {
     "SMOTE moderate (khuyến nghị)": "smote_moderate",
     "Không xử lý (baseline)":       "none",
     "Class weight (balanced)":      "class_weight",
+    "SMOTE + class weight (kết hợp)": "smote_class_weight",
     "SMOTE full balance":           "smote_full",
     "Borderline-SMOTE":             "borderline_smote",
     "SMOTE + Tomek links":          "smote_tomek",

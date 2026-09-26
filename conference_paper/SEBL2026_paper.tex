@@ -1,0 +1,677 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{vietnam}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\usepackage[labelsep=period,labelfont=bf,font=small]{caption}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{float}
+
+\setstretch{1.12}
+\titlespacing*{\section}{0pt}{1.4em}{0.8em}
+\titlespacing*{\subsection}{0pt}{1.1em}{0.6em}
+
+\newcommand{\refitem}[1]{\par\noindent\hangindent=1cm\hangafter=1 #1\par\smallskip}
+
+\begin{document}
+\renewcommand{\figurename}{Figure}
+\renewcommand{\tablename}{Table}
+\pagestyle{plain}
+
+\begin{center}
+{\LARGE\bfseries Explainable Machine Learning for Credit Risk Classification: Evidence from a Vietnamese Commercial Bank and Implications for Sustainable Private-Sector Credit Governance}
+
+\vspace{1em}
+{\large TS. Lê Thị Thanh An, TS. Lê Kim Thư; Đàm Công Danh\textsuperscript{*}}\\[0.2em]
+School of Applied Mathematics and Informatics, Hanoi University of Science and Technology (HUST), Hanoi, Vietnam\\[0.1em]
+\textsuperscript{*}Corresponding author: \texttt{danh.dc251317M@sis.hust.edu.vn}
+
+\vspace{0.8em}
+\textit{Submitted to the 3rd Global Conference on Sustainability in Economics, Business and Law\\
+(UEL SEBL International Conference 2026),\\
+``Green Economy and Sustainable Governance: New Growth Drivers for the Private Sector,''\\
+Ho Chi Minh City, October 6, 2026.}
+\end{center}
+
+\vspace{1em}
+\noindent\textbf{Abstract.}\quad
+Robust credit-risk classification supports responsible private-sector lending. Using 27{,}001 loan contracts from a Vietnamese commercial bank, this study addresses three questions. First, among six classifiers under common class weighting, LightGBM performs best; testing the full model-by-strategy grid, four unweighted configurations --- Decision Tree, XGBoost, Random Forest and LightGBM --- are statistically indistinguishable after dependence and multiplicity corrections (repeated-CV Macro-F1 0.618--0.627), each significantly ahead of unweighted CatBoost ($p=0.0091$), showing algorithm ranking depends on imbalance treatment and that ensemble complexity is not automatically warranted. Second, nine-feature configurations retain approximately 98\% of the best hold-out Macro-F1, while an embedded LightGBM check confirms only a small cross-validated reduction relative to 11 features. Third, consistently defined Gain and SHAP analyses identify loan maturity as the leading information group, although lower-ranked contributions remain model-dependent. Precision below 0.25 for Group 2 and unresolved temporal admissibility of \texttt{DAYS\_TO\_MATURITY} limit operational interpretation. Overall, the findings show that model choice, imbalance treatment, feature efficiency, and explanation methodology must be governed jointly.
+
+\smallskip
+\noindent\textbf{Keywords:} credit risk classification; class imbalance; explainable AI; model governance; Vietnam
+
+\bigskip
+\hrule
+\bigskip
+
+\section{Introduction}
+
+A growing private sector needs reliable access to bank credit at a fair, risk-appropriate cost, and reliable access depends on banks being able to classify credit risk soundly. Every commercial bank allocates credit through an internal risk-classification process, and the quality of that process determines how much credit reaches productive private borrowers, how consistently problem loans are identified, and how resilient the banking system remains through the credit cycle. Weak or opaque credit risk assessment works against this in two directions: it can restrict the flow of credit to bankable private borrowers because risk cannot be priced with confidence, or it can let risk accumulate unrecognised until it surfaces as non-performing loans (NPLs) that force banks to retrench lending precisely when the private sector needs it most.
+
+This paper's contribution to the conference's ``green economy and sustainable governance'' theme is deliberately scoped to the governance half of that pairing, not the environmental half: it does not measure, model or classify green or environmentally sustainable lending, and no variable in the dataset used here identifies a loan's environmental purpose or impact. The contribution instead concerns \textit{sustainable and responsible credit-risk governance} as an institutional capability --- evaluated honestly under class imbalance, kept no more complex than the data justify, explained through more than one method, and checked rather than merely asserted --- which is a precondition for a bank's overall lending capacity (green or otherwise) to be exercised responsibly and sustained over time. Readers looking for a direct measure of green-credit allocation will not find one in this paper; what follows is offered as infrastructure-level evidence for the private-sector-financing side of the conference theme.
+
+In Vietnam, the classification of loans into risk-ordered debt groups is not a purely internal modelling choice; it is a regulatory obligation. Under the asset-classification framework currently in force --- Circular No.\ 31/2024/TT-NHNN, as amended by Circular No.\ 37/2025/TT-NHNN and consolidated in Document No.\ 27/VBHN-NHNN dated 21 November 2025 --- commercial banks, non-bank credit institutions and foreign bank branches must classify each loan into one of five debt groups of increasing risk, with groups 3--5 constituting non-performing debt. This classification underpins provisioning, portfolio monitoring and, ultimately, the volume and cost of credit a bank is willing and able to extend to private borrowers. A bank that can classify the current risk of its portfolio more accurately and more consistently --- with less dependence on any single officer's judgement --- is a bank that can govern its credit portfolio more soundly and support private-sector growth more confidently.
+
+Machine learning offers a way to strengthen this classification process, but it also raises a governance concern that is directly relevant to a ``sustainable governance'' agenda: models that are accurate but opaque, or that unintentionally learn the labelling rule itself rather than genuine predictive signal, are unsuitable for a regulated, accountable credit process. Good governance of an AI-based credit model therefore requires three things simultaneously: predictive performance that is fairly measured under severe class imbalance; a feature set that is efficient and auditable rather than needlessly large; and an explanation of \textit{why} the model classifies a given loan as it does.
+
+This paper addresses these three requirements using a real dataset of 27{,}001 loan contracts from a Vietnamese commercial bank (\texttt{Data\_credit\_rating\_VN.xlsx}), covering the debt-group target \texttt{NHOMNOMOI} (groups 1--5) and 21 raw variables describing the loan, the borrower and the branch. Building on a broader ongoing thesis-level research programme on AI applications in credit rating, this paper isolates and reports the full pipeline and results obtained on this single dataset, reframed around the following four questions, chosen for their direct relevance to credit governance and private-sector financing:
+
+\begin{itemize}[leftmargin=2.2em]
+\item[\textbf{RQ1.}] How do standard machine-learning classifiers compare on a multi-class, severely imbalanced debt-group classification task, using imbalance-aware evaluation metrics?
+\item[\textbf{RQ2.}] Does adding more features always improve out-of-sample performance, or can a smaller, cheaper-to-maintain feature set retain (near-)full performance?
+\item[\textbf{RQ3.}] Which business-defined groups of information (loan tenure, product/purpose, balance/utilization, branch, demographics, pricing) drive predictive performance, and is this conclusion stable across two different importance measures (Gain and SHAP)?
+\item[\textbf{RQ4.}] What do the answers to RQ1--RQ3 imply for how a bank should govern an AI-based credit-classification model in a way that supports --- rather than restricts --- sound private-sector credit allocation?
+\end{itemize}
+
+The remainder of the paper is organised as follows. Section 2 reviews the credit-scoring literature and the Vietnamese legal context. Section 3 describes the data, the preprocessing and leakage-control pipeline, the engineered features, and the modelling and evaluation design. Section 4 reports the empirical results. Section 5 discusses the implications for sustainable credit governance and private-sector financing. Section 6 concludes and states the limitations of the study.
+
+\section{Literature Review and Institutional Context}
+
+\subsection{From statistical scoring to machine learning}
+
+Credit scoring has a long statistical tradition. Altman (1968) introduced the multivariate discriminant Z-score on a matched sample of 66 U.S.\ manufacturing firms, reporting about 95\% correct classification one year before bankruptcy --- a result obtained on a small, artificially balanced sample and therefore not directly transferable as an accuracy benchmark to a modern, imbalanced retail-banking dataset. Ohlson (1980) moved the field toward probabilistic prediction with a logit model estimated on a much larger and more realistic sample (105 bankrupt vs.\ 2{,}058 non-bankrupt firms). In consumer credit, Hand and Henley (1997) and Thomas (2000) systematised the statistical foundations of credit and behavioural scoring; logistic regression became --- and remains --- the industry baseline because of its transparent, additive log-odds structure (Hosmer et al., 2013).
+
+The 2000s and 2010s extended the toolkit substantially. Random Forest (Breiman, 2001) reduces variance relative to a single decision tree (Quinlan, 1986) by averaging over bootstrap-sampled, decorrelated trees. Gradient Boosting (Friedman, 2001) fits an additive sequence of weak learners to residual error. XGBoost (Chen \& Guestrin, 2016), LightGBM (Ke et al., 2017) and CatBoost (Prokhorenkova et al., 2018) are, respectively, a regularised and scalable boosting framework, a histogram/leaf-wise boosting framework optimised for large, high-dimensional tabular data, and a boosting framework with native handling of categorical features. Large-scale benchmarking studies caution against assuming any one family is uniformly best: Baesens et al. (2003) found that non-linear classifiers did not dominate logistic regression consistently across eight European and U.S.\ credit datasets, while Lessmann et al. (2015), updating that benchmark on 41 classifiers and 8 datasets, found that many classifiers outperform logistic regression and that heterogeneous ensembles perform well on average, but that rankings vary by dataset and metric. Brown and Mues (2012) show, across five real credit datasets under class ratios pushed from 70/30 to an extreme 99/1, that the best-performing algorithm changes with the degree of imbalance, with Random Forest performing best at the most extreme imbalance level they test.
+
+\subsection{Class imbalance, evaluation and explainability}
+
+Credit datasets are structurally imbalanced: good loans vastly outnumber bad ones. Under such imbalance, Accuracy is a misleading headline metric because a trivial ``always predict good'' classifier can score deceptively well; Macro-F1, which averages F1 across classes without weighting by class frequency, is a more informative primary metric because it penalises poor detection of rare, high-risk classes (Brown \& Mues, 2012). The Synthetic Minority Over-sampling Technique (SMOTE; Chawla et al., 2002) is a widely used resampling method to counteract imbalance, but it must be fitted only within the training partition to avoid leaking synthetic-neighbour information into the evaluation set. Beyond raw predictive performance, credit-risk models used in a regulated setting must also be explainable. SHAP (SHapley Additive exPlanations), grounded in cooperative game theory, attributes each prediction additively to its input features at both the individual and the aggregate level (Lundberg \& Lee, 2017), and is increasingly treated as a governance tool rather than a purely technical add-on, precisely because it lets a bank show, feature by feature, why a given loan was scored as it was.
+
+A complementary, older but still standard tool for feature screening in credit scoring is the Weight of Evidence / Information Value (WOE/IV) framework (Siddiqi, 2006), which quantifies how well a single variable separates ``good'' from ``bad'' outcomes before any model is fitted, using conventional thresholds (IV $<$ 0.02 ``useless,'' 0.02--0.1 ``weak,'' 0.1--0.3 ``medium,'' 0.3--0.5 ``strong,'' 0.5--1.0 ``very strong,'' and $>$ 1.0 flagged as ``suspiciously high,'' a common heuristic trigger to check for data leakage). This last threshold matters for governance: an unusually high IV is not proof of leakage, but it is a signal that a variable's availability at scoring time must be verified before the variable is used --- a discipline this paper applies explicitly in Section 3.
+
+\subsection{Legal and institutional context in Vietnam, and its alignment with this dataset's timing}
+
+The target variable used in this paper is not an arbitrary research construct: it is the debt group assigned to each loan under Vietnam's binding regulatory framework for asset classification, which has been revised several times. Decision No.\ 493/2005/QĐ-NHNN (as amended by Decision No.\ 18/2007/QĐ-NHNN) first codified the five-group debt-classification structure retained in every subsequent version. Circular No.\ 02/2013/TT-NHNN (as amended by Circular No.\ 09/2014/TT-NHNN) replaced Decision 493; Circular No.\ 11/2021/TT-NHNN, effective 1 October 2021, then replaced Circular 02/2013; and Circular No.\ 31/2024/TT-NHNN, effective 1 July 2024 and further amended by Circular No.\ 37/2025/TT-NHNN (consolidated in Document No.\ 27/VBHN-NHNN, 21 November 2025), is the framework currently in force. Across all versions, assets are classified into five debt groups of increasing risk, with groups 3, 4 and 5 constituting non-performing debt. In parallel, the National Credit Information Center of Vietnam (CIC), operating under Circular No.\ 15/2023/TT-NHNN, aggregates cross-institution credit-history information used in classification and monitoring.
+
+The dataset does not record its classification date, so the operative circular cannot be established from the file alone. A snapshot before 1 October 2021 may fall under Circular No.\ 02/2013/TT-NHNN; a later snapshot may fall under Circular No.\ 11/2021/TT-NHNN. The narrower claim is that \texttt{NHOMNOMOI} appears to operationalise Vietnam's long-standing five-group regulatory structure, while the exact legal instrument and bank-internal assignment rules remain unverified. Circular No.\ 31/2024/TT-NHNN is cited only for the framework currently in force.
+
+\subsection{Prior machine-learning credit-scoring work in Vietnam and the research gap}
+
+Several recent studies have applied machine learning to credit risk at Vietnamese commercial banks. Dang and Nguyen (2020) built an early credit-scoring pipeline for a Vietnamese bank; Trung and Vuong (2025) developed a credit-scoring model for individual Vietnamese bank customers comparing Logistic Regression, k-nearest neighbours, Decision Tree, Random Forest, LightGBM and SVM; Nguyen and Ngo (2025) compared four boosting algorithms (AdaBoost, XGBoost, LightGBM, CatBoost) for personal default prediction on a pooled dataset of 7{,}542 customers from Vietnamese commercial banks and financial institutions (2014--2022); and, closest in subject to the present paper, Nguyen et al. (2024) built an early-warning system for debt-group migration at one Vietnamese commercial bank, comparing Logistic Regression, SVM, Decision Tree and Random Forest and reporting up to 81.84\% Accuracy for a Random Forest model predicting overdue-debt migration.
+
+These studies establish that machine learning is an active, competitive area of Vietnamese banking research and that ensemble/boosting methods are strong candidates in this setting, but three gaps in this literature motivate the present paper's design. First, model comparisons are typically reported using Accuracy as the headline metric --- including the 81.84\% figure above --- without a class-imbalance-robust primary metric such as Macro-F1; Section 4.1 of this paper shows directly, on this same category of data, how misleading Accuracy can be under severe imbalance (CatBoost's Accuracy and Macro-F1 diverge sharply). Second, none of these studies checks whether its feature-importance conclusions are stable across more than one algorithm or more than one importance measure; Section 4.3 shows that Gain-based importance computed from two different tree-boosting libraries on the \textit{same} Vietnamese dataset can disagree sharply with each other, a methodological caution directly relevant to any single-model importance analysis in this literature. Third, none reports an explicit leakage diagnostic for a dominant predictor, an ablation study, or a check of sensitivity to an arbitrary modelling convention such as a reference date --- verification steps this paper treats as a governance requirement (Section 5) rather than an optional robustness check. The present paper's contribution is accordingly not one more machine-learning model for a Vietnamese bank, but a demonstration of a verification-first methodology --- cross-model importance triangulation, a leakage ablation, a reference-date sensitivity check, and imbalance-metric discipline with a properly specified statistical test --- that this literature has not yet applied together, and that this paper argues should be a governance baseline before a model of this kind informs credit decisions affecting private-sector borrowers.
+
+\section{Data and Methodology}
+
+\subsection{Dataset}
+
+The dataset (\texttt{Data\_credit\_rating\_VN.xlsx}) contains 27{,}001 loan contracts from a Vietnamese commercial bank and 21 raw variables, with no missing values in the target variable \texttt{NHOMNOMOI} (debt group, 1--5), which is defined per the classification framework described in Section 2.3. Table 1 reports the class distribution together with the stratified 80/20 train/test split (\texttt{random\_state = 42}) used throughout.
+
+\begin{table}[H]
+\centering
+\caption{Debt-group distribution in Dataset A}
+\begin{tabular}{lrrrr}
+\toprule
+Group & Total & Share (\%) & Train & Test \\
+\midrule
+1 (standard)        & 20,965 & 77.65  & 16,771 & 4,194 \\
+2 (special mention)  & 1,287  & 4.77   & 1,030  & 257 \\
+3 (sub-standard)     & 604    & 2.24   & 483    & 121 \\
+4 (doubtful)         & 784    & 2.90   & 627    & 157 \\
+5 (loss)             & 3,361  & 12.45  & 2,689  & 672 \\
+\midrule
+\textbf{Total} & \textbf{27,001} & \textbf{100.00} & \textbf{21,600} & \textbf{5,401} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The imbalance ratio between the largest and smallest groups is approximately 35:1 (Group 1 vs.\ Group 3), which motivates the imbalance-aware modelling and evaluation choices described below.
+
+The raw file does not contain an explicit ``as-of'' or classification-date field, so this paper treats the 27{,}001 records as a single cross-sectional snapshot rather than a panel spanning multiple classification dates. Two pieces of indirect evidence support, without conclusively proving, this reading. First, a three-valued field named \texttt{ID\_TIME} initially raised the possibility that the data spans multiple reporting periods; direct inspection shows it instead encodes loan tenor category (short/medium/long-term), not a time period, so it provides no evidence of multi-date pooling. Second, \texttt{OPEN\_DATE} is heavily concentrated in 2016--2019, falls to five records in 2020, and contains none after 8 November 2020 --- a pattern consistent with a single extraction of the active loan book taken shortly after that date, though it does not rule out staggered classification dates within the book. Because this cannot be verified independently from the data, the fixed reference date $d_0 = $ 31 December 2021 used below (Section 3.4) should be read as a modelling convention consistent with the wider pipeline rather than a value read from a recorded snapshot-date field; this is stated explicitly as an assumption and revisited in Section 6.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\linewidth]{fig1_class_distribution.png}
+\caption{Debt-group distribution in Dataset A ($n = 27{,}001$). Group 1 (standard debt) alone accounts for 77.6\% of loan contracts, while the three non-performing groups (3--5) together account for only 17.6\%.}
+\end{figure}
+
+\subsection{Data cleaning}
+
+Before computing descriptive statistics, the two date fields \texttt{OPEN\_DATE} and \texttt{NGAYDENHAN} (maturity date) were checked for format consistency. A substantial share of records stored dates as Excel serial-date integers rather than \texttt{dd/mm/yyyy} text strings --- 36.84\% of \texttt{OPEN\_DATE} (9,949 records) and 36.63\% of \texttt{NGAYDENHAN} (9,890 records). Because the original date parser only recognised text-formatted dates, applying it without this check would have silently converted more than a third of records to missing values. Serial-date values were therefore converted using the Excel epoch (30 December 1899); after cleaning, both fields had zero missing or unparsed records.
+
+The five raw numeric variables (\texttt{BASE\_BAL}, \texttt{CURR\_BAL}, \texttt{LAISUAT} [interest rate], \texttt{ORGNBR}, \texttt{PARENTORGNBR}) show strong right skew typical of monetary variables in banking data --- for instance, the standard deviation of \texttt{BASE\_BAL} ($6.40\times10^{9}$) is more than ten times its mean ($4.28\times10^{8}$) --- and elevated Interquartile-Range (IQR) outlier rates for the two balance variables (\texttt{CURR\_BAL}: 9.12\%; \texttt{BASE\_BAL}: 7.13\%), consistent with a small number of very large corporate-type exposures within an otherwise retail-dominated book.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\linewidth]{fig2_distributions.png}
+\caption{Distribution of key numeric variables in Dataset A. \texttt{BASE\_BAL} and \texttt{CURR\_BAL} are plotted on a $\log_{10}$ scale to reveal their approximately log-normal shape; \texttt{UTIL\_RATE} shows a visible spike at the clip boundary of 10, confirming that the clipping rule in Section 3.4 is binding for a non-trivial share of contracts; \texttt{DAYS\_TO\_MATURITY} is markedly bimodal around zero, separating loans already past their reference-date maturity from loans with substantial remaining tenor.}
+\end{figure}
+
+\subsection{Leakage control}
+
+This stage addresses the third research gap identified in Section 2.4: prior Vietnamese credit-scoring studies rarely document an explicit diagnostic for predictors that may encode the outcome being modelled. The risk is especially material here because \texttt{NHOMNOMOI} is a regulator-defined debt-group classification and the source file contains neighbouring fields produced by the same credit-monitoring process. A model trained on a current or earlier debt-group field could achieve apparently strong out-of-sample scores by reproducing the bank's classification rule, rather than by learning a relationship that would remain valid when the model is applied to genuinely new observations.
+
+We therefore applied a two-part admissibility criterion before modelling: an input must be available no later than the intended classification point and must not be a direct or derived restatement of \texttt{NHOMNOMOI}. On this basis, \texttt{NHOMNO} was excluded because it is an alternate debt-group field with a Pearson correlation of 0.98 with the target, while \texttt{NHOMNO\_TCBS} was excluded because it is a text-coded restatement of debt group. These exclusions are treated as leakage control, not ordinary feature selection: retaining either variable would compromise the validity of every subsequent comparison, irrespective of the algorithm used.
+
+The remaining removals address redundancy and lack of usable information rather than target leakage. \texttt{DUNO\_QD} duplicates the outstanding-balance information, \texttt{MJACCTTYPDESC} is a free-text description of the coded product field, and constant or near-uninformative fields cannot support stable discrimination. After these rules, 13 variables remain as the candidate-admissible pool. This initial screen is deliberately not presented as conclusive proof that every retained variable is leakage-free. Instead, it establishes an auditable first filter that is followed by the IV-based review in Section 3.5 and the ablation and reference-date checks in Section 4.2. The resulting sequence---semantic screening, quantitative flagging, and falsifiable robustness tests---is the study's concrete methodological response to the leakage-diagnostic gap in the prior literature.
+
+\subsection{Feature engineering}
+
+Three engineered variables were constructed from the cleaned date and balance fields, using a fixed reference date $d_0 = $ 31 December 2021 so that results are reproducible across re-runs:
+
+\[
+\text{\texttt{LOAN\_TENURE\_DAYS}}_i = \max\{0,\; d_i^{\mathrm{maturity}} - d_i^{\mathrm{open}}\}
+\]
+\[
+\text{\texttt{DAYS\_TO\_MATURITY}}_i = d_i^{\mathrm{maturity}} - d_0
+\]
+
+\[
+\text{\texttt{UTIL\_RATE}}_i =
+\begin{cases}
+\operatorname{clip}\!\left(\dfrac{\text{\texttt{CURR\_BAL}}_i}{\text{\texttt{BASE\_BAL}}_i},\,0,\,10\right), & \text{\texttt{BASE\_BAL}}_i>0 \\[6pt]
+0, & \text{\texttt{BASE\_BAL}}_i \le 0
+\end{cases}
+\]
+
+where $\operatorname{clip}(u;0,10)=\min\{\max(u,0),10\}$ caps the utilization ratio at ten times the original balance, preventing a small number of extreme ratios (from additional disbursements) from dominating the standardisation step used by the linear baseline. \texttt{DAYS\_TO\_MATURITY} has the highest IQR-outlier rate (23.08\%) because it is legitimately bimodal --- negative for loans already past maturity at the reference date and positive, sometimes far so, for long-tenor loans --- a business feature, not a data error. \texttt{LOAN\_TENURE\_DAYS} and \texttt{DAYS\_TO\_MATURITY} are strongly correlated ($r=0.942$), as expected since both derive from the same two date fields; \texttt{BASE\_BAL} and \texttt{CURR\_BAL} are similarly correlated ($r=0.923$). No pair exceeds $|r|=0.95$, so no variable was dropped purely on correlation grounds, but this correlation structure is kept in mind when interpreting tree-based importance measures in Section 4.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.62\linewidth]{fig3_correlation.png}
+\caption{Pearson correlation matrix of the eight numeric variables of Dataset A. The three high-correlation pairs discussed in the text (\texttt{LOAN\_TENURE\_DAYS}--\texttt{DAYS\_TO\_MATURITY}, \texttt{BASE\_BAL}--\texttt{CURR\_BAL}, \texttt{ORGNBR}--\texttt{PARENTORGNBR}) stand out as the darkest off-diagonal cells.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.66\linewidth]{fig4_boxplot_maturity.png}
+\caption{Distribution of \texttt{DAYS\_TO\_MATURITY} by debt group (outliers hidden to show box shape). The median falls fairly steadily from Group 1 to Group 4 and then drops sharply for Group 5, foreshadowing why this variable emerges as the dominant predictor in the SHAP analysis of Section 4.3 --- while also showing that the relationship is not strictly monotonic, a caution against over-interpreting it causally.}
+\end{figure}
+
+\subsection{Feature screening with Information Value (IV)}
+
+Following the WOE/IV convention (Siddiqi, 2006), IV was computed for all 13 admissible variables (Table 2). Five variables exceed the conventional IV $=1.0$ threshold that flags a possible leakage risk. Rather than excluding them automatically, each was manually checked against the leakage criterion stated in Section 2.3 --- availability at or before the classification date --- and retained, because \texttt{DAYS\_TO\_MATURITY}, \texttt{LOAN\_TENURE\_DAYS} and \texttt{UTIL\_RATE} are computed strictly from origination/maturity dates and balances known at scoring time, and \texttt{CURRMIACCTTYPCD} (31-category product sub-type) and \texttt{MUCDICHVAY} (79-category loan purpose) are contractual attributes fixed at origination, not outcomes of the classification process itself. This distinguishes them from \texttt{NHOMNO}/\texttt{NHOMNO\_TCBS}, which were excluded in Section 3.3 precisely because they \textit{are} restatements of the target. We report this distinction explicitly because it illustrates a governance point developed further in Section 5: an automatic IV-based leakage flag is a prompt for human review, not a substitute for it.
+
+\begin{table}[H]
+\centering
+\caption{Information Value of the 13-variable pool (Dataset A)}
+\begin{tabular}{lrp{6.6cm}}
+\toprule
+Feature & IV & Level \\
+\midrule
+\texttt{DAYS\_TO\_MATURITY} & 4.554 & High IV --- reviewed, retained (available at scoring time) \\
+\texttt{CURRMIACCTTYPCD} & 1.992 & High IV --- reviewed, retained \\
+\texttt{LOAN\_TENURE\_DAYS} & 1.941 & High IV --- reviewed, retained \\
+\texttt{MUCDICHVAY} & 1.414 & High IV --- reviewed, retained \\
+\texttt{UTIL\_RATE} & 1.333 & High IV --- reviewed, retained \\
+\texttt{MJACCTTYPCD} & 0.970 & Very strong \\
+\texttt{LAISUAT} (interest rate) & 0.785 & Very strong \\
+\texttt{BASE\_BAL} & 0.536 & Very strong \\
+\texttt{PARENTORGNBR} & 0.320 & Strong \\
+\texttt{CURR\_BAL} & 0.259 & Medium \\
+\texttt{ORGNBR} & 0.182 & Medium \\
+\texttt{SEX} & 0.008 & Useless \\
+\texttt{LOAIKH} (customer type) & 0.000 & Useless \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Because \texttt{SEX} and \texttt{LOAIKH} carry effectively no separating information, the \textbf{main modelling configuration uses the remaining 11 features} (the 13-variable pool minus these two), while the full 13-variable pool is retained for the top-$k$ feature-efficiency experiment in Section 4.2.
+
+\paragraph{A closer look at \texttt{DAYS\_TO\_MATURITY}.} Its IV of 4.554 is markedly higher than any other admissible variable, and --- as Section 4.3 shows --- it is also the single dominant SHAP predictor under both models tested. This combination warrants a direct check of whether the variable is a genuine, non-deterministic risk signal or, like \texttt{NHOMNO} in Section 3.3, effectively a restatement of the classification rule. Two definitional points bound the concern before turning to the data: \texttt{DAYS\_TO\_MATURITY} is computed from \texttt{NGAYDENHAN}, the loan's \textit{original contractual} maturity date, not from a payment-due date; and the raw 21-column file contains no ``days overdue on payment'' / ``days past due'' field of any kind, so the two concepts cannot be compared directly --- only inferred indirectly, as done here.
+
+Table 2b reports the distribution of \texttt{DAYS\_TO\_MATURITY} by debt group and the share of each group already past its original maturity date ($\text{\texttt{DAYS\_TO\_MATURITY}} < 0$) as of the reference date.
+
+\begin{table}[H]
+\centering
+\caption*{\small\textbf{Table 2b.} \texttt{DAYS\_TO\_MATURITY} by debt group, and share already past original maturity}
+\begin{tabular}{lrrrrr}
+\toprule
+Group & Mean & Median & Min & Max & Share with $<0$ \\
+\midrule
+1 (standard)         & 1,112.0   & 224     & $-$3,252 & 16,798 & 35.1\% \\
+2 (special mention)  & 733.2     & 172     & $-$724   & 6,549  & 44.2\% \\
+3 (sub-standard)     & 327.8     & $-$418  & $-$727   & 6,547  & 60.3\% \\
+4 (doubtful)         & 54.4      & $-$517  & $-$1,085 & 6,520  & 68.1\% \\
+5 (loss)             & $-$1,884.8 & $-$2,236 & $-$5,513 & 6,495  & 92.1\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.66\linewidth]{fig4b_past_maturity_share.png}
+\caption*{\small\textbf{Figure 4b.} Share of loans with \texttt{DAYS\_TO\_MATURITY} $<0$ (already past their original contractual maturity date), by debt group. The share rises with risk but is far from a 0\%/100\% step function at any group boundary --- over a third of Group-1 loans are already past original maturity, and almost 8\% of Group-5 loans are not --- the pattern discussed in the text.}
+\end{figure}
+
+The mean and median fall monotonically from Group 1 to Group 5, the pattern that motivates a leakage concern in the first place. However, two features of the table above argue against \texttt{DAYS\_TO\_MATURITY} being a simple restatement of the labelling rule. First, 35.1\% of Group-1 (standard, lowest-risk) loans are already past their \textit{original} maturity date yet remain classified as standard --- plausibly short-term working-capital loans that were rolled over or renewed without a change in risk classification, a common practice in Vietnamese commercial lending. If the variable directly encoded the overdue-payment criterion used for classification, this share should be close to zero. Second, 7.9\% of Group-5 (loss, highest-risk) loans are \textit{not} past their original maturity, indicating that \texttt{NHOMNOMOI} also reflects information beyond original-maturity status (e.g., restructuring history or other qualitative criteria under Circular No.\ 11/2021/TT-NHNN, the framework applicable to this dataset per Section 2.3). As a more direct quantitative check, a univariate rule that predicts ``non-performing'' whenever $\text{\texttt{DAYS\_TO\_MATURITY}} < 0$ and ``performing'' otherwise reconstructs the binary good/bad split (Groups 2--5 vs.\ Group 1) with only 67.3\% accuracy and an F1-score of 0.508 on the non-performing class over the full 27{,}001-record dataset --- far from the near-perfect reconstruction that would indicate the variable is algebraically equivalent to the label, and in clear contrast to \texttt{NHOMNO} in Section 3.3, whose 0.98 correlation with the target was the basis for its exclusion.
+
+Taken together, this evidence is consistent with \texttt{DAYS\_TO\_MATURITY} being a strong, economically plausible predictor --- a loan sitting well past its original maturity without formal renewal is a reasonable indicator of distress --- rather than a hidden copy of the classification outcome. It does not, however, amount to proof: the exact quantitative criteria the source bank uses to assign \texttt{NHOMNOMOI} are not documented in the dataset, so a residual possibility that part of the variable's predictive power reflects an unobserved overdue-payment field correlated with it cannot be fully excluded from the data alone. This is stated as an explicit limitation in Section 6, together with a recommendation to confirm the variable's relationship to the bank's internal classification methodology before any operational use.
+
+\subsection{Models, imbalance handling and evaluation}
+
+Six classifiers were trained and compared: Logistic Regression, Decision Tree, Random Forest, XGBoost, LightGBM and CatBoost, all trained and evaluated in a single software environment (\texttt{scikit-learn} 1.9.0, \texttt{xgboost} 3.3.0, \texttt{lightgbm} 4.7.0, \texttt{catboost} 1.2.10; full versions in the Reproducibility Statement) so that every number reported below is directly comparable. All numerical preprocessing (imputation, standardisation) was fitted on the training partition only, to prevent information from the test partition from influencing model training.
+
+Class imbalance was handled with \textbf{class weighting} for the single-split, common-treatment comparison reported in Section 4.1 (Table 3). Five of eleven features are categorical, including nominal branch identifiers \texttt{ORGNBR} and \texttt{PARENTORGNBR}; these are no longer treated as continuous quantities. For non-CatBoost models they remain label-encoded, a limitation stated in Section 6. SMOTE was rejected because interpolation between encoded category values has no contractual meaning. A pilot check showed that class weighting substantially changes CatBoost's Macro-F1 (Section 4.1, Table 5); rather than assume this is CatBoost-specific, Section 4.4 evaluates \textbf{every} model under both weighting settings, on the same repeated cross-validation folds, before any cross-model ranking is drawn. Models were evaluated on the stratified 20\% hold-out set using four metrics:
+
+\[
+\mathrm{Accuracy}=\frac{\sum_{k=1}^{K}C_{kk}}{N}, \qquad
+F1_{\mathrm{macro}}=\frac{1}{K}\sum_{k=1}^{K}F1_k
+\]
+\[
+F1_{\mathrm{weighted}}=\sum_{k=1}^{K}\frac{n_k}{N}F1_k, \qquad
+\mathrm{AUC}_{\mathrm{macro,OvR}}=\frac{1}{K}\sum_{k=1}^{K}\mathrm{AUC}\bigl(y^{(k)},\hat p^{(k)}\bigr)
+\]
+
+with $K=5$ classes. Because Group 1 alone accounts for 77.65\% of observations, Accuracy is reported for completeness but \textbf{Macro-F1 is treated as the primary criterion}, consistent with the imbalance literature reviewed in Section 2.2. Per-class Precision/Recall/F1 and the full $5\times5$ confusion matrix are also reported for the top model (Section 4.1), because Macro-F1 alone does not show \textit{which} debt groups drive a model's score. Because a single stratified split can make a small, split-specific gap between two close models look more decisive than it is, the single-split comparison in Table 3 is supplemented with a repeated stratified cross-validation check (5-fold, 5 repeats, 25 train/test partitions per model) that reports Macro-F1 as a mean $\pm$ standard deviation for each of the six models, together with a \textbf{corrected resampled paired $t$-test} (Nadeau \& Bengio, 2003) comparing the top model against every other model --- an explicit correction for the fact that folds within repeated $k$-fold CV share data and are not independent, so a naive paired $t$-test or Wilcoxon test on the same folds understates variance and overstates significance (Section 4.4).
+
+Feature importance was assessed with two independent measures: Gain (split-based importance native to the tree-boosting libraries) and mean absolute SHAP value (via \texttt{TreeExplainer}), computed on the full 5,401-observation test set for the 11-feature main configuration. Because the feature-analysis module in this pipeline defaults to XGBoost, the top-$k$ curve and Gain/SHAP importance analysis are reported for both XGBoost and LightGBM throughout Section 4, so that the paper's feature-level conclusions do not rest on one algorithm's internal ranking behaviour. Three additional checks probe whether this ranking-based design is trustworthy: an \textbf{ablation} that removes the dominant predictor, \texttt{DAYS\_TO\_MATURITY}, from the feature set entirely (Section 4.2); a \textbf{reference-date sensitivity check} that re-derives \texttt{DAYS\_TO\_MATURITY} and refits the model under five different values of $d_0$ (Section 4.2); and an \textbf{embedded (in-fold) feature-selection} variant of the top-$k$ experiment, in which the ranking used to select the top 9 features is computed from each cross-validation fold's training partition only, rather than from a ranking that could be informed by repeated looks at the test partition (Section 4.2).
+
+\section{Empirical Results}
+
+\subsection{Model comparison (RQ1)}
+
+\begin{table}[H]
+\centering
+\caption{Out-of-sample results on the 11-feature main configuration (class weighting)}
+\begin{tabular}{lrrrr}
+\toprule
+Model & Accuracy & Macro-F1 & Weighted-F1 & ROC-AUC (macro) \\
+\midrule
+Logistic Regression & 0.6091 & 0.3946 & 0.6886 & 0.7744 \\
+Decision Tree   & 0.6441 & 0.4962 & 0.7243 & 0.8647 \\
+Random Forest   & 0.7784 & 0.5699 & 0.8229 & 0.9071 \\
+XGBoost         & 0.8298 & 0.5966 & 0.8556 & 0.9147 \\
+\textbf{LightGBM} & \textbf{0.8548} & \textbf{0.6044} & \textbf{0.8713} & \textbf{0.9128} \\
+CatBoost        & 0.7730 & 0.5460 & 0.8192 & 0.9062 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{fig5_model_comparison.png}
+\caption{Accuracy, Macro-F1, Weighted-F1 and ROC-AUC (macro) for the six models compared in Table 3, under the class-weighting methodology adopted in Section 3.6.}
+\end{figure}
+
+Under the common class-weighting treatment, LightGBM attains the best point estimate on all four metrics. Logistic Regression and the depth-constrained Decision Tree perform substantially worse, but the present design does not isolate whether this is caused by functional form, category encoding or sensitivity to weighting. CatBoost's weighted result is treatment-sensitive, so the unweighted configuration is tested separately below and in repeated cross-validation.
+
+\begin{table}[H]
+\centering
+\caption{LightGBM confusion matrix and per-class metrics, 11-feature main configuration}
+\small
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+True $\backslash$ Pred & 1 & 2 & 3 & 4 & 5 & Prec. & Recall & F1 & Support \\
+\midrule
+\textbf{1} & 3,755 & 323 & 54 & 47 & 15 & 0.958 & 0.895 & 0.926 & 4,194 \\
+\textbf{2} & 99 & 121 & 21 & 15 & 1 & 0.245 & 0.471 & 0.323 & 257 \\
+\textbf{3} & 24 & 27 & 50 & 18 & 2 & 0.350 & 0.413 & 0.379 & 121 \\
+\textbf{4} & 31 & 13 & 14 & 86 & 13 & 0.411 & 0.548 & 0.470 & 157 \\
+\textbf{5} & 11 & 9 & 4 & 43 & 605 & 0.951 & 0.900 & 0.925 & 672 \\
+\midrule
+\textit{Macro avg} & & & & & & \textit{0.583} & \textit{0.645} & \textit{0.604} & \textit{5,401} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent{\footnotesize Rows are true debt groups, columns are predicted debt groups; e.g., row 3 shows that of the 121 loans truly in Group 3, the model predicted 50 correctly, 24 as Group 1, 27 as Group 2, 18 as Group 4 and 2 as Group 5. The corresponding table for XGBoost is reported in Appendix B (Table B1).}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.62\linewidth]{fig8_confusion_matrix.png}
+\caption{Row-normalised confusion matrix for LightGBM (Table 4). The darkest cells on the diagonal (Groups 1 and 5) show where the model is most reliable; the lighter, more spread-out rows for Groups 2--4 show where its flags require more caution.}
+\end{figure}
+
+Group 2 has Precision below 0.25, and Group 3 remains well below 0.4 despite recovering from the pre-fix estimate. Errors are not confined to adjacent groups: 24 true Group-3 loans and 31 true Group-4 loans are assigned to Group 1, indicating operationally important under-classification.
+
+\begin{table}[H]
+\centering
+\caption{CatBoost ablation: \texttt{auto\_class\_weights} substitution}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+Setting & \texttt{auto\_cw} & Accuracy & Macro-F1 & Weighted-F1 & ROC-AUC \\
+\midrule
+Class weighting (Table 3) & Balanced & 0.7730 & 0.5460 & 0.8192 & 0.9062 \\
+Alternative configuration & None & 0.9093 & \textbf{0.6074} & 0.8911 & 0.9235 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Turning \texttt{auto\_class\_weights} off produces a substantially better hold-out estimate for CatBoost specifically. Section~\ref{sec:cv} shows this pattern --- unweighted outperforming class-weighted --- is not unique to CatBoost: it holds for every one of the six models tested. Algorithm and imbalance treatment must therefore be selected jointly, and this single-model ablation should not be read as evidence that CatBoost--none is the best configuration overall; the full cross-model comparison is reported in Section~\ref{sec:cv}.
+
+\subsection{Feature efficiency: does more always help, and is the strongest predictor doing something suspicious? (RQ2)}
+
+\paragraph{\texttt{DAYS\_TO\_MATURITY} ablation.} Table 6 refits the 11-feature main configuration with \texttt{DAYS\_TO\_MATURITY} removed (10 features), for both XGBoost and LightGBM.
+
+\begin{table}[H]
+\centering
+\caption{Effect of removing \texttt{DAYS\_TO\_MATURITY} from the 11-feature configuration}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Model & F1 (11 feat.) & F1 (10 feat., no DTM) & Change & AUC (10 feat.) \\
+\midrule
+XGBoost  & 0.5966 & 0.4995 & $-$0.0971 ($-$16.3\%) & 0.8693 \\
+LightGBM & 0.6044 & 0.5052 & $-$0.0992 ($-$16.4\%) & 0.8673 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Removing the leading SHAP variable costs approximately 16\% of Macro-F1 for both models, establishing non-redundant predictive contribution. It does not establish temporal admissibility or rule out proxy leakage; those questions require the bank's actual snapshot date and classification methodology.
+
+\paragraph{Reference-date invariance.} Only \texttt{DAYS\_TO\_MATURITY}, not \texttt{LOAN\_TENURE\_DAYS}, depends on $d_0$. Changing $d_0$ adds one constant to all records and therefore leaves tree partitions unchanged (Macro-F1 0.6044; ROC-AUC 0.9128). This rules out tuning the numerical value of $d_0$ to inflate tree performance, but does not establish the true snapshot date, temporal availability or absence of proxy leakage.
+
+\paragraph{Embedded (in-fold) feature selection.} LightGBM ranking was recomputed inside every training fold with $k=9$ fixed before this verification, although motivated by earlier exploration. The embedded result is 0.5878 $\pm$ 0.0101 versus 0.5917 $\pm$ 0.0089 for the fixed 11-feature configuration.
+
+\begin{table}[H]
+\centering
+\caption{Macro-F1 and ROC-AUC by number of top-$k$ features (13-variable pool), XGBoost vs.\ LightGBM ranking}
+\small
+\begin{tabular}{rrrrr}
+\toprule
+$k$ & XGB F1 & XGB AUC & LGBM F1 & LGBM AUC \\
+\midrule
+3   & 0.4819 & 0.8765 & 0.5324 & 0.8879 \\
+5   & 0.5516 & 0.8986 & 0.5724 & 0.9039 \\
+7   & 0.5903 & 0.9162 & 0.5911 & 0.9091 \\
+9   & 0.5944 & 0.9170 & 0.5966 & 0.9107 \\
+11  & 0.5899 & 0.9161 & 0.6065 & 0.9126 \\
+13 (full pool) & \textbf{0.6036} & \textbf{0.9174} & \textbf{0.6077} & \textbf{0.9127} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.68\linewidth]{fig6_topk_curve.png}
+\caption{Macro-F1 as a function of the number of top-ranked features used, XGBoost vs.\ LightGBM ranking (Table 7), under class weighting.}
+\end{figure}
+
+Nine features recover approximately 98\% of the best hold-out Macro-F1 for both models. Embedded verification was performed only for LightGBM, and the flat curve does not establish a unique optimum.
+
+\subsection{Contribution of business feature groups: Gain vs.\ SHAP (RQ3)}
+
+\begin{table}[H]
+\centering
+\caption{Gain-based group importance --- XGBoost vs.\ LightGBM (13-variable pool, class weighting)}
+\begin{tabular}{lrr}
+\toprule
+Business group & XGBoost Gain (\%) & LightGBM Gain (\%) \\
+\midrule
+Product \& loan purpose        & 21.7 & 5.7 \\
+Loan tenure / maturity         & \textbf{31.7} & \textbf{49.3} \\
+Balance \& utilization         & 16.8 & 24.6 \\
+Branch / organisational unit   & 11.2 & 12.5 \\
+Interest rate                  & 9.0  & 6.2 \\
+Demographics (low IV)          & 9.7  & 1.6 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{SHAP-based group importance --- XGBoost vs.\ LightGBM (11-feature main configuration, class weighting)}
+\begin{tabular}{lrr}
+\toprule
+Business group & XGBoost SHAP (\%) & LightGBM SHAP (\%) \\
+\midrule
+Loan tenure / maturity       & \textbf{42.0} & \textbf{42.8} \\
+Balance \& utilization        & 28.0 & 28.7 \\
+Branch / organisational unit  & 13.9 & 13.7 \\
+Interest rate                 & 8.3 & 6.7 \\
+Product \& loan purpose       & 7.8 & 8.1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\linewidth]{fig7_gain_vs_shap.png}
+\caption{Gain-based (left) vs.\ SHAP-based (right) group importance share, XGBoost vs.\ LightGBM, under class weighting (Tables 8--9).}
+\end{figure}
+
+After explicitly setting LightGBM's \texttt{importance\_type="gain"}, Gain agrees that loan tenure/maturity leads, but lower-ranked group shares remain model-dependent. SHAP more closely aligns the two models, ranking maturity first and balance/utilization second.
+
+This is read as evidence that \textbf{Gain-based importance is not a stable property of the data --- it depends materially on which tree-boosting implementation computed it} --- while SHAP, cross-checked across two algorithms, is comparatively stable evidence for which information genuinely drives predictions. The practical implication for a bank is unchanged: a feature-importance-based data-investment decision should not be made from a single model's Gain ranking alone.
+
+\subsection{Statistical robustness: repeated cross-validation and a corrected paired test}
+\label{sec:cv}
+
+Tables 3 and 5 each compare configurations under one imbalance-treatment setting at a time, which cannot by itself support a claim about the single best configuration overall. Table 10 closes this gap: it reports 5-fold $\times$ 5-repeat (25-fold) repeated cross-validation for the \textbf{full 6-model $\times$ 2-strategy grid} --- every one of the six classifiers evaluated under both no weighting (``none'') and class weighting (``balanced''), on the identical 25 folds --- together with a corrected paired $t$-test of every configuration against the single best-performing one. The Nadeau--Bengio correction replaces the naive variance factor $1/25=0.04$ with $1/25+1/4=0.29$; Holm adjustment then controls the family-wise error rate across the resulting 11 pairwise comparisons.
+
+\begin{table}[H]
+\centering
+\caption{Repeated cross-validation (5-fold $\times$ 5-repeat), full model $\times$ strategy grid, and corrected paired $t$-test vs.\ the top-ranked configuration (Decision Tree--none)}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Configuration & Macro-F1 (mean $\pm$ std) & Top minus comparator & $t$ & Holm $p$ \\
+\midrule
+\textbf{Decision Tree--none} & \textbf{0.6271 $\pm$ 0.0109} & --- & --- & --- \\
+XGBoost--none & 0.6217 $\pm$ 0.0101 & +0.0053 & 0.81 & 0.7885 \\
+Random Forest--none & 0.6216 $\pm$ 0.0097 & +0.0054 & 0.87 & 0.7885 \\
+LightGBM--none & 0.6183 $\pm$ 0.0095 & +0.0088 & 1.26 & 0.6634 \\
+CatBoost--none & 0.6042 $\pm$ 0.0116 & +0.0229 & 3.42 & 0.0091 \\
+LightGBM--balanced & 0.5917 $\pm$ 0.0089 & +0.0354 & 5.51 & 0.0001 \\
+XGBoost--balanced & 0.5878 $\pm$ 0.0083 & +0.0392 & 6.50 & $<$0.0001 \\
+Random Forest--balanced & 0.5637 $\pm$ 0.0072 & +0.0634 & 10.98 & $<$0.0001 \\
+CatBoost--balanced & 0.5471 $\pm$ 0.0091 & +0.0800 & 13.11 & $<$0.0001 \\
+Decision Tree--balanced & 0.4990 $\pm$ 0.0144 & +0.1281 & 14.24 & $<$0.0001 \\
+Logistic Regression--balanced & 0.3876 $\pm$ 0.0055 & +0.2394 & 41.55 & $<$0.0001 \\
+Logistic Regression--none & 0.3699 $\pm$ 0.0089 & +0.2572 & 31.54 & $<$0.0001 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The top four configurations --- Decision Tree, XGBoost, Random Forest and LightGBM, all \textbf{without class weighting} (Macro-F1 0.618--0.627) --- are statistically indistinguishable from one another after Holm correction (all $p \geq 0.66$ against the nominal top, Decision Tree--none); this paper therefore does not single out one of them as uniquely best. All four are significantly ahead of CatBoost--none ($\Delta \geq 0.0229$, $p=0.0091$ against the closest of the four) and of every class-weighted configuration. That a single depth-10 decision tree ties the boosting ensembles is consistent with Section 3.4's leakage diagnostic: with a complete, correctly parsed \texttt{DAYS\_TO\_MATURITY} signal (Section 3.5 footnote), the debt groups are separated largely by a small number of threshold splits on this one variable, which a shallow tree already captures --- additional ensemble complexity buys little further Macro-F1 on this dataset. A single tree's known instability under data drift and higher overfitting risk relative to ensembles are not visible in this Macro-F1 comparison, so LightGBM and XGBoost remain the more defensible choices for deployment despite the statistical tie, consistent with the ensemble literature discussed in Section 4.5. As in the single-model ablation of Table 5, turning class weighting off improves Macro-F1 for every model tested, and CatBoost is not exceptional in this respect: CatBoost's apparent advantage there was an artefact of it being the only model tested under both strategies. The likely mechanism is the interaction between class weighting and Macro-F1's harmonic-mean structure (Section 3.6): weighting raises minority-class Recall (Table 4) but at a steep Precision cost, which lowers per-class F1 --- and therefore Macro-F1 --- for a broad range of models on this class distribution, not only for CatBoost. Model ranking, not only headline Macro-F1, is therefore inseparable from imbalance treatment: depending on which single strategy is tested, any of these six models could plausibly, and misleadingly, be reported as the best.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\linewidth]{fig9_repeatedcv_boxplot.png}
+\caption{Distribution of Macro-F1 across 25 repeated-CV folds for the full 6-model $\times$ 2-strategy grid (Table 10); solid boxes are unweighted, faded boxes are class-weighted.}
+\end{figure}
+
+\subsection{Comparison with the literature}
+
+The results are consistent with, and extend, both the international benchmarking literature and the Vietnamese studies reviewed in Section 2.4. Lessmann et al. (2015) caution that heterogeneous ensembles perform well \textit{on average} but that rankings vary by dataset and metric, and this dataset illustrates that caution directly: once a single, complete \texttt{DAYS\_TO\_MATURITY} signal is available, a single depth-10 Decision Tree is statistically indistinguishable from the boosting ensembles (Table 10) --- ensemble methods do not automatically dominate a well-specified single tree on every dataset, and a bank should not assume otherwise without checking, as this paper did. Consistent with Baesens et al. (2003), CatBoost's gap to the top-ranked configurations narrows substantially on ROC-AUC relative to Macro-F1, illustrating that ranking-quality and hard-classification performance diverge under class imbalance; this study's ablation (Table 5) additionally shows that a specific implementation default, not a general property of boosting, explains most of CatBoost's shortfall here --- reinforcing Lessmann et al.'s (2015) broader caution that no single imbalance-handling technique is uniformly optimal across models. Relative to the Vietnamese studies reviewed in Section 2.4, this paper's central methodological contrast is the one developed across Sections 4.1--4.4: reporting Accuracy alongside Macro-F1 and a confusion matrix (Table 4) shows a materially less optimistic picture of minority-class detection than Accuracy alone would suggest --- precisely the gap this paper's contribution (Section 2.4) argues the existing literature has not yet closed.
+
+\section{Discussion: Implications for Sustainable Credit Governance and Private-Sector Financing}
+
+The results in Section 4 carry four concrete implications for how a bank should govern an AI-based credit-classification system in a way that supports, rather than constrains, sound and sustainable financing of the private sector.
+
+\textbf{First, imbalance-aware, multi-metric evaluation --- including a confusion matrix, not only a single macro-averaged number --- is a governance safeguard.} Table 4 shows that even the best-performing single-split model in this study recovers Group 2 at Precision below 0.25, and Group 3 at Precision of only 0.350: for Group 2, roughly three in four loans it flags are not actually Group 2. A bank that acted on such flags without this context would misallocate review effort; a bank that saw only Macro-F1 = 0.604 would not know this without the underlying confusion matrix. Reporting per-class Precision/Recall/F1 and the confusion matrix alongside Macro-F1, as done in Table 4, is a low-cost governance practice with a direct operational reading: it tells a credit-risk unit which specific groups a model's flags can and cannot be trusted for, rather than only whether the model is ``good'' in aggregate.
+
+\textbf{Second, feature efficiency may lower governance cost.} Nine features recover most hold-out performance, while LightGBM's embedded result is 0.5878 $\pm$ 0.0101 versus 0.5917 $\pm$ 0.0089 for 11 features. This supports a flat efficiency region, not a universal optimum.
+
+\textbf{Third, no single measure of model quality or feature importance should be trusted until checked against an independent one, and Section 4 shows this is inexpensive to do in practice.} Gain-based importance alone would support different conclusions about which information group ranks second depending only on which of two widely used tree-boosting libraries was used (Table 8); only SHAP, checked against both algorithms, supports ``loan tenure/maturity dominates, balance/utilization second'' as a property of the data (Table 9). Separately, the explanation offered for CatBoost's weak Macro-F1 under class weighting was confirmed, not merely asserted, by a controlled ablation (Table 5) and by the full model $\times$ strategy grid in Table 10. That grid also illustrates why the corrected test, not the raw ranking, must decide model-comparison claims: the nominal top-ranked configuration (Decision Tree--none) is statistically indistinguishable from three other unweighted models (all $p \geq 0.66$ after Holm correction), so a claim that any one of them is uniquely ``the best'' would not survive the corrected test, even though their raw Macro-F1 values differ. Each of these checks is a small procedural step directly transferable to a bank's model-governance checklist.
+
+\textbf{Fourth, a variable flagged by an automated screen should trigger a documented, falsifiable check, not only a plausible written justification.} Section 3.5's leakage diagnostic and Section 4.2's ablation and reference-date checks together test, rather than assert, that \texttt{DAYS\_TO\_MATURITY} is a genuine risk signal: a univariate rule on the variable alone reconstructs the label at only 67.3\% accuracy; removing it costs approximately 16\% of Macro-F1 rather than collapsing the model; and its predictive contribution is provably unaffected by the arbitrary reference-date convention used to compute it. None of these three results \textit{proves} the variable is free of leakage --- Section 6 restates this limitation plainly --- but each is a test that could have gone the other way and did not, which is a materially stronger basis for a governance decision than a plausible narrative on its own.
+
+Taken together, these points connect the technical results to the conference's private-sector-financing theme as scoped in Section 1: a credit-classification pipeline whose every non-trivial claim about model quality, feature importance and leakage risk has been checked against an independent test, rather than asserted, is a pipeline a bank can govern responsibly --- and responsible governance of credit-risk classification is a precondition, not a substitute, for a bank's capacity to extend credit to private enterprises and households with confidence.
+
+\section{Conclusion, Limitations and Future Research}
+
+This study makes three principal contributions corresponding to RQ1--RQ3. First, the model comparison in RQ1 shows that algorithm performance cannot be separated from imbalance treatment: across all six classifiers tested, turning class weighting off improves repeated-CV Macro-F1, and four configurations --- Decision Tree, XGBoost, Random Forest and LightGBM, all without class weighting (Macro-F1 0.618--0.627) --- are statistically indistinguishable from one another after Holm correction, each significantly ahead of unweighted CatBoost ($p=0.0091$) and of every class-weighted configuration. A partial, single-model comparison (weighted vs.\ unweighted CatBoost alone) would have wrongly suggested CatBoost was the strongest configuration overall --- only the full, symmetric 6-model $\times$ 2-strategy grid (Table 10) reveals this was an artefact of which configurations happened to be compared, not a genuine model-quality finding; the same corrected test also shows that a single decision tree, once given a complete leading-predictor signal, statistically ties the boosting ensembles, which this paper reads as a caution against assuming ensemble complexity is always warranted rather than as a recommendation to deploy a single tree in practice. Second, the feature-efficiency analysis in RQ2 shows that nine-feature configurations retain approximately 98\% of the best hold-out Macro-F1; the embedded LightGBM analysis further records only a small reduction from the fixed 11-feature configuration, supporting a more parsimonious and auditable specification. Third, the explainability analysis in RQ3 shows that consistently defined Gain and SHAP measures both identify loan maturity as the leading information group, while cross-model differences among lower-ranked groups demonstrate the value of triangulating importance measures. Together, these findings provide a verification-oriented framework in which predictive performance, feature economy, and interpretability are evaluated jointly rather than treated as separate governance objectives.
+
+The study also identifies important boundaries to these contributions. Groups 2 and 3 remain difficult to identify precisely, and \texttt{DAYS\_TO\_MATURITY}, although predictively informative, cannot be confirmed as temporally admissible without the bank's snapshot date and classification methodology. Accordingly, the results support model-development and governance decisions, but not immediate operational deployment.
+
+Two limitations warrant emphasis. First, the small number of observations in some debt groups---only 121 Group-3 loans in the test set---introduces uncertainty into the per-class estimates in Table 4; model comparisons should therefore rely primarily on the repeated cross-validation results in Table 10. Second, evidence from a single institution and classification snapshot limits external and temporal validity. The reduced-feature configurations require independent, out-of-time validation before operational use, while forecasting future debt-group transitions remains a separate research task requiring longitudinal data.
+
+\section*{Data Availability and Reproducibility}
+
+The raw dataset (\texttt{Data\_credit\_rating\_VN.xlsx}) is proprietary loan-level data obtained from a Vietnamese commercial bank under an academic research arrangement and is not publicly released. All preprocessing, feature-engineering, modelling and evaluation code is organised as a standalone Python package (\texttt{config/}, \texttt{src/}, \texttt{pages/}) built on \texttt{pandas}, \texttt{scikit-learn}, \texttt{imbalanced-learn}, \texttt{xgboost}, \texttt{lightgbm}, \texttt{catboost} and \texttt{shap}; a fixed \texttt{random\_state = 42} is used for every split, resample and model fit reported in this paper. All results reported here were produced in a single software environment (\texttt{scikit-learn} 1.9.0, \texttt{xgboost} 3.3.0, \texttt{lightgbm} 4.7.0, \texttt{catboost} 1.2.10, \texttt{shap} 0.52.0) in a single re-run pass, so that every number in Tables 1--10 (main text) and Appendix B is directly comparable; the standalone scripts used to produce each table, together with their raw console logs and CSV outputs, are retained alongside this paper for independent verification of the reported figures. Researchers with a legitimate academic interest and an appropriate data-sharing agreement with the source institution may request access to the underlying pipeline code.
+
+\section*{Ethics and Confidentiality Statement}
+
+The dataset contains no direct personal identifiers, and neither borrowers nor the source bank were identified. It was used solely for academic research; the resulting models were not used for lending decisions and require independent validation and institutional approval before any operational application.
+
+\bigskip
+\hrule
+\bigskip
+
+\section*{References}
+\begingroup
+\setlength{\parindent}{0pt}
+
+\refitem{Altman, E. I. (1968). Financial ratios, discriminant analysis and the prediction of corporate bankruptcy. \textit{The Journal of Finance, 23}(4), 589--609. \url{https://doi.org/10.1111/j.1540-6261.1968.tb00843.x}}
+
+\refitem{Baesens, B., Van Gestel, T., Viaene, S., Stepanova, M., Suykens, J., \& Vanthienen, J. (2003). Benchmarking state-of-the-art classification algorithms for credit scoring. \textit{Journal of the Operational Research Society, 54}(6), 627--635. \url{https://doi.org/10.1057/palgrave.jors.2601545}}
+
+\refitem{Basel Committee on Banking Supervision. (2000). \textit{Principles for the management of credit risk}. Bank for International Settlements.}
+
+\refitem{Breiman, L. (2001). Random forests. \textit{Machine Learning, 45}, 5--32. \url{https://doi.org/10.1023/A:1010933404324}}
+
+\refitem{Brown, I., \& Mues, C. (2012). An experimental comparison of classification algorithms for imbalanced credit scoring data sets. \textit{Expert Systems with Applications, 39}(3), 3446--3453. \url{https://doi.org/10.1016/j.eswa.2011.09.033}}
+
+\refitem{Chawla, N. V., Bowyer, K. W., Hall, L. O., \& Kegelmeyer, W. P. (2002). SMOTE: Synthetic minority over-sampling technique. \textit{Journal of Artificial Intelligence Research, 16}, 321--357. \url{https://doi.org/10.1613/jair.953}}
+
+\refitem{Chen, T., \& Guestrin, C. (2016). XGBoost: A scalable tree boosting system. In \textit{Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining} (pp. 785--794). \url{https://doi.org/10.1145/2939672.2939785}}
+
+\refitem{Dang, H. G., \& Nguyen, T. P. D. (2020). Building credit scoring process in Vietnamese commercial banks using machine learning. \textit{Tạp chí Khoa học Kinh tế, 8}(1), 1--12. \url{https://scholar.dlu.edu.vn/thuvienso/handle/DLU123456789/140405}}
+
+\refitem{Friedman, J. H. (2001). Greedy function approximation: A gradient boosting machine. \textit{The Annals of Statistics, 29}(5), 1189--1232. \url{https://doi.org/10.1214/aos/1013203451}}
+
+\refitem{Hand, D. J., \& Henley, W. E. (1997). Statistical classification methods in consumer credit scoring: A review. \textit{Journal of the Royal Statistical Society: Series A (Statistics in Society), 160}(3), 523--541. \url{https://doi.org/10.1111/j.1467-985X.1997.00078.x}}
+
+\refitem{Hosmer, D. W., Lemeshow, S., \& Sturdivant, R. X. (2013). \textit{Applied logistic regression} (3rd ed.). Wiley.}
+
+\refitem{Ke, G., Meng, Q., Finley, T., Wang, T., Chen, W., Ma, W., Ye, Q., \& Liu, T.-Y. (2017). LightGBM: A highly efficient gradient boosting decision tree. In \textit{Advances in Neural Information Processing Systems} (Vol. 30, pp. 3149--3157).}
+
+\refitem{Lessmann, S., Baesens, B., Seow, H.-V., \& Thomas, L. C. (2015). Benchmarking state-of-the-art classification algorithms for credit scoring: An update of research. \textit{European Journal of Operational Research, 247}(1), 124--136. \url{https://doi.org/10.1016/j.ejor.2015.05.030}}
+
+\refitem{Lundberg, S. M., \& Lee, S.-I. (2017). A unified approach to interpreting model predictions. In \textit{Advances in Neural Information Processing Systems} (Vol. 30, pp. 4765--4774).}
+
+\refitem{Nadeau, C., \& Bengio, Y. (2003). Inference for the generalization error. \textit{Machine Learning, 52}(3), 239--281. \url{https://doi.org/10.1023/A:1024068626366}}
+
+\refitem{Ngân hàng Nhà nước Việt Nam [State Bank of Vietnam]. (2005). \textit{Decision No.\ 493/2005/QĐ-NHNN on classification of debts, provisioning and use of provisions to handle credit risk in the banking activities of credit institutions}, as amended by Decision No.\ 18/2007/QĐ-NHNN (2007).}
+
+\refitem{Ngân hàng Nhà nước Việt Nam [State Bank of Vietnam]. (2013). \textit{Circular No.\ 02/2013/TT-NHNN on classification of assets, levels and methods of setting up risk provisions, and use of provisions against credit risks in the banking activities of credit institutions and foreign bank branches}, as amended by Circular No.\ 09/2014/TT-NHNN (2014).}
+
+\refitem{Ngân hàng Nhà nước Việt Nam [State Bank of Vietnam]. (2021). \textit{Circular No.\ 11/2021/TT-NHNN on asset classification, provisioning levels and methods, and use of provisions to handle risk in the operation of credit institutions and foreign bank branches}. Effective 1 October 2021.}
+
+\refitem{Ngân hàng Nhà nước Việt Nam [State Bank of Vietnam]. (2023). \textit{Circular No.\ 15/2023/TT-NHNN on credit information activities of the State Bank of Vietnam}.}
+
+\refitem{Ngân hàng Nhà nước Việt Nam [State Bank of Vietnam]. (2024). \textit{Circular No.\ 31/2024/TT-NHNN on asset classification in the operation of commercial banks, non-bank credit institutions and foreign bank branches}, as amended by Circular No.\ 37/2025/TT-NHNN and consolidated in Document No.\ 27/VBHN-NHNN (21 November 2025).}
+
+\refitem{Nguyen, N., \& Ngo, D. (2025). Comparative analysis of boosting algorithms for predicting personal default. \textit{Cogent Economics \& Finance, 13}(1), Article 2465971. \url{https://doi.org/10.1080/23322039.2025.2465971}}
+
+\refitem{Nguyen, Q. H., Trinh, H. V., Phuong, T. V., \& Ly, T. T. M. (2024). Early warning system for debt group migration: The case of one commercial bank in Vietnam. \textit{Foundations of Management, 16}(1), 195--216. \url{https://doi.org/10.2478/fman-2024-0012}}
+
+\refitem{Ohlson, J. A. (1980). Financial ratios and the probabilistic prediction of bankruptcy. \textit{Journal of Accounting Research, 18}(1), 109--131. \url{https://doi.org/10.2307/2490395}}
+
+\refitem{Prokhorenkova, L., Gusev, G., Vorobev, A., Dorogush, A. V., \& Gulin, A. (2018). CatBoost: Unbiased boosting with categorical features. In \textit{Advances in Neural Information Processing Systems} (Vol. 31).}
+
+\refitem{Quinlan, J. R. (1986). Induction of decision trees. \textit{Machine Learning, 1}(1), 81--106. \url{https://doi.org/10.1007/BF00116251}}
+
+\refitem{Siddiqi, N. (2006). \textit{Credit risk scorecards: Developing and implementing intelligent credit scoring}. John Wiley \& Sons.}
+
+\refitem{Thomas, L. C. (2000). A survey of credit and behavioural scoring: Forecasting financial risk of lending to consumers. \textit{International Journal of Forecasting, 16}(2), 149--172. \url{https://doi.org/10.1016/S0169-2070(00)00034-0}}
+
+\refitem{Trung, T. V., \& Vuong, N. A. N. (2025). Development of a credit scoring model using machine learning for commercial banks in Vietnam. \textit{Advances and Applications in Statistics, 92}(1), 107--120. \url{https://doi.org/10.17654/0972361725006}}
+
+\endgroup
+
+\bigskip
+\hrule
+\bigskip
+
+\section*{Appendix A. Data Dictionary}
+
+\begin{table}[H]
+\centering
+\caption*{\small\textbf{Table A1.} Raw and engineered variables, Dataset A}
+\small
+\begin{tabular}{p{2.9cm}p{2.1cm}p{2.3cm}p{6.0cm}}
+\toprule
+Variable & Type & Role & Description \\
+\midrule
+\texttt{MJACCTTYPCD} & Categorical (3) & Retained & Major product/account type code \\
+\texttt{CURRMIACCTTYPCD} & Categorical (31) & Retained & Detailed product sub-type code \\
+\texttt{MIACCTTYPDESC} & Text & Dropped & Text label duplicating \texttt{CURRMIACCTTYPCD} \\
+\texttt{LOAIKH} & Categorical & Retained (13-pool only) & Customer type code; IV = 0.000 \\
+\texttt{SEX} & Categorical & Retained (13-pool only) & Borrower gender code; IV = 0.008 \\
+\texttt{BASE\_BAL} & Numeric & Retained & Original loan balance / credit limit \\
+\texttt{CURR\_BAL} & Numeric & Retained & Current outstanding balance \\
+\texttt{DUNO\_QD} & Numeric & Dropped & Duplicate of \texttt{CURR\_BAL} \\
+\texttt{CURRENCYCD} & Categorical & Dropped & Currency code; constant (VND only), IV = 0.00 \\
+\texttt{OPEN\_DATE} & Date & Used, then dropped & Loan origination date \\
+\texttt{NGAYDENHAN} & Date & Used, then dropped & Original contractual maturity date \\
+\texttt{ID\_TIME} & Categorical (3) & Dropped & Loan tenor category (short/medium/long-term); despite its name, not a reporting-period identifier (Section 3.1); IV = 0.006 \\
+\texttt{DESC\_TIME} & Text & Dropped & Text label duplicating \texttt{ID\_TIME} \\
+\texttt{MJACCTTYPDESC} & Text & Dropped & Text label duplicating \texttt{MJACCTTYPCD} \\
+\texttt{ORGNBR} & Categorical/code & Retained & Nominal branch identifier \\
+\texttt{PARENTORGNBR} & Categorical/code & Retained & Nominal parent-branch identifier \\
+\texttt{LAISUAT} & Numeric & Retained & Interest rate \\
+\texttt{MUCDICHVAY} & Categorical (79) & Retained & Loan-purpose code \\
+\texttt{NHOMNO} & Numeric & Dropped (leakage) & Alternate/earlier debt-group field; $r=0.98$ with target \\
+\texttt{NHOMNOMOI} & Numeric (1--5) & \textbf{Target} & Debt group under the classification framework in force (Section 2.3) \\
+\texttt{NHOMNO\_TCBS} & Text/code & Dropped (leakage) & Text-coded restatement of debt group \\
+\texttt{LOAN\_TENURE\_DAYS} (eng.) & Numeric & Retained & $\max(0,\ \texttt{NGAYDENHAN} - \texttt{OPEN\_DATE})$ \\
+\texttt{DAYS\_TO\_MATURITY} (eng.) & Numeric & Retained & $\texttt{NGAYDENHAN} - d_0$; dominant predictor, subject to the leakage diagnostic in Section 3.5 \\
+\texttt{UTIL\_RATE} (eng.) & Numeric & Retained & $\operatorname{clip}(\texttt{CURR\_BAL}/\texttt{BASE\_BAL},0,10)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent{\footnotesize ``Retained'' indicates inclusion in the 13-variable admissible pool (Section 3.5); the 11-feature main configuration additionally excludes \texttt{SEX} and \texttt{LOAIKH}.}
+
+\section*{Appendix B. Supplementary Tables}
+
+\begin{table}[H]
+\centering
+\caption*{\small\textbf{Table B1.} XGBoost confusion matrix and per-class metrics, 11-feature main configuration}
+\small
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+True $\backslash$ Pred & 1 & 2 & 3 & 4 & 5 & Prec. & Recall & F1 & Support \\
+\midrule
+\textbf{1} & 3,602 & 428 & 79 & 73 & 12 & 0.961 & 0.859 & 0.907 & 4,194 \\
+\textbf{2} & 91 & 133 & 24 & 7 & 2 & 0.218 & 0.518 & 0.307 & 257 \\
+\textbf{3} & 17 & 25 & 58 & 18 & 3 & 0.320 & 0.479 & 0.384 & 121 \\
+\textbf{4} & 25 & 14 & 15 & 91 & 12 & 0.387 & 0.580 & 0.464 & 157 \\
+\textbf{5} & 13 & 10 & 5 & 46 & 598 & 0.954 & 0.890 & 0.921 & 672 \\
+\midrule
+\textit{Macro avg} & & & & & & \textit{0.568} & \textit{0.665} & \textit{0.597} & \textit{5,401} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption*{\small\textbf{Table B2.} SHAP individual-feature importance (mean $|\phi_j|$ across all classes), 11-feature main configuration, class weighting}
+\begin{tabular}{lrr}
+\toprule
+Feature & XGBoost & LightGBM \\
+\midrule
+\texttt{DAYS\_TO\_MATURITY} & \textbf{0.9731} & \textbf{1.2607} \\
+\texttt{UTIL\_RATE}         & 0.3600 & 0.4698 \\
+\texttt{CURR\_BAL}          & 0.2672 & 0.3018 \\
+\texttt{LAISUAT}            & 0.2350 & 0.2396 \\
+\texttt{ORGNBR}             & 0.2302 & 0.3053 \\
+\texttt{LOAN\_TENURE\_DAYS} & 0.2169 & 0.2686 \\
+\texttt{BASE\_BAL}          & 0.1642 & 0.2527 \\
+\texttt{PARENTORGNBR}       & 0.1635 & 0.1838 \\
+\texttt{CURRMIACCTTYPCD}    & 0.1453 & 0.1881 \\
+\texttt{MUCDICHVAY}         & 0.0582 & 0.0865 \\
+\texttt{MJACCTTYPCD}        & 0.0172 & 0.0141 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption*{\small\textbf{Table B3.} Reference-date sensitivity, full detail (LightGBM, 11-feature configuration)}
+\begin{tabular}{lrr}
+\toprule
+$d_0$ & Macro-F1 & ROC-AUC (macro) \\
+\midrule
+2020-12-31 & 0.6044 & 0.9128 \\
+2021-06-30 & 0.6044 & 0.9128 \\
+2021-12-31 (adopted convention) & 0.6044 & 0.9128 \\
+2022-06-30 & 0.6044 & 0.9128 \\
+2023-12-31 & 0.6044 & 0.9128 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

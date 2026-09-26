@@ -1,16 +1,16 @@
 ﻿feature_1,feature_2,corr
 ENG_DAYS_TO_MATURITY,ENG_TENOR_ACTUAL_DAYS,0.9750506293104453
 Số dư nợ theo nguyên tệ,Số tiền nợ gốc cơ cấu,0.9075736935455031
-Số dư nợ theo nguyên tệ,Số tiền nợ lãi cơ cấu,0.850446695142468
-Lãi suất,Số tiền nợ gốc cơ cấu,-0.6134202527306296
-Lãi phải thu hạch toán nội bảng,Số tiền nợ lãi cơ cấu,0.4819332807052799
-Số lần cơ cấu lại thời hạn trả nợ,Mã chi nhánh TCTD,-0.39873424095357135
-Số tiền nợ gốc cơ cấu,Số tiền nợ lãi cơ cấu,0.39703968716249044
-Lãi chưa thu hạch toán ngoại bảng,Số tiền nợ lãi cơ cấu,0.36713435777148423
+Số dư nợ theo nguyên tệ,Số tiền nợ lãi cơ cấu,0.8504466951424681
+Lãi suất,Số tiền nợ gốc cơ cấu,-0.6134202527306295
+Lãi phải thu hạch toán nội bảng,Số tiền nợ lãi cơ cấu,0.48193328070527996
+Số lần cơ cấu lại thời hạn trả nợ,Mã chi nhánh TCTD,-0.3987342409535714
+Số tiền nợ gốc cơ cấu,Số tiền nợ lãi cơ cấu,0.3970396871624905
+Lãi chưa thu hạch toán ngoại bảng,Số tiền nợ lãi cơ cấu,0.3671343577714843
 Số tiền nợ gốc cơ cấu,ENG_LOAN_AGE_DAYS,-0.327280815734983
-Lãi suất,Số lần cơ cấu lại thời hạn trả nợ,-0.260751254455822
-Số tiền nợ gốc cơ cấu,ENG_TENOR_ACTUAL_DAYS,-0.2448013012855209
-Lãi suất,Số tiền nợ lãi cơ cấu,-0.23995498616567237
+Lãi suất,Số lần cơ cấu lại thời hạn trả nợ,-0.26075125445582187
+Số tiền nợ gốc cơ cấu,ENG_TENOR_ACTUAL_DAYS,-0.24480130128552094
+Lãi suất,Số tiền nợ lãi cơ cấu,-0.2399549861656724
 ENG_LOAN_AGE_DAYS,ENG_TENOR_ACTUAL_DAYS,0.22331331907015828
-Số lần cơ cấu lại thời hạn trả nợ,ENG_LOAN_AGE_DAYS,0.22078430065582938
-Số tiền nợ gốc cơ cấu,ENG_DAYS_TO_MATURITY,-0.21422154852555864
+Số lần cơ cấu lại thời hạn trả nợ,ENG_LOAN_AGE_DAYS,0.22078430065582957
+Số tiền nợ gốc cơ cấu,ENG_DAYS_TO_MATURITY,-0.21422154852555875

@@ -1,0 +1,5 @@
+[04:11:30] Đang tải dữ liệu kỳ T (20260531) và T+1 (20260630, THẬT)…
+[04:12:22] X_all: (98620, 20), positive rate: 0.262%
+[04:39:56]   [none] CatBoost: PR-AUC=0.0060±0.0023 | ROC-AUC=0.5521 | Recall(+)=0.000 (1654.5s)
+[05:35:13]   [class_weight] CatBoost: PR-AUC=0.0054±0.0047 | ROC-AUC=0.5005 | Recall(+)=0.146 (3317.2s)
+[05:35:13] HOÀN TẤT CatBoost cặp 2.

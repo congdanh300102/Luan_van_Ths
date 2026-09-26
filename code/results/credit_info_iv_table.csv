@@ -6,16 +6,16 @@ Mô tả mục đích sử dụng tiền vay,0.3611,Strong
 Lãi suất,0.313,Strong
 ENG_DAYS_TO_MATURITY,0.2549,Medium
 Số dư nợ theo nguyên tệ,0.1892,Medium
-Phương thức cho vay,0.0732,Weak
-Số tiền nợ gốc cơ cấu,0.0626,Weak
-Số lần cơ cấu lại thời hạn trả nợ,0.062,Weak
+Phương thức cho vay,0.0722,Weak
+Số tiền nợ gốc cơ cấu,0.0623,Weak
 Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.062,Weak
+Số lần cơ cấu lại thời hạn trả nợ,0.0616,Weak
 Mã chi nhánh TCTD,0.0415,Weak
-Số tiền nợ lãi cơ cấu,0.032,Weak
+Số tiền nợ lãi cơ cấu,0.0319,Weak
 Mã thời hạn cấp tín dụng,0.0107,Useless
 Mã tiền tệ,0.0039,Useless
+Lãi chưa thu hạch toán ngoại bảng,0.0,Useless
 ENG_HAS_RESTRUCTURE,0.0,Useless
 Hình thức cấp tín dụng,0.0,Useless
-Lãi chưa thu hạch toán ngoại bảng,0.0,Useless
 Nguồn cấp tín dụng,0.0,Useless
 Hoạt động cấp tín dụng bằng phương tiện điện tử,0.0,Useless

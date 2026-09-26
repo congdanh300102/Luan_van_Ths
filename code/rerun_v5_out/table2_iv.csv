@@ -1,0 +1,14 @@
+feature,iv,level
+DAYS_TO_MATURITY,4.5541,⚠️ Suspicious (leakage?)
+CURRMIACCTTYPCD,1.9921,⚠️ Suspicious (leakage?)
+LOAN_TENURE_DAYS,1.941,⚠️ Suspicious (leakage?)
+MUCDICHVAY,1.4141,⚠️ Suspicious (leakage?)
+UTIL_RATE,1.3334,⚠️ Suspicious (leakage?)
+MJACCTTYPCD,0.9695,Very strong
+LAISUAT,0.7851,Very strong
+BASE_BAL,0.5356,Very strong
+PARENTORGNBR,0.3201,Strong
+CURR_BAL,0.2585,Medium
+ORGNBR,0.182,Medium
+SEX,0.0081,Useless
+LOAIKH,0.0,Useless

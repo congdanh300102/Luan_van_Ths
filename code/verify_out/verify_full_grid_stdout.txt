@@ -1,0 +1,8 @@
+Total folds: 25 (5-fold x 5-repeat)
+logistic         + none      macroF1 = 0.3330 +/- 0.0027   (65.6s)
+decision_tree    + none      macroF1 = 0.5981 +/- 0.0112   (5.7s)
+random_forest    + none      macroF1 = 0.6038 +/- 0.0097   (44.8s)
+xgboost          + none      macroF1 = 0.6068 +/- 0.0101   (94.3s)
+lightgbm         + none      macroF1 = 0.6178 +/- 0.0120   (94.1s)
+
+Done.

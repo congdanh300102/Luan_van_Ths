@@ -60,14 +60,17 @@ CATEGORICAL_COLS = [
     "MJACCTTYPCD",       # IV=0.97 — loại sản phẩm vay chính (3 nhóm)
     "CURRMIACCTTYPCD",   # IV=1.99 — loại sản phẩm vay chi tiết (31 nhóm)
     "MUCDICHVAY",        # IV=1.41 — mục đích vay (79 nhóm)
+    # Mã đơn vị là nominal identifiers, không phải đại lượng số.
+    # Giữ chúng ở categorical tránh tạo thứ tự/khoảng cách giả khi
+    # chuẩn hoá cho Logistic Regression hoặc chia ngưỡng trong tree models.
+    "ORGNBR",
+    "PARENTORGNBR",
 ]
 
 NUMERICAL_COLS = [
     "BASE_BAL",          # hạn mức/dư nợ gốc
     "CURR_BAL",          # dư nợ hiện tại
     "LAISUAT",           # lãi suất
-    "ORGNBR",            # mã chi nhánh
-    "PARENTORGNBR",      # mã chi nhánh cấp trên
     "LOAN_TENURE_DAYS",  # thời hạn khoản vay (ngày)
     "DAYS_TO_MATURITY",  # số ngày đến đáo hạn
     "UTIL_RATE",         # tỷ lệ sử dụng hạn mức = CURR_BAL / BASE_BAL
@@ -84,13 +87,19 @@ MODEL_OPTIONS = {
     "LightGBM":            "lightgbm",
 }
 
-# ── Dataset 2: Thông tin tín dụng (train 20260430 / test 20260507) ───────────
+# ── Dataset 2: Thông tin tín dụng (train 20260430 / test 20260531) ───────────
 DATA_CREDIT_INFO_TRAIN = _resolve_raw("Thông tin tín dụng 20260430.xlsx")
-DATA_CREDIT_INFO_TEST  = _resolve_raw("Thông tin tín dụng 20260507.xlsx")
+DATA_CREDIT_INFO_TEST  = _resolve_raw("Thông tin tín dụng 20260531.xlsx")
+
+# Kỳ báo cáo thứ ba, THẬT — ngân hàng cung cấp bổ sung ngày 2026-09-12, cho
+# phép xây cặp chuyển nhóm nợ thứ hai (20260531 -> 20260630) bằng dữ liệu
+# thật, thay vì kỳ mô phỏng DATA_CREDIT_INFO_SIM ở dưới. Dùng trong
+# src/generate_transition_report_pair2.py.
+DATA_CREDIT_INFO_TEST2 = _resolve_raw("Thông tin tín dụng 20260630.xlsx")
 
 CREDIT_INFO_TARGET_COL = "Nhóm nợ tự phân loại"
 
-# 20260507 (test) chỉ có 33/41 cột của 20260430 (train) — tập đặc trưng chỉ
+# 20260531 (test) chỉ có 33/41 cột của 20260430 (train) — tập đặc trưng chỉ
 # được xây từ 33 cột chung để mô hình huấn luyện trên train vẫn chấm điểm
 # được trên tập test độc lập. Danh sách đầy đủ + lý do loại từng cột nằm ở
 # src/credit_info_preprocessing.py (ID_LEAKAGE_COLS, DATE_COLS, FEATURE_GROUPS).
@@ -132,8 +141,8 @@ CREDIT_INFO_SMOTE_STRATEGY = {
 
 CREDIT_INFO_NHOMNO_LABELS = NHOMNO_LABELS
 
-# ── Bài toán bổ sung: dự báo chuyển nhóm nợ trong 1 tháng (bộ B) ──────────────
-# Ghép 20260430 (T) với 20260507 (T+1 tháng) qua "Số khế ước" — 98.968/100.617
+# ── Bài toán bổ sung: dự báo chuyển nhóm nợ trong 31 ngày (bộ B) ──────────────
+# Ghép 20260430 (T) với 20260531 (T+31 ngày) qua "Số khế ước" — 98.968/100.617
 # khoản vay khớp được (98,4%); trong đó chỉ 265 khoản vay (0,27%) chuyển sang
 # nhóm nợ cao hơn — sự kiện hiếm, không dùng lại CREDIT_INFO_SMOTE_STRATEGY
 # (thiết kế cho bài toán 5 lớp với tỉ lệ mất cân bằng ~1-3%, không phải 0,27%).
@@ -146,3 +155,9 @@ TRANSITION_SMOTE_STRATEGY = {1: 1200}
 
 TRANSITION_CV_SPLITS = 5
 TRANSITION_CV_REPEATS = 10  # đồng bộ 5x10 với repeated_stratified_recall() của bài toán 5 lớp
+
+# Chỉ dùng cho Phụ lục minh họa mở rộng đánh giá đa kỳ — KHÔNG phải dữ liệu
+# thật, KHÔNG dùng trong pipeline chính (generate_credit_info_report.py,
+# generate_transition_report.py, Streamlit app). Sinh bởi
+# src/generate_synthetic_period.py từ cặp kỳ thật 20260430/20260531.
+DATA_CREDIT_INFO_SIM = _resolve_raw("Thông tin tín dụng 20260630 (mô phỏng).xlsx")

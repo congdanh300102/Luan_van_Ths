@@ -1,0 +1,186 @@
+\chapter*{PHỤ LỤC}
+\addcontentsline{toc}{chapter}{Phụ lục}
+\renewcommand{\thesection}{P\arabic{section}}
+\setcounter{section}{0}
+
+Phụ lục này trình bày các bảng số liệu chi tiết được tham chiếu từ Chương 2: giá trị Information Value đầy đủ của từng biến, ví dụ minh họa hồ sơ trước và sau xử lý, và không gian tìm kiếm siêu tham số đầy đủ theo từng mô hình.
+
+\section{Bảng Information Value đầy đủ}
+
+\begin{table}[H]
+\centering
+\caption{Information Value của 13 biến — bộ dữ liệu A}
+\label{tab:iv-a}
+\begin{tabular}{|l|r|l|}
+\hline
+Biến & IV & Mức\\
+\hline
+\texttt{\seqsplit{DAYS\_TO\_MATURITY}} & 4,5541 & (!) Nghi ngờ (leakage?)\\
+\texttt{\seqsplit{CURRMIACCTTYPCD}} & 1,9921 & (!) Nghi ngờ (leakage?)\\
+\texttt{\seqsplit{LOAN\_TENURE\_DAYS}} & 1,9410 & (!) Nghi ngờ (leakage?)\\
+\texttt{\seqsplit{MUCDICHVAY}} & 1,4141 & (!) Nghi ngờ (leakage?)\\
+\texttt{\seqsplit{UTIL\_RATE}} & 1,3334 & (!) Nghi ngờ (leakage?)\\
+\texttt{\seqsplit{MJACCTTYPCD}} & 0,9695 & Rất mạnh\\
+\texttt{LAISUAT} & 0,7851 & Rất mạnh\\
+\texttt{\seqsplit{BASE\_BAL}} & 0,5356 & Rất mạnh\\
+\texttt{\seqsplit{PARENTORGNBR}} & 0,3201 & Mạnh\\
+\texttt{\seqsplit{CURR\_BAL}} & 0,2585 & Trung bình\\
+\texttt{ORGNBR} & 0,1820 & Trung bình\\
+\texttt{SEX} & 0,0081 & Vô dụng\\
+\texttt{LOAIKH} & 0,0000 & Vô dụng\\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Information Value của 20 đặc trưng — bộ dữ liệu B}
+\label{tab:iv-b-full}
+\begin{tabular}{|l|r|l|}
+\hline
+Biến & IV & Mức\\
+\hline
+\texttt{\seqsplit{ENG\_LOAN\_AGE\_DAYS}} & 1,1170 & (!) Nghi ngờ (leakage?)\\
+\texttt{Lãi phải thu hạch toán nội bảng} & 0,5420 & Rất mạnh\\
+\texttt{\seqsplit{ENG\_TENOR\_ACTUAL\_DAYS}} & 0,3793 & Mạnh\\
+\texttt{Mô tả mục đích sử dụng tiền vay} & 0,3611 & Mạnh\\
+\texttt{Lãi suất} & 0,3130 & Mạnh\\
+\texttt{\seqsplit{ENG\_DAYS\_TO\_MATURITY}} & 0,2549 & Trung bình\\
+\texttt{Số dư nợ theo nguyên tệ} & 0,1892 & Trung bình\\
+\texttt{Phương thức cho vay} & 0,0732 & Yếu\\
+\texttt{Số tiền nợ gốc cơ cấu} & 0,0626 & Yếu\\
+\texttt{Số lần cơ cấu lại thời hạn trả nợ} & 0,0620 & Yếu\\
+\texttt{Mục đích sử dụng tiền vay phân theo ngành kinh tế} & 0,0620 & Yếu\\
+\texttt{Mã chi nhánh TCTD} & 0,0415 & Yếu\\
+\texttt{Số tiền nợ lãi cơ cấu} & 0,0320 & Yếu\\
+\texttt{Mã thời hạn cấp tín dụng} & 0,0107 & Vô dụng\\
+\texttt{Mã tiền tệ} & 0,0039 & Vô dụng\\
+\texttt{\seqsplit{ENG\_HAS\_RESTRUCTURE}} & 0,0000 & Vô dụng\\
+\texttt{Hình thức cấp tín dụng} & 0,0000 & Vô dụng\\
+\texttt{Lãi chưa thu hạch toán ngoại bảng} & 0,0000 & Vô dụng\\
+\texttt{Nguồn cấp tín dụng} & 0,0000 & Vô dụng\\
+\texttt{Hoạt động cấp tín dụng bằng phương tiện điện tử} & 0,0000 & Vô dụng\\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Ví dụ minh họa hồ sơ trước và sau xử lý}
+
+Bảng~\ref{tab:example-a} trình bày ba hồ sơ thực tế trong tập kiểm định của bộ A qua từng bước xử lý; Bảng~\ref{tab:example-b} minh họa ba hồ sơ thực tế của bộ B có giá trị thiếu tại biến \texttt{Phương thức cho vay} (thiếu ở 46/100.617 hồ sơ gốc, 0,05\%).
+
+\begin{table}[H]
+\centering
+\caption{Ví dụ ba hồ sơ thực tế của bộ A trước và sau xử lý}
+\label{tab:example-a}
+\begin{tabular}{|l|r|r|r|}
+\hline
+Biến & Hồ sơ \#5944 & Hồ sơ \#7333 & Hồ sơ \#12595\\
+\hline
+\multicolumn{4}{|l|}{\textit{Giá trị thô (không có biến nào thiếu ở bộ A)}}\\
+\hline
+\texttt{\seqsplit{BASE\_BAL}} & 201.000.000 & 5.000.000 & 300.000.000\\
+\texttt{\seqsplit{CURR\_BAL}} & 77.050.000 & 9.184.112 & 180.000.000\\
+\texttt{LAISUAT} & 0,1173 & 0,0000 & 0,1200\\
+\texttt{\seqsplit{UTIL\_RATE}} & 0,3833 & 1,8368 & 0,6000\\
+\texttt{\seqsplit{MJACCTTYPCD}} & CNS & CNS & CNS\\
+\texttt{\seqsplit{CURRMIACCTTYPCD}} & TH01 & VS01 & TH01\\
+\hline
+\multicolumn{4}{|l|}{\textit{Sau chuẩn hóa z-score (học $\mu,\sigma$ trên tập huấn luyện)}}\\
+\hline
+\texttt{\seqsplit{BASE\_BAL}} & $-0,0334$ & $-0,0651$ & $-0,0173$\\
+\texttt{\seqsplit{CURR\_BAL}} & $-0,0501$ & $-0,0628$ & $-0,0310$\\
+\texttt{LAISUAT} & 0,7095 & $-1,0111$ & 0,7491\\
+\texttt{\seqsplit{UTIL\_RATE}} & $-0,6374$ & $-0,1923$ & $-0,5710$\\
+\hline
+\multicolumn{4}{|l|}{\textit{Sau mã hóa LabelEncoder (học trên tập huấn luyện)}}\\
+\hline
+\texttt{\seqsplit{MJACCTTYPCD}} & 1 & 1 & 1\\
+\texttt{\seqsplit{CURRMIACCTTYPCD}} & 12 & 22 & 12\\
+\hline
+\end{tabular}
+\end{table}
+
+Bước điền khuyết không làm thay đổi giá trị ở đây (bộ A không thiếu dữ liệu); ví dụ chủ yếu thể hiện tác động của mã hóa và chuẩn hóa. Hồ sơ \#7333 có \mbox{\texttt{UTIL\_RATE}} thô bằng 1,8368 nhưng z-score âm ($-0,1923$), dù tỷ lệ sử dụng cao hơn hai hồ sơ còn lại, vì \mbox{\texttt{UTIL\_RATE}} trung bình toàn mẫu xấp xỉ 2,46 — z-score chỉ có ý nghĩa \emph{tương đối} trong phân phối lệch, không nên diễn giải như chỉ số rủi ro tuyệt đối.
+
+\begin{table}[H]
+\centering
+\caption{Ví dụ ba hồ sơ thực tế của bộ B có giá trị thiếu, trước và sau xử lý}
+\label{tab:example-b}
+\begin{tabular}{|l|r|r|r|}
+\hline
+Biến & Hồ sơ \#22771 & Hồ sơ \#26934 & Hồ sơ \#26961\\
+\hline
+\multicolumn{4}{|l|}{\textit{Giá trị thô}}\\
+\hline
+\texttt{Số dư nợ theo nguyên tệ} & 338 & 13.700 & 8.840\\
+\texttt{Lãi suất} & 16,50 & 16,95 & 21,00\\
+\texttt{Phương thức cho vay} & \textit{NaN} & \textit{NaN} & \textit{NaN}\\
+\texttt{Nhóm nợ tự phân loại} & 5 & 5 & 5\\
+\hline
+\multicolumn{4}{|l|}{\textit{Sau chuẩn hóa z-score (học $\mu,\sigma$ trên tập huấn luyện)}}\\
+\hline
+\texttt{Số dư nợ theo nguyên tệ} & $-0,0390$ & 0,0706 & 0,0307\\
+\texttt{Lãi suất} & 1,2578 & 1,3667 & 2,3438\\
+\hline
+\multicolumn{4}{|l|}{\textit{Sau điền khuyết (most\_frequent) / mã hóa}}\\
+\hline
+\texttt{Phương thức cho vay} & 11 & 11 & 11\\
+\hline
+\end{tabular}
+\end{table}
+
+Cả ba hồ sơ đều thuộc nhóm nợ 5 và thiếu \texttt{Phương thức cho vay}; cỡ mẫu nhỏ nên chưa đủ khẳng định tương quan với nhóm nợ, nhưng là điểm cần theo dõi thêm. \mbox{\texttt{SimpleImputer(strategy="most\_frequent")}} thay giá trị thiếu bằng danh mục phổ biến nhất trên tập huấn luyện (mã \texttt{11}, chiếm 76,9\% trong ba giá trị hợp lệ \texttt{11}/\texttt{14}/\texttt{16}) trước khi mã hóa; CatBoost giữ dạng chuỗi \texttt{UNKNOWN} thay vì điền most\_frequent. Ba biến số trong bảng cho cùng hiệu ứng nén biến thiên sau chuẩn hóa: dù \texttt{Số dư nợ theo nguyên tệ} của hồ sơ \#26934 lớn gấp hơn 40 lần hồ sơ \#22771, z-score tương ứng chỉ chênh khoảng 0,11, do độ lệch chuẩn toàn mẫu (121.908,73) lớn hơn nhiều trung bình (5.092,31).
+
+\section{Không gian tìm kiếm siêu tham số đầy đủ}
+
+Bảng~\ref{tab:grid-design} và Bảng~\ref{tab:grid-design-b} liệt kê đầy đủ không gian tìm kiếm siêu tham số theo từng mô hình, tương ứng với kết quả độ nhạy siêu tham số báo cáo tại Mục~\ref{sec:grid-search} (Chương 3).
+
+{\footnotesize
+\begin{table}[H]
+\centering
+\caption{Không gian tìm kiếm siêu tham số theo từng mô hình — bộ dữ liệu A}
+\label{tab:grid-design}
+\begin{tabular}{|p{2.6cm}|p{9.3cm}|p{1.2cm}|}
+\hline
+Mô hình & Tham số và giá trị thử & Số cấu hình\\
+\hline
+Decision Tree & max\_depth$\in\{5,10,15,20\}$, min\_samples\_leaf$\in\{5,10,20\}$ & 12\\
+\hline
+Random Forest & n\_estimators$\in\{100,300,500\}$, max\_depth$\in\{10,15,20\}$, min\_samples\_leaf$\in\{5,10\}$ & 18\\
+\hline
+XGBoost & max\_depth$\in\{4,6,8\}$ $\times$ learning\_rate$\in\{0{,}03;0{,}05;0{,}1\}$ tại n\_estimators=400, cộng n\_estimators$\in\{200,600\}$ tại cấu hình mặc định & 11\\
+\hline
+LightGBM & tương tự XGBoost & 11\\
+\hline
+CatBoost & depth$\in\{4,6,8\}$ $\times$ learning\_rate$\in\{0{,}03;0{,}05;0{,}1\}$ tại iterations=400 & 9\\
+\hline
+Logistic Regression & C$\in\{0{,}01;\,0{,}1;\,1{,}0;\,10{,}0\}$ & 4\\
+\hline
+\end{tabular}
+\end{table}
+}
+
+{\footnotesize
+\begin{table}[H]
+\centering
+\caption{Không gian tìm kiếm siêu tham số theo từng mô hình — bộ dữ liệu B}
+\label{tab:grid-design-b}
+\begin{tabular}{|p{2.6cm}|p{9.3cm}|p{1.2cm}|}
+\hline
+Mô hình & Tham số và giá trị thử & Số cấu hình\\
+\hline
+Logistic Regression & C$\in\{0{,}01;\,0{,}1;\,1{,}0;\,10{,}0\}$ & 4\\
+\hline
+Decision Tree & max\_depth$\in\{5,8,12,20\}$, min\_samples\_leaf$\in\{5,20\}$ & 8\\
+\hline
+Random Forest & n\_estimators$\in\{200,400\}$, max\_depth$\in\{10,20,\text{None}\}$, min\_samples\_leaf$\in\{5,15\}$ & 12\\
+\hline
+XGBoost & max\_depth$\in\{3,6,9\}$ $\times$ learning\_rate$\in\{0{,}03;0{,}1\}$ $\times$ n\_estimators$\in\{200,400\}$ & 12\\
+\hline
+LightGBM & tương tự XGBoost & 12\\
+\hline
+CatBoost & depth$\in\{4,6,8\}$ $\times$ learning\_rate$\in\{0{,}03;0{,}1\}$ $\times$ iterations$\in\{200,400\}$ & 12\\
+\hline
+\end{tabular}
+\end{table}
+}

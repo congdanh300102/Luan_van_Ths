@@ -1,0 +1,20 @@
+Loaded 25 folds, models: ['logistic', 'decision_tree', 'random_forest', 'xgboost', 'lightgbm', 'catboost', 'catboost_none']
+lightgbm vs xgboost         mean_diff=+0.0145  corrected: t=3.647 p=0.0013   naive: t=9.819 p=0.0000
+lightgbm vs random_forest   mean_diff=+0.0388  corrected: t=8.689 p=0.0000   naive: t=23.396 p=0.0000
+lightgbm vs catboost        mean_diff=+0.0490  corrected: t=11.692 p=0.0000   naive: t=31.483 p=0.0000
+lightgbm vs catboost_none   mean_diff=-0.0241  corrected: t=-4.001 p=0.0005   naive: t=-10.774 p=0.0000
+lightgbm vs decision_tree   mean_diff=+0.1080  corrected: t=10.521 p=0.0000   naive: t=28.329 p=0.0000
+lightgbm vs logistic        mean_diff=+0.2302  corrected: t=38.323 p=0.0000   naive: t=103.189 p=0.0000
+
+Saved stat_tests.csv
+
+Corrected tests with Holm-adjusted p-values:
+               comparison  mean_diff  corrected_t  corrected_p    naive_t      naive_p       holm_p
+      lightgbm vs xgboost   0.014469     3.646709 1.279728e-03   9.819065 7.013248e-10 1.279728e-03
+lightgbm vs random_forest   0.038843     8.689013 7.092434e-09  23.395883 4.959643e-18 2.127730e-08
+     lightgbm vs catboost   0.048994    11.692405 2.135447e-11  31.482764 4.968230e-21 1.067724e-10
+lightgbm vs catboost_none  -0.024090    -4.001455 5.249738e-04 -10.774249 1.123527e-10 1.049948e-03
+lightgbm vs decision_tree   0.108039    10.521275 1.805505e-10  28.329401 5.867946e-20 7.222019e-10
+     lightgbm vs logistic   0.230163    38.323356 0.000000e+00 103.188794 2.700124e-33 0.000000e+00
+
+Stage H complete.

@@ -1,0 +1,10 @@
+Total folds: 25 (5-fold x 5-repeat)
+  fold 5/25 done (27s elapsed)
+  fold 10/25 done (79s elapsed)
+  fold 15/25 done (109s elapsed)
+  fold 20/25 done (150s elapsed)
+  fold 25/25 done (191s elapsed)
+
+Embedded top-9 (in-fold selection): macroF1 = 0.5663 +/- 0.0092  (191.0s)
+
+Done.

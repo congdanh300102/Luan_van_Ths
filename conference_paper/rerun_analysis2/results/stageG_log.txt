@@ -1,0 +1,14 @@
+Total folds: 25 (5-fold x 5-repeat)
+logistic         macroF1 = 0.3346 +/- 0.0062   (70.8s)
+decision_tree    macroF1 = 0.4577 +/- 0.0182   (4.2s)
+random_forest    macroF1 = 0.5353 +/- 0.0068   (37.7s)
+xgboost          macroF1 = 0.5532 +/- 0.0067   (95.0s)
+lightgbm         macroF1 = 0.5714 +/- 0.0100   (96.3s)
+catboost         macroF1 = 0.5095 +/- 0.0084   (791.9s)
+
+Saved repeatedcv_summary_cw.csv and repeatedcv_perfold_cw.csv
+
+=== Embedded in-fold feature selection (LightGBM, k=9, 13-variable pool) ===
+Embedded top-9 (in-fold selection): macroF1 = 0.5656 +/- 0.0099  (217.2s)
+
+Stage G complete.

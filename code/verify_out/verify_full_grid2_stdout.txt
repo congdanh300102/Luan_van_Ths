@@ -1,0 +1,10 @@
+Total folds: 25 (5-fold x 5-repeat)
+logistic_balanced          macroF1 = 0.3390 +/- 0.0055   (88.7s)
+decision_tree_balanced     macroF1 = 0.4611 +/- 0.0158   (5.1s)
+random_forest_balanced     macroF1 = 0.5303 +/- 0.0075   (42.9s)
+xgboost_balanced           macroF1 = 0.6068 +/- 0.0101   (201.9s)
+lightgbm_balanced          macroF1 = 0.5691 +/- 0.0099   (343.4s)
+catboost_none              macroF1 = 0.5932 +/- 0.0101   (1438.9s)
+catboost_balanced          macroF1 = 0.5202 +/- 0.0093   (927.3s)
+
+Done.

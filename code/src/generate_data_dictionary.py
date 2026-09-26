@@ -2,7 +2,7 @@
 
 Chạy: python code/src/generate_data_dictionary.py
 Đầu ra: code/results/data_dictionary_20260430.xlsx
-        code/results/data_dictionary_20260507.xlsx
+        code/results/data_dictionary_20260531.xlsx
 """
 import sys
 from pathlib import Path
@@ -25,7 +25,7 @@ OUT_DIR.mkdir(exist_ok=True)
 
 FILES = {
     "20260430": RAW_DIR / "Thông tin tín dụng 20260430.xlsx",
-    "20260507": RAW_DIR / "Thông tin tín dụng 20260507.xlsx",
+    "20260531": RAW_DIR / "Thông tin tín dụng 20260531.xlsx",
 }
 
 FEATURE_DESC = credit_info_feature_info(RAW_NUMERICAL_COLS, RAW_CATEGORICAL_COLS)

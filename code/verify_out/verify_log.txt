@@ -1,0 +1,70 @@
+CATEGORICAL_COLS (5): ['MJACCTTYPCD', 'CURRMIACCTTYPCD', 'MUCDICHVAY', 'ORGNBR', 'PARENTORGNBR']
+NUMERICAL_COLS (6): ['BASE_BAL', 'CURR_BAL', 'LAISUAT', 'LOAN_TENURE_DAYS', 'DAYS_TO_MATURITY', 'UTIL_RATE']
+  MJACCTTYPCD: 3 unique values
+  CURRMIACCTTYPCD: 31 unique values
+  MUCDICHVAY: 79 unique values
+  ORGNBR: 134 unique values
+  PARENTORGNBR: 31 unique values
+
+Train 21600  Test 5401
+
+=== 1) CatBoost (native categorical handling) ===
+  CatBoost native-cat + none                    acc=0.9067  macroF1=0.5898  weightedF1=0.8849
+  CatBoost native-cat + balanced                acc=0.7482  macroF1=0.5109  weightedF1=0.8001
+
+=== 2) LightGBM (label-encoded via CreditPreprocessor, current pipeline) ===
+  LightGBM label-enc + balanced                 acc=0.8332  macroF1=0.5761  weightedF1=0.8537
+  LightGBM label-enc + none                     acc=0.9076  macroF1=0.6237  weightedF1=0.8909
+
+=== 3) LightGBM (native pandas-category handling, no label-encoding) ===
+  LightGBM native-cat + balanced                acc=0.8456  macroF1=0.5793  weightedF1=0.8606
+  LightGBM native-cat + none                    acc=0.9054  macroF1=0.6174  weightedF1=0.8901
+
+=== SUMMARY ===
+                        config  accuracy  macro_f1  weighted_f1
+     LightGBM label-enc + none  0.907610  0.623715     0.890883
+    LightGBM native-cat + none  0.905388  0.617447     0.890063
+    CatBoost native-cat + none  0.906684  0.589812     0.884906
+LightGBM native-cat + balanced  0.845584  0.579323     0.860607
+ LightGBM label-enc + balanced  0.833179  0.576050     0.853732
+CatBoost native-cat + balanced  0.748195  0.510884     0.800147
+
+=== Confusion matrix: CatBoost native-cat + none ===
+[[4187    1    0    1    5]
+ [ 206   42    1    0    8]
+ [  73    5   33    4    6]
+ [  77    0    1   46   33]
+ [  62    1    1   19  589]]
+              precision    recall  f1-score   support
+
+           0      0.909     0.998     0.952      4194
+           1      0.857     0.163     0.275       257
+           2      0.917     0.273     0.420       121
+           3      0.657     0.293     0.405       157
+           4      0.919     0.876     0.897       672
+
+    accuracy                          0.907      5401
+   macro avg      0.852     0.521     0.590      5401
+weighted avg      0.901     0.907     0.885      5401
+
+
+=== Confusion matrix: LightGBM label-enc + balanced (paper's comparator) ===
+[[3662  325  110   76   21]
+ [  99  118   16   20    4]
+ [  32   22   52   10    5]
+ [  29   13   18   85   12]
+ [  28    9    7   45  583]]
+              precision    recall  f1-score   support
+
+           0      0.951     0.873     0.910      4194
+           1      0.242     0.459     0.317       257
+           2      0.256     0.430     0.321       121
+           3      0.360     0.541     0.433       157
+           4      0.933     0.868     0.899       672
+
+    accuracy                          0.833      5401
+   macro avg      0.549     0.634     0.576      5401
+weighted avg      0.882     0.833     0.854      5401
+
+
+Done.

@@ -1,0 +1,34 @@
+XGBoost feature importance ranking (13-variable pool):
+   1. DAYS_TO_MATURITY     0.1987
+   2. CURRMIACCTTYPCD      0.1912
+   3. LOAN_TENURE_DAYS     0.0943
+   4. MUCDICHVAY           0.0935
+   5. LAISUAT              0.0928
+   6. MJACCTTYPCD          0.0528
+   7. PARENTORGNBR         0.0527
+   8. UTIL_RATE            0.0510
+   9. ORGNBR               0.0407
+  10. LOAIKH               0.0362
+  11. BASE_BAL             0.0347
+  12. SEX                  0.0322
+  13. CURR_BAL             0.0292
+
+XGBoost top-k curve:
+ k  accuracy  f1_macro  f1_weighted  roc_auc
+ 3  0.900204  0.600432     0.880399 0.865741
+ 5  0.898908  0.602530     0.881666 0.866202
+ 7  0.899093  0.600034     0.882228 0.884612
+ 9  0.904832  0.613472     0.889660 0.902768
+11  0.905943  0.615052     0.890292 0.905844
+13  0.905573  0.619630     0.890459 0.905253
+
+XGBoost group importance (Gain, 13-variable pool):
+                  group  importance       pct
+Sản phẩm & Mục đích vay    0.337402 33.700001
+       Kỳ hạn khoản vay    0.292975 29.299999
+Dư nợ & Hạn mức sử dụng    0.114958 11.500000
+     Đơn vị / Chi nhánh    0.093387  9.300000
+               Lãi suất    0.092817  9.300000
+Nhân khẩu học (IV thấp)    0.068461  6.800000
+
+Stage D complete.

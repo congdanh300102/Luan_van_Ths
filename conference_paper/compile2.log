@@ -1,0 +1,247 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(SEBL2026_paper.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-06-18>
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/base\size11.clo))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/vntex\vietnam.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/vntex\t5enc.def
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/vntex\t5enc.dfu))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/vntex\t5cmr.fd))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/base\inputenc.sty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/vntex\vncaps.tex))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/microtype\microtype.s
+ty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
+)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/microtype\microtype-p
+dftex.def)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/microtype\microtype.c
+fg))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg
+))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics
+.cfg)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.d
+ef)))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+) (C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cf
+g)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.lt
+x))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.s
+ty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefi
+nekeys.sty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape
+.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcm
+ds.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr
+.sty)))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
+)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gett
+itlestring.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.s
+ty)))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc
+.sty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
+) (C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintca
+lc.sty)))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunf
+ilecheck.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniqu
+ecounter.sty)))
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty)
+)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumitem.sty
+)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty
+)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty
+) (C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-p
+dftex.def) (SEBL2026_paper.aux)
+
+Package microtype Warning: Unable to apply patch `footnote' on input line 24.
+
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-cmr.cfg)
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.
+mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf
+-base.sty
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys
+.cfg)) (SEBL2026_paper.out) (SEBL2026_paper.out)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msb.cfg)
+(C:\Users\danhdc2\AppData\Local\Programs\MiKTeX\tex/latex/vntex\t5cmtt.fd)
+
+Package microtype Warning: I cannot find a protrusion list for font
+(microtype)                `T5/cmtt/m/n/10.95'. Switching off
+(microtype)                protrusion for this font on input line 35.
+
+
+Overfull \hbox (6.08347pt too wide) in paragraph at lines 45--47
+\T5/cmr/m/n/10.95 (-20) complexity is not automatically warranted. Second, nine
+-feature configurations retain approximately
+[1{C:/Users/danhdc2/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
+Overfull \hbox (15.8027pt too wide) in paragraph at lines 70--71
+[]\T5/cmr/m/n/10.95 (-20) Which business-defined groups of information (loan te
+nure, product/purpose, balance/utilization,
+[2] [3] [4] [5]
+
+Package microtype Warning: I cannot find a protrusion list for font
+(microtype)                `T5/cmtt/m/n/10'. Switching off
+(microtype)                protrusion for this font on input line 145.
+
+[6 <./figures/fig1_class_distribution.png>] [7 <./figures/fig2_distributions.pn
+g>] [8] [9 <./figures/fig3_correlation.png> <./figures/fig4_boxplot_maturity.pn
+g>]
+
+Package microtype Warning: I cannot find a protrusion list for font
+(microtype)                `T5/cmtt/m/n/10.95'. Switching off
+(microtype)                protrusion for this font on input line 219.
+
+[10]
+Overfull \hbox (4.33682pt too wide) in paragraph at lines 247--248
+[]\T5/cmr/m/n/10.95 (-20) Taken together, this evidence is consistent with \T5/
+cmtt/m/n/10.95 DAYS_TO_MATURITY \T5/cmr/m/n/10.95 (-20) being a strong, economi
+cally
+[11 <./figures/fig4b_past_maturity_share.png>] [12] [13 <./figures/fig5_model_c
+omparison.png>] [14 <./figures/fig8_confusion_matrix.png>]
+Overfull \hbox (31.27342pt too wide) in paragraph at lines 344--345
+[] []\T5/cmtt/m/n/10.95 DAYS_TO_MATURITY \T5/cmr/bx/n/10.95 (-20) ablation.[] \
+T5/cmr/m/n/10.95 (-20) Table 6 refits the 11-feature main configuration with \T
+5/cmtt/m/n/10.95 DAYS_TO_MATURITY
+[15] [16 <./figures/fig6_topk_curve.png>]
+Overfull \hbox (19.03111pt too wide) in paragraph at lines 433--434
+\T5/cmr/m/n/10.95 (-20) After explicitly setting LightGBM's \T5/cmtt/m/n/10.95 
+importance_type="gain"\T5/cmr/m/n/10.95 (-20) , Gain agrees that loan tenure/ma
+turity
+[17 <./figures/fig7_gain_vs_shap.png>] [18] [19 <./figures/fig9_repeatedcv_boxp
+lot.png>] [20] [21] [22] [23]
+Underfull \hbox (badness 10000) in paragraph at lines 588--588
+[]|\T5/cmr/m/n/10 (+20) Categorical
+
+Underfull \hbox (badness 10000) in paragraph at lines 589--589
+[]|\T5/cmr/m/n/10 (+20) Categorical
+
+Underfull \hbox (badness 10000) in paragraph at lines 590--591
+[]|\T5/cmr/m/n/10 (+20) Text label duplicating
+
+Underfull \hbox (badness 5696) in paragraph at lines 591--591
+[]|\T5/cmr/m/n/10 (+20) Retained (13-
+
+Underfull \hbox (badness 5696) in paragraph at lines 592--592
+[]|\T5/cmr/m/n/10 (+20) Retained (13-
+
+Underfull \hbox (badness 10000) in paragraph at lines 597--597
+[]|\T5/cmr/m/n/10 (+20) Used, then
+
+Underfull \hbox (badness 10000) in paragraph at lines 598--598
+[]|\T5/cmr/m/n/10 (+20) Used, then
+
+Underfull \hbox (badness 10000) in paragraph at lines 599--599
+[]|\T5/cmr/m/n/10 (+20) Categorical
+
+Underfull \hbox (badness 10000) in paragraph at lines 599--600
+[]|\T5/cmr/m/n/10 (+20) Loan tenor category
+
+Overfull \hbox (12.94742pt too wide) in paragraph at lines 602--602
+[]|\T5/cmr/m/n/10 (-20) Categorical/code| 
+
+Overfull \hbox (12.94742pt too wide) in paragraph at lines 603--603
+[]|\T5/cmr/m/n/10 (-20) Categorical/code| 
+
+Underfull \hbox (badness 10000) in paragraph at lines 605--605
+[]|\T5/cmr/m/n/10 (+20) Categorical
+
+Underfull \hbox (badness 10000) in paragraph at lines 606--606
+[]|\T5/cmr/m/n/10 (+20) Dropped
+
+Underfull \hbox (badness 4779) in paragraph at lines 607--607
+[]|\T5/cmr/m/n/10 (+20) Numeric (1--
+
+Underfull \hbox (badness 10000) in paragraph at lines 608--608
+[]|\T5/cmr/m/n/10 (+20) Dropped
+
+Overfull \hbox (1.46667pt too wide) in paragraph at lines 609--609
+[]|\T5/cmtt/m/n/10 LOAN_TENURE_DAYS
+
+Overfull \hbox (1.46667pt too wide) in paragraph at lines 610--610
+[]|\T5/cmtt/m/n/10 DAYS_TO_MATURITY
+[24]
+
+Package microtype Warning: I cannot find a protrusion list for font
+(microtype)                `T5/cmtt/m/n/9'. Switching off
+(microtype)                protrusion for this font on input line 616.
+
+[25] [26] (SEBL2026_paper.aux) )
+(see the transcript file for additional information)<C:/Users/danhdc2/AppData/L
+ocal/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/danhdc
+2/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/U
+sers/danhdc2/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7
+.pfb><C:/Users/danhdc2/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfont
+s/cm/cmmi8.pfb><C:/Users/danhdc2/AppData/Local/Programs/MiKTeX/fonts/type1/publ
+ic/amsfonts/cm/cmr10.pfb><C:/Users/danhdc2/AppData/Local/Programs/MiKTeX/fonts/
+type1/public/amsfonts/cm/cmr7.pfb><C:/Users/danhdc2/AppData/Local/Programs/MiKT
+eX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/danhdc2/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/danhdc2/AppData
+/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnbx10.pfb><C:/Users/danhdc2/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnbx12.pfb><C:/Users/danhdc2/App
+Data/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnr10.pfb><C:/Users/danhdc2/Ap
+pData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnr12.pfb><C:/Users/danhdc2/A
+ppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnr8.pfb><C:/Users/danhdc2/A
+ppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnr9.pfb><C:/Users/danhdc2/A
+ppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnti10.pfb><C:/Users/danhdc2
+/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vntt10.pfb><C:/Users/danhd
+c2/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vntt9.pfb>
+Output written on SEBL2026_paper.pdf (26 pages, 956737 bytes).
+Transcript written on SEBL2026_paper.log.
+pdflatex: major issue: So far, you have not checked for MiKTeX updates.

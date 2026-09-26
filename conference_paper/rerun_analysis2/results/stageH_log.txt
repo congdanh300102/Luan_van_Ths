@@ -1,0 +1,10 @@
+Loaded 25 folds, models: ['logistic', 'decision_tree', 'random_forest', 'xgboost', 'lightgbm', 'catboost']
+lightgbm vs xgboost         mean_diff=+0.0181  corrected: t=4.044 p=0.0005   naive: t=10.889 p=0.0000
+lightgbm vs random_forest   mean_diff=+0.0361  corrected: t=7.267 p=0.0000   naive: t=19.567 p=0.0000
+lightgbm vs catboost        mean_diff=+0.0619  corrected: t=13.016 p=0.0000   naive: t=35.046 p=0.0000
+lightgbm vs decision_tree   mean_diff=+0.1137  corrected: t=10.517 p=0.0000   naive: t=28.318 p=0.0000
+lightgbm vs logistic        mean_diff=+0.2367  corrected: t=40.139 p=0.0000   naive: t=108.078 p=0.0000
+
+Saved stat_tests.csv
+
+Stage H complete.

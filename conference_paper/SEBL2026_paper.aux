@@ -1,0 +1,50 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Literature Review and Institutional Context}{3}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}From statistical scoring to machine learning}{3}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Class imbalance, evaluation and explainability}{3}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Legal and institutional context in Vietnam, and its alignment with this dataset's timing}{4}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Prior machine-learning credit-scoring work in Vietnam and the research gap}{4}{subsection.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Data and Methodology}{5}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Dataset}{5}{subsection.3.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Debt-group distribution in Dataset A}}{5}{table.caption.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Debt-group distribution in Dataset A ($n = 27{,}001$). Group 1 (standard debt) alone accounts for 77.6\% of loan contracts, while the three non-performing groups (3--5) together account for only 17.6\%.}}{6}{figure.caption.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Data cleaning}{6}{subsection.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Distribution of key numeric variables in Dataset A. \texttt  {BASE\_BAL} and \texttt  {CURR\_BAL} are plotted on a $\log _{10}$ scale to reveal their approximately log-normal shape; \texttt  {UTIL\_RATE} shows a visible spike at the clip boundary of 10, confirming that the clipping rule in Section 3.4 is binding for a non-trivial share of contracts; \texttt  {DAYS\_TO\_MATURITY} is markedly bimodal around zero, separating loans already past their reference-date maturity from loans with substantial remaining tenor.}}{7}{figure.caption.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Leakage control}{7}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Feature engineering}{8}{subsection.3.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Pearson correlation matrix of the eight numeric variables of Dataset A. The three high-correlation pairs discussed in the text (\texttt  {LOAN\_TENURE\_DAYS}--\texttt  {DAYS\_TO\_MATURITY}, \texttt  {BASE\_BAL}--\texttt  {CURR\_BAL}, \texttt  {ORGNBR}--\texttt  {PARENTORGNBR}) stand out as the darkest off-diagonal cells.}}{9}{figure.caption.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Distribution of \texttt  {DAYS\_TO\_MATURITY} by debt group (outliers hidden to show box shape). The median falls fairly steadily from Group 1 to Group 4 and then drops sharply for Group 5, foreshadowing why this variable emerges as the dominant predictor in the SHAP analysis of Section 4.3 --- while also showing that the relationship is not strictly monotonic, a caution against over-interpreting it causally.}}{9}{figure.caption.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Feature screening with Information Value (IV)}{9}{subsection.3.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Information Value of the 13-variable pool (Dataset A)}}{10}{table.caption.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{A closer look at \texttt  {DAYS\_TO\_MATURITY}.}{10}{table.caption.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Models, imbalance handling and evaluation}{12}{subsection.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Empirical Results}{13}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Model comparison (RQ1)}{13}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Out-of-sample results on the 11-feature main configuration (class weighting)}}{13}{table.caption.9}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Accuracy, Macro-F1, Weighted-F1 and ROC-AUC (macro) for the six models compared in Table 3, under the class-weighting methodology adopted in Section 3.6.}}{13}{figure.caption.10}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces LightGBM confusion matrix and per-class metrics, 11-feature main configuration}}{14}{table.caption.11}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Row-normalised confusion matrix for LightGBM (Table 4). The darkest cells on the diagonal (Groups 1 and 5) show where the model is most reliable; the lighter, more spread-out rows for Groups 2--4 show where its flags require more caution.}}{14}{figure.caption.12}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces CatBoost ablation: \texttt  {auto\_class\_weights} substitution}}{14}{table.caption.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Feature efficiency: does more always help, and is the strongest predictor doing something suspicious? (RQ2)}{15}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\texttt  {DAYS\_TO\_MATURITY} ablation.}{15}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Effect of removing \texttt  {DAYS\_TO\_MATURITY} from the 11-feature configuration}}{15}{table.caption.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Reference-date invariance.}{15}{table.caption.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Embedded (in-fold) feature selection.}{15}{table.caption.14}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Macro-F1 and ROC-AUC by number of top-$k$ features (13-variable pool), XGBoost vs.\ LightGBM ranking}}{15}{table.caption.15}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Macro-F1 as a function of the number of top-ranked features used, XGBoost vs.\ LightGBM ranking (Table 7), under class weighting.}}{16}{figure.caption.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Contribution of business feature groups: Gain vs.\ SHAP (RQ3)}{16}{subsection.4.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Gain-based group importance --- XGBoost vs.\ LightGBM (13-variable pool, class weighting)}}{16}{table.caption.17}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces SHAP-based group importance --- XGBoost vs.\ LightGBM (11-feature main configuration, class weighting)}}{16}{table.caption.18}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Gain-based (left) vs.\ SHAP-based (right) group importance share, XGBoost vs.\ LightGBM, under class weighting (Tables 8--9).}}{17}{figure.caption.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Statistical robustness: repeated cross-validation and a corrected paired test}{17}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:cv}{{4.4}{17}{Statistical robustness: repeated cross-validation and a corrected paired test}{subsection.4.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Repeated cross-validation (5-fold $\times $ 5-repeat), full model $\times $ strategy grid, and corrected paired $t$-test vs.\ the top-ranked configuration (Decision Tree--none)}}{18}{table.caption.20}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Distribution of Macro-F1 across 25 repeated-CV folds for the full 6-model $\times $ 2-strategy grid (Table 10); solid boxes are unweighted, faded boxes are class-weighted.}}{19}{figure.caption.21}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Comparison with the literature}{19}{subsection.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion: Implications for Sustainable Credit Governance and Private-Sector Financing}{19}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion, Limitations and Future Research}{20}{section.6}\protected@file@percent }
+\gdef \@abspage@last{26}

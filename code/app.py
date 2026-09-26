@@ -87,7 +87,7 @@ with st.expander("🔬 Dành cho chuyên viên phân tích / Data Scientist (EDA
     with col2:
         st.page_link("pages/2_🤖_Huấn_Luyện.py", label="Trang 2 — Huấn luyện mô hình (Logistic, RF, XGBoost, LightGBM)", icon="🤖")
 
-    st.markdown("#### 📁 Bộ dữ liệu 2 — Thông tin tín dụng (train 20260430 / test 20260507)")
+    st.markdown("#### 📁 Bộ dữ liệu 2 — Thông tin tín dụng (train 20260430 / test 20260531)")
     col3, col4 = st.columns(2)
     with col3:
         st.page_link("pages/5_📊_Mô_Hình_Tín_Dụng.py", label="Trang 5 — Mô hình Tín dụng: xây dựng & huấn luyện", icon="📊")
@@ -104,7 +104,7 @@ with st.expander("🔬 Dành cho chuyên viên phân tích / Data Scientist (EDA
 
     | | Data_credit_rating_VN.xlsx | Thông tin tín dụng |
     |---|---|---|
-    | **Số hồ sơ** | ~27,001 | 100.617 (train 20260430) + 100.274 (test 20260507) |
+    | **Số hồ sơ** | ~27,001 | 100.617 (train 20260430) + 100.274 (test 20260531) |
     | **Số biến** | 21 | 41 (train) / 33 (test) — 33 cột chung dùng làm đặc trưng |
     | **Target** | `NHOMNOMOI` | `Nhóm nợ tự phân loại` |
     | **Imbalance ratio** | ~34.7× | ~89× |

@@ -11,9 +11,15 @@ def benchmark_strategies(model_key: str,
                          cat_cols: list, num_cols: list,
                          X_train, y_train, X_test, y_test,
                          strategies: dict,
-                         random_state: int = 42) -> pd.DataFrame:
+                         random_state: int = 42,
+                         custom_smote_strategy: dict | None = None) -> pd.DataFrame:
     """
     strategies: dict nhãn hiển thị -> imbalance_strategy key (xem models.IMBALANCE_OPTIONS)
+
+    custom_smote_strategy: bắt buộc phải truyền nếu `strategies` có chứa
+    "custom" hoặc "smote_class_weight" — nếu không, build_pipeline() sẽ âm
+    thầm rơi về mốc _SMOTE_MODERATE mặc định (calibrate cho phân bố lớp của
+    bộ A), gây sai lệch khi benchmark trên một bộ dữ liệu khác (VD bộ B).
 
     Trả về DataFrame: 1 hàng / chiến lược, gồm Macro F1, Weighted F1, ROC-AUC
     và Recall từng nhóm nợ (để thấy rõ đánh đổi giữa các lớp thiểu số).
@@ -23,7 +29,8 @@ def benchmark_strategies(model_key: str,
         try:
             pipe = build_pipeline(model_key, cat_cols, num_cols,
                                   random_state=random_state,
-                                  imbalance_strategy=strategy_key)
+                                  imbalance_strategy=strategy_key,
+                                  custom_smote_strategy=custom_smote_strategy)
             pipe.fit(X_train, y_train)
         except ValueError:
             # VD: chiến lược SMOTE có target thấp hơn số mẫu gốc của lớp đó

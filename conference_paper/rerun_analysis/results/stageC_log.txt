@@ -1,0 +1,26 @@
+Test set size for SHAP: 5401
+SHAP values shape: (5401, 11, 5)  (n_samples, n_features, n_classes)
+Feature names: ['BASE_BAL', 'CURR_BAL', 'LAISUAT', 'ORGNBR', 'PARENTORGNBR', 'LOAN_TENURE_DAYS', 'DAYS_TO_MATURITY', 'UTIL_RATE', 'MJACCTTYPCD', 'CURRMIACCTTYPCD', 'MUCDICHVAY']
+
+LightGBM SHAP importance (mean |phi_j| across all classes):
+  DAYS_TO_MATURITY     0.9697
+  LAISUAT              0.4360
+  UTIL_RATE            0.3472
+  CURRMIACCTTYPCD      0.3376
+  CURR_BAL             0.2796
+  ORGNBR               0.2722
+  PARENTORGNBR         0.2552
+  BASE_BAL             0.1904
+  LOAN_TENURE_DAYS     0.1803
+  MUCDICHVAY           0.1291
+  MJACCTTYPCD          0.0381
+
+LightGBM SHAP group importance:
+                  group  importance  pct
+       Kỳ hạn khoản vay    1.149978 33.5
+Dư nợ & Hạn mức sử dụng    0.817228 23.8
+     Đơn vị / Chi nhánh    0.527391 15.4
+Sản phẩm & Mục đích vay    0.504738 14.7
+               Lãi suất    0.436021 12.7
+
+Stage C complete.

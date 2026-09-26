@@ -1,0 +1,15 @@
+logistic         OK   macroF1 = 0.3529 +/- 0.0093   (326.2s)
+decision_tree    OK   macroF1 = 0.5958 +/- 0.0135   (15.4s)
+random_forest    OK   macroF1 = 0.6121 +/- 0.0118   (123.1s)
+xgboost          OK   macroF1 = 0.6163 +/- 0.0122   (283.5s)
+lightgbm         OK   macroF1 = 0.6190 +/- 0.0096   (283.7s)
+catboost         OK   macroF1 = 0.5093 +/- 0.0082   (2609.1s)
+
+Saved repeatedcv_summary.csv
+        model  macro_f1_mean  macro_f1_std  n_splits  n_repeats     seconds status
+     logistic       0.352937      0.009343         5         10  326.221112     OK
+decision_tree       0.595778      0.013454         5         10   15.399230     OK
+random_forest       0.612082      0.011784         5         10  123.104810     OK
+      xgboost       0.616281      0.012207         5         10  283.533246     OK
+     lightgbm       0.619017      0.009626         5         10  283.653185     OK
+     catboost       0.509276      0.008230         5         10 2609.132183     OK

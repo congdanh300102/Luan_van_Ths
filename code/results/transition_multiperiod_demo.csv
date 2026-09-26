@@ -1,0 +1,3 @@
+﻿pair,n_total,n_pos,positive_rate_pct,model,strategy,pr_auc_mean,pr_auc_std,roc_auc_mean,roc_auc_std,recall_pos_mean,recall_pos_std,n_splits,n_repeats,precision_pos_mean,precision_pos_std,f1_pos_mean,f1_pos_std,f1_macro_mean,f1_macro_std,f1_weighted_mean,f1_weighted_std
+430_to_531_real,,,,XGBoost,none,0.1805938423253528,0.0490874775055414,0.8457881744360336,0.0268446644595322,0.1098113207547169,0.0382502482947862,,,,,,,,,,
+531_to_630_sim,98620.0,258.0,0.2616,xgboost,none,0.005579475722354987,0.005298222844775788,0.48875319742587353,0.03332433290633245,0.0,0.0,5.0,10.0,0.0,0.0,0.0,0.0,0.49934511775060825,6.2888653416457495e-06,0.9960775600777734,3.76019143487475e-05

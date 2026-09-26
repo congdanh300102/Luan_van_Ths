@@ -1,0 +1,107 @@
+Config: 5 categorical + 6 numeric = 11 features
+n = 27001   class counts = [20965, 1287, 604, 784, 3361]
+
+=== 1) Hold-out grid (train 21600 / test 5401) ===
+  logistic_balanced          acc=0.6091  macroF1=0.3946  wF1=0.6886  auc=0.7744  (7s)
+  logistic_none              acc=0.8752  macroF1=0.3628  wF1=0.8298  auc=0.8083  (4s)
+  decision_tree_balanced     acc=0.6441  macroF1=0.4962  wF1=0.7243  auc=0.8647  (0s)
+  decision_tree_none         acc=0.9082  macroF1=0.6245  wF1=0.8907  auc=0.8921  (0s)
+  random_forest_balanced     acc=0.7784  macroF1=0.5699  wF1=0.8229  auc=0.9071  (3s)
+  random_forest_none         acc=0.9080  macroF1=0.6149  wF1=0.8908  auc=0.9239  (3s)
+  xgboost_balanced           acc=0.8298  macroF1=0.5966  wF1=0.8556  auc=0.9147  (5s)
+  xgboost_none               acc=0.9113  macroF1=0.6197  wF1=0.8942  auc=0.9282  (5s)
+  lightgbm_balanced          acc=0.8548  macroF1=0.6044  wF1=0.8713  auc=0.9128  (5s)
+  lightgbm_none              acc=0.9113  macroF1=0.6248  wF1=0.8954  auc=0.9246  (5s)
+  catboost_balanced          acc=0.7730  macroF1=0.5460  wF1=0.8192  auc=0.9062  (63s)
+  catboost_none              acc=0.9093  macroF1=0.6074  wF1=0.8911  auc=0.9235  (72s)
+
+Best hold-out Macro-F1 config: lightgbm_none
+
+=== 2) Confusion matrices / per-class metrics ===
+
+lightgbm_balanced confusion matrix (rows=true 1..5, cols=pred 1..5):
+[[3755  323   54   47   15]
+ [  99  121   21   15    1]
+ [  24   27   50   18    2]
+ [  31   13   14   86   13]
+ [  11    9    4   43  605]]
+              precision  recall  f1-score    support
+1                0.9579  0.8953    0.9256  4194.0000
+2                0.2454  0.4708    0.3227   257.0000
+3                0.3497  0.4132    0.3788   121.0000
+4                0.4115  0.5478    0.4699   157.0000
+5                0.9513  0.9003    0.9251   672.0000
+accuracy         0.8548  0.8548    0.8548     0.8548
+macro avg        0.5831  0.6455    0.6044  5401.0000
+weighted avg     0.8937  0.8548    0.8713  5401.0000
+
+lightgbm_none confusion matrix (rows=true 1..5, cols=pred 1..5):
+[[4153   22    6    3   10]
+ [ 195   47   10    3    2]
+ [  68    3   38   10    2]
+ [  59    2    7   73   16]
+ [  33    4    1   23  611]]
+              precision  recall  f1-score    support
+1                0.9213  0.9902    0.9545  4194.0000
+2                0.6026  0.1829    0.2806   257.0000
+3                0.6129  0.3140    0.4153   121.0000
+4                0.6518  0.4650    0.5428   157.0000
+5                0.9532  0.9092    0.9307   672.0000
+accuracy         0.9113  0.9113    0.9113     0.9113
+macro avg        0.7483  0.5723    0.6248  5401.0000
+weighted avg     0.8953  0.9113    0.8954  5401.0000
+
+xgboost_balanced confusion matrix (rows=true 1..5, cols=pred 1..5):
+[[3602  428   79   73   12]
+ [  91  133   24    7    2]
+ [  17   25   58   18    3]
+ [  25   14   15   91   12]
+ [  13   10    5   46  598]]
+              precision  recall  f1-score    support
+1                0.9610  0.8588    0.9071  4194.0000
+2                0.2180  0.5175    0.3068   257.0000
+3                0.3204  0.4793    0.3841   121.0000
+4                0.3872  0.5796    0.4643   157.0000
+5                0.9537  0.8899    0.9207   672.0000
+accuracy         0.8298  0.8298    0.8298     0.8298
+macro avg        0.5681  0.6650    0.5966  5401.0000
+weighted avg     0.8938  0.8298    0.8556  5401.0000
+
+=== 3) Repeated CV: 25 folds (5-fold x 5-repeat) ===
+  logistic_balanced          macroF1 = 0.3876 +/- 0.0055   (137s)
+  logistic_none              macroF1 = 0.3699 +/- 0.0089   (120s)
+  decision_tree_balanced     macroF1 = 0.4990 +/- 0.0144   (9s)
+  decision_tree_none         macroF1 = 0.6271 +/- 0.0109   (9s)
+  random_forest_balanced     macroF1 = 0.5637 +/- 0.0072   (68s)
+  random_forest_none         macroF1 = 0.6216 +/- 0.0097   (66s)
+  xgboost_balanced           macroF1 = 0.5878 +/- 0.0083   (140s)
+  xgboost_none               macroF1 = 0.6217 +/- 0.0101   (93s)
+  lightgbm_balanced          macroF1 = 0.5917 +/- 0.0089   (91s)
+  lightgbm_none              macroF1 = 0.6183 +/- 0.0095   (76s)
+  catboost_balanced          macroF1 = 0.5471 +/- 0.0091   (2234s)
+  catboost_none              macroF1 = 0.6042 +/- 0.0116   (4435s)
+
+=== 4) Corrected paired t-test vs. best CV config: decision_tree_none (0.6271) ===
+  decision_tree_none - xgboost_none               diff=+0.0053  t= +0.81  p_raw=0.423584  p_holm=0.788474
+  decision_tree_none - random_forest_none         diff=+0.0054  t= +0.87  p_raw=0.394237  p_holm=0.788474
+  decision_tree_none - lightgbm_none              diff=+0.0088  t= +1.26  p_raw=0.221127  p_holm=0.663382
+  decision_tree_none - catboost_none              diff=+0.0229  t= +3.42  p_raw=0.002264  p_holm=0.009056
+  decision_tree_none - lightgbm_balanced          diff=+0.0354  t= +5.51  p_raw=0.000012  p_holm=0.000058
+  decision_tree_none - xgboost_balanced           diff=+0.0392  t= +6.50  p_raw=0.000001  p_holm=0.000006
+  decision_tree_none - random_forest_balanced     diff=+0.0634  t=+10.98  p_raw=0.000000  p_holm=0.000000
+  decision_tree_none - catboost_balanced          diff=+0.0800  t=+13.11  p_raw=0.000000  p_holm=0.000000
+  decision_tree_none - decision_tree_balanced     diff=+0.1281  t=+14.24  p_raw=0.000000  p_holm=0.000000
+  decision_tree_none - logistic_balanced          diff=+0.2394  t=+41.55  p_raw=0.000000  p_holm=0.000000
+  decision_tree_none - logistic_none              diff=+0.2572  t=+31.54  p_raw=0.000000  p_holm=0.000000
+
+=== 5) Reviewer-requested contrasts (uncorrected for multiplicity) ===
+  lightgbm_none            - xgboost_none             diff=-0.0035  t= -0.89  p=0.384400
+  catboost_none            - lightgbm_balanced        diff=+0.0125  t= +2.29  p=0.031321
+  lightgbm_none            - lightgbm_balanced        diff=+0.0266  t= +6.14  p=0.000002
+  xgboost_none             - xgboost_balanced         diff=+0.0339  t= +6.71  p=0.000001
+  catboost_none            - catboost_balanced        diff=+0.0571  t= +8.70  p=0.000000
+  random_forest_none       - random_forest_balanced   diff=+0.0580  t=+10.56  p=0.000000
+  decision_tree_none       - decision_tree_balanced   diff=+0.1281  t=+14.24  p=0.000000
+  logistic_none            - logistic_balanced        diff=-0.0178  t= -2.78  p=0.010346
+
+Done.

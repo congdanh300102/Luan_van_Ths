@@ -1,0 +1,73 @@
+Raw shape: (27001, 21)
+
+=== Table 1: debt-group distribution ===
+   total  train  test  share_pct
+1  20965  16771  4194      77.65
+2   1287   1030   257       4.77
+3    604    483   121       2.24
+4    784    627   157       2.90
+5   3361   2689   672      12.45
+Imbalance ratio group1/group3 = 34.7:1
+Groups 3-5 share = 17.59%   Groups 2-4 share = 9.91%   Group 5 share = 12.45%
+
+=== Section 3.2: date formats and numeric shape ===
+  OPEN_DATE: 9949 (36.85%) stored as Excel serial numbers
+  NGAYDENHAN: 9890 (36.63%) stored as Excel serial numbers
+  unparsed after cleaning: OPEN_DATE=0, NGAYDENHAN=0
+  BASE_BAL           mean=4.28e+08  std=6.405e+09  IQR-outliers=7.13%
+  CURR_BAL           mean=3.555e+08  std=5.325e+09  IQR-outliers=9.12%
+  LAISUAT            mean=0.0688  std=0.06812  IQR-outliers=0.01%
+  UTIL_RATE          mean=2.456  std=3.256  IQR-outliers=17.21%
+  LOAN_TENURE_DAYS   mean=2293  std=2452  IQR-outliers=10.20%
+  DAYS_TO_MATURITY   mean=672.7  std=2398  IQR-outliers=23.08%
+
+=== Section 3.3: leakage screen ===
+  corr(NHOMNO, NHOMNOMOI) = 0.9820
+
+=== Table 2: Information Value, 13-variable pool ===
+         feature     iv                    level
+DAYS_TO_MATURITY 4.5541 ⚠️ Suspicious (leakage?)
+ CURRMIACCTTYPCD 1.9921 ⚠️ Suspicious (leakage?)
+LOAN_TENURE_DAYS 1.9410 ⚠️ Suspicious (leakage?)
+      MUCDICHVAY 1.4141 ⚠️ Suspicious (leakage?)
+       UTIL_RATE 1.3334 ⚠️ Suspicious (leakage?)
+     MJACCTTYPCD 0.9695              Very strong
+         LAISUAT 0.7851              Very strong
+        BASE_BAL 0.5356              Very strong
+    PARENTORGNBR 0.3201                   Strong
+        CURR_BAL 0.2585                   Medium
+          ORGNBR 0.1820                   Medium
+             SEX 0.0081                  Useless
+          LOAIKH 0.0000                  Useless
+
+=== Section 3.4: correlations among numeric variables ===
+                  BASE_BAL  CURR_BAL  LAISUAT  LOAN_TENURE_DAYS  DAYS_TO_MATURITY  UTIL_RATE
+BASE_BAL             1.000     0.923    0.025             0.029             0.025     -0.034
+CURR_BAL             0.923     1.000    0.021             0.042             0.036     -0.020
+LAISUAT              0.025     0.021    1.000             0.352             0.215     -0.327
+LOAN_TENURE_DAYS     0.029     0.042    0.352             1.000             0.942      0.172
+DAYS_TO_MATURITY     0.025     0.036    0.215             0.942             1.000      0.178
+UTIL_RATE           -0.034    -0.020   -0.327             0.172             0.178      1.000
+
+Top |r| pairs:
+  DAYS_TO_MATURITY - LOAN_TENURE_DAYS: r = 0.942
+  BASE_BAL - CURR_BAL: r = 0.923
+  LAISUAT - LOAN_TENURE_DAYS: r = 0.352
+  LAISUAT - UTIL_RATE: r = -0.327
+  DAYS_TO_MATURITY - LAISUAT: r = 0.215
+  UTIL_RATE - DAYS_TO_MATURITY: r = 0.178
+
+=== Table 2b: DAYS_TO_MATURITY by debt group ===
+        mean  median   min    max  share_negative_pct
+grp                                                  
+1    1112.02   224.0 -3252  16798               35.09
+2     733.22   172.0  -724   6549               44.21
+3     327.76  -418.0  -727   6547               60.26
+4      54.36  -517.0 -1085   6520               68.11
+5   -1884.78 -2236.0 -5513   6495               92.09
+
+=== Section 3.5: univariate rule 'DAYS_TO_MATURITY < 0' -> non-performing ===
+  accuracy on binary good/bad split = 0.6730
+  F1 on the non-performing class    = 0.5082
+
+Done.

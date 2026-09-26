@@ -1,5 +1,5 @@
 """Trang 5 — Mô hình dự báo Nhóm Nợ trên tập dữ liệu Thông tin tín dụng
-(train 20260430 / test độc lập 20260507)."""
+(train 20260430 / test độc lập 20260531)."""
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -38,7 +38,7 @@ st.title("📊 Mô hình Dự báo Nhóm Nợ — Thông tin tín dụng")
 st.markdown(
     "Xây dựng và huấn luyện mô hình phân loại nhóm nợ **1–5** trên "
     "`Thông tin tín dụng 20260430.xlsx` (train/validation 80/20), sau đó đánh giá "
-    "trên tập test độc lập `Thông tin tín dụng 20260507.xlsx`."
+    "trên tập test độc lập `Thông tin tín dụng 20260531.xlsx`."
 )
 
 
@@ -138,7 +138,7 @@ df_features, num_p, cat_p, feature_info = _resolve_feature_set(df_raw)
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
 tab_eda, tab_train, tab_test, tab_imbalance, tab_shap = st.tabs(
-    ["📋 Tổng quan dữ liệu", "🤖 Huấn luyện & Đánh giá", "🧪 Test độc lập (20260507)",
+    ["📋 Tổng quan dữ liệu", "🤖 Huấn luyện & Đánh giá", "🧪 Test độc lập (20260531)",
      "⚖️ So sánh xử lý mất cân bằng", "🧭 Giải thích SHAP"]
 )
 
@@ -179,7 +179,7 @@ with tab_eda:
     st.markdown("#### Bể đặc trưng hợp lệ — quy tắc loại trừ từ 33 cột chung train/test")
     st.caption(
         "Tập đặc trưng chỉ dùng 33 cột có mặt ở cả 2 file (train 20260430 có 41 "
-        "cột, test 20260507 chỉ có 33 cột) — để mô hình huấn luyện trên train vẫn "
+        "cột, test 20260531 chỉ có 33 cột) — để mô hình huấn luyện trên train vẫn "
         "chấm điểm được trên tập test độc lập."
     )
     e1, e2, e3, e4 = st.columns(4)
@@ -370,7 +370,7 @@ with tab_train:
         lbl     = st.session_state.get("credit_info_model_lbl", "")
 
         st.success(f"✅ Mô hình: **{lbl}** — {len(st.session_state.get('credit_info_num_cols', []) + st.session_state.get('credit_info_cat_cols', []))} đặc trưng")
-        st.caption("Đánh giá trên tập validation 20% tách từ 20260430 (không phải tập test 20260507 — xem tab **Test độc lập**).")
+        st.caption("Đánh giá trên tập validation 20% tách từ 20260430 (không phải tập test 20260531 — xem tab **Test độc lập**).")
 
         c1, c2, c3 = st.columns(3)
         c1.metric("Macro F1",    f"{metrics['f1_macro']:.4f}")
@@ -475,7 +475,7 @@ with tab_train:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Tab 3: Test độc lập trên 20260507
+# Tab 3: Test độc lập trên 20260531
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_test:
     if "credit_info_pipe" not in st.session_state:
@@ -483,18 +483,18 @@ with tab_test:
     else:
         st.markdown(
             "Đánh giá pipeline đã fit (tiền xử lý + mô hình, huấn luyện trên "
-            "20260430) trên `Thông tin tín dụng 20260507.xlsx` — dữ liệu hoàn "
+            "20260430) trên `Thông tin tín dụng 20260531.xlsx` — dữ liệu hoàn "
             "toàn tách biệt, không tham gia vào bước train/validation 80/20 ở "
             "trên. Đây là con số phản ánh đúng khả năng tổng quát hoá của mô hình."
         )
-        eval_test_btn = st.button("📥 Nạp 20260507 và đánh giá", type="primary")
+        eval_test_btn = st.button("📥 Nạp 20260531 và đánh giá", type="primary")
 
         if eval_test_btn:
             with st.spinner("Đang tải và đánh giá trên tập test…"):
                 try:
                     df_test_raw = _resolve_data(
                         DATA_CREDIT_INFO_TEST, "credit_info_test_upload",
-                        "Chọn file dữ liệu test (20260507)",
+                        "Chọn file dữ liệu test (20260531)",
                     )
                     df_test_eng, _ = engineer_business_features(df_test_raw)
                     df_test_valid = df_test_eng.dropna(subset=[CREDIT_INFO_TARGET_COL]).copy()
@@ -528,10 +528,10 @@ with tab_test:
 
             col_a, col_b = st.columns(2)
             with col_a:
-                st.markdown("**Confusion Matrix — tập test 20260507**")
+                st.markdown("**Confusion Matrix — tập test 20260531**")
                 st.plotly_chart(plot_confusion_matrix(hy_true, hy_pred), use_container_width=True)
             with col_b:
-                st.markdown("**Classification Report — tập test 20260507**")
+                st.markdown("**Classification Report — tập test 20260531**")
                 report_df = pd.DataFrame(hm.get("report", {})).T
                 num_cols_r = report_df.select_dtypes(include=float).columns
                 st.dataframe(
@@ -567,6 +567,7 @@ with tab_imbalance:
                     st.session_state["credit_info_X_train"], st.session_state["credit_info_y_train"],
                     st.session_state["credit_info_X_test"], st.session_state["credit_info_y_test"],
                     strategies,
+                    custom_smote_strategy=CREDIT_INFO_SMOTE_STRATEGY,
                 )
             st.session_state["credit_info_imbalance_bm"] = df_bm
 

@@ -1,5 +1,5 @@
 """Script tái lập kết quả cho luận văn — Bộ dữ liệu Thông tin tín dụng
-(train 20260430 / test 20260507).
+(train 20260430 / test 20260531).
 
 Không phải trang Streamlit — chạy độc lập để sinh toàn bộ số liệu/bảng/hình
 dùng trong Chương 3-4 (thay thế các bảng/hình cũ dựa trên fct_l.xlsx):
@@ -56,13 +56,19 @@ def _pct(x):
     return round(float(x) * 100, 2)
 
 
+def _acc(metrics):
+    """Accuracy lấy từ classification_report — compute_metrics() không trả
+    riêng chỉ số này nhưng report dạng dict luôn có khoá 'accuracy'."""
+    return float(metrics["report"]["accuracy"])
+
+
 def log(msg):
     print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
 
 
 def main():
     # ── 1. Load dữ liệu ──────────────────────────────────────────────────────
-    log("Đang tải dữ liệu train (20260430) và test (20260507)…")
+    log("Đang tải dữ liệu train (20260430) và test (20260531)…")
     df_train_raw = load_credit_info(DATA_CREDIT_INFO_TRAIN)
     df_test_raw = load_credit_info(DATA_CREDIT_INFO_TEST)
     log(f"Train: {df_train_raw.shape}, Test: {df_test_raw.shape}")
@@ -159,7 +165,7 @@ def main():
     plt.close(fig)
     log("Đã lưu 3 hình EDA vào luanvan_latex/figures/")
 
-    # ── 5. Train/validation split (80/20) + test độc lập 20260507 ──────────
+    # ── 5. Train/validation split (80/20) + test độc lập 20260531 ──────────
     X_all, y_all = prepare_credit_info(df_train_eng, CREDIT_INFO_TARGET_COL, num_p, cat_p)
     X_train, X_val, y_train, y_val = train_test_split(
         X_all, y_all, test_size=TEST_SIZE, stratify=y_all, random_state=RANDOM_STATE,
@@ -170,7 +176,7 @@ def main():
     df_test_valid = df_test_eng.dropna(subset=[CREDIT_INFO_TARGET_COL]).copy()
     X_holdout = transform_credit_info(df_test_valid, num_p, cat_p)
     y_holdout = df_test_valid[CREDIT_INFO_TARGET_COL].astype(int).values - 1
-    log(f"Test độc lập (20260507): {X_holdout.shape}")
+    log(f"Test độc lập (20260531): {X_holdout.shape}")
 
     # ── 6. So sánh 6 mô hình (cấu hình mặc định) ────────────────────────────
     log("Đang huấn luyện & so sánh các mô hình (cấu hình mặc định)…")
@@ -189,14 +195,14 @@ def main():
         y_pred_v = pipe.predict(X_val) + 1
         y_proba_v = pipe.predict_proba(X_val)
         m_v = compute_metrics(y_val + 1, y_pred_v, y_proba_v)
-        val_rows.append({"model": label, "model_key": key,
+        val_rows.append({"model": label, "model_key": key, "accuracy": _acc(m_v),
                          "f1_macro": m_v["f1_macro"], "f1_weighted": m_v["f1_weighted"],
                          "roc_auc": m_v["roc_auc"]})
 
         y_pred_h = pipe.predict(X_holdout) + 1
         y_proba_h = pipe.predict_proba(X_holdout)
         m_h = compute_metrics(y_holdout + 1, y_pred_h, y_proba_h)
-        holdout_rows.append({"model": label, "model_key": key,
+        holdout_rows.append({"model": label, "model_key": key, "accuracy": _acc(m_h),
                              "f1_macro": m_h["f1_macro"], "f1_weighted": m_h["f1_weighted"],
                              "roc_auc": m_h["roc_auc"]})
         log(f"  {label}: val Macro-F1={m_v['f1_macro']:.4f} | "
@@ -225,7 +231,7 @@ def main():
     report_h = pd.DataFrame(m_h["report"]).T
     report_h.to_csv(RESULTS_DIR / "credit_info_best_model_by_class_holdout.csv", encoding="utf-8-sig")
     log(f"Chi tiết theo nhóm nợ (validation):\n{report_v}")
-    log(f"Chi tiết theo nhóm nợ (holdout 20260507):\n{report_h}")
+    log(f"Chi tiết theo nhóm nợ (holdout 20260531):\n{report_h}")
 
     # ── 8. Top-k theo importance ─────────────────────────────────────────────
     log("Đang đánh giá hiệu năng theo số lượng đặc trưng (top-k)…")
@@ -243,7 +249,8 @@ def main():
         y_pred = p.predict(X_val[subset]) + 1
         y_proba = p.predict_proba(X_val[subset])
         m = compute_metrics(y_val + 1, y_pred, y_proba)
-        return {"f1_macro": m["f1_macro"], "f1_weighted": m["f1_weighted"], "roc_auc": m["roc_auc"]}
+        return {"accuracy": _acc(m), "f1_macro": m["f1_macro"],
+                "f1_weighted": m["f1_weighted"], "roc_auc": m["roc_auc"]}
 
     topk_df = evaluate_performance_vs_k(_build_and_eval, ordered_features, ks)
     topk_df.to_csv(RESULTS_DIR / "credit_info_topk.csv", index=False, encoding="utf-8-sig")
@@ -319,12 +326,14 @@ def main():
                 m = compute_metrics(y_val + 1, y_pred, y_proba)
                 grid_rows.append({
                     "model": label, "model_key": key, "config_id": i, "params": str(params),
+                    "accuracy": _acc(m),
                     "f1_macro": m["f1_macro"], "f1_weighted": m["f1_weighted"], "roc_auc": m["roc_auc"],
                     "status": "OK",
                 })
             except Exception as e:
                 grid_rows.append({
                     "model": label, "model_key": key, "config_id": i, "params": str(params),
+                    "accuracy": np.nan,
                     "f1_macro": np.nan, "f1_weighted": np.nan, "roc_auc": np.nan,
                     "status": f"ERROR: {e}",
                 })
@@ -343,7 +352,7 @@ def main():
     sens.to_csv(RESULTS_DIR / "credit_info_grid_search_sensitivity.csv", index=False, encoding="utf-8-sig")
     log(f"Độ nhạy hyperparameter:\n{sens}")
 
-    default_vs_best = val_df.merge(grid_best[["model", "f1_macro"]], on="model",
+    default_vs_best = val_df.merge(grid_best[["model", "accuracy", "f1_macro"]], on="model",
                                    suffixes=("_default", "_best"))
     default_vs_best["improve_pct"] = (
         (default_vs_best["f1_macro_best"] - default_vs_best["f1_macro_default"])

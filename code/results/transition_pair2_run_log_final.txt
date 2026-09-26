@@ -1,0 +1,45 @@
+[05:43:49] Đang tải dữ liệu kỳ T (20260531) và T+1 (20260630, THẬT)…
+[05:44:47] Kỳ T: (100274, 33), Kỳ T+1: (98620, 33)
+[05:44:47] Số khoản vay khớp được ở cả hai kỳ: 98,620 / 100,274 (98.4%)
+[05:44:49] Đối chiếu khoản vay bị loại (n=1654) vs. được giữ (n=98620):
+   nhom_no_tai_T  so_luong_bi_loai  ...  so_luong_duoc_giu  ty_le_duoc_giu_pct
+0              1              1602  ...              86925               88.14
+1              2                37  ...               6302                6.39
+2              3                 4  ...                987                1.00
+3              4                 0  ...               1421                1.44
+4              5                11  ...               2985                3.03
+
+[5 rows x 5 columns]
+[05:44:49] Phân bố nhãn: 258/98620 (0.262%) chuyển sang nhóm cao hơn.
+[05:44:49] Ma trận chuyển nhóm (cặp 2):
+Nhóm nợ tại T+1      1     2    3     4     5
+Nhóm nợ tại T                                
+1                86719   206    0     0     0
+2                  143  6151    8     0     0
+3                    5     0  970    12     0
+4                    0     0    0  1389    32
+5                    3     0    0     0  2982
+[05:44:49] Tập đặc trưng: 12 numerical (gồm 4 engineered) + 8 categorical = 20 tổng.
+[05:44:49] X_all: (98620, 20), positive rate: 0.262%
+[05:44:49] Đang đánh giá 4 chiến lược x 6 mô hình bằng RepeatedStratifiedKFold (5x10)…
+[05:46:57]   [none] Logistic Regression: PR-AUC=0.0027±0.0004 | ROC-AUC=0.4783 | Recall(+)=0.000 (127.9s)
+[05:53:16]   [class_weight] Logistic Regression: PR-AUC=0.0026±0.0003 | ROC-AUC=0.4749 | Recall(+)=0.333 (379.3s)
+[05:57:21]   [custom] Logistic Regression: PR-AUC=0.0028±0.0004 | ROC-AUC=0.4843 | Recall(+)=0.000 (245.0s)
+[06:05:03]   [smote_class_weight] Logistic Regression: PR-AUC=0.0027±0.0004 | ROC-AUC=0.4823 | Recall(+)=0.364 (462.3s)
+[06:06:17]   [none] Decision Tree: PR-AUC=0.0039±0.0017 | ROC-AUC=0.4735 | Recall(+)=0.000 (74.0s)
+[06:07:27]   [class_weight] Decision Tree: PR-AUC=0.0035±0.0007 | ROC-AUC=0.4938 | Recall(+)=0.293 (70.0s)
+[06:08:35]   [custom] Decision Tree: PR-AUC=0.0040±0.0017 | ROC-AUC=0.5025 | Recall(+)=0.002 (67.6s)
+[06:09:41]   [smote_class_weight] Decision Tree: PR-AUC=0.0037±0.0011 | ROC-AUC=0.5086 | Recall(+)=0.235 (66.1s)
+[06:13:06]   [none] Random Forest: PR-AUC=0.0042±0.0012 | ROC-AUC=0.4781 | Recall(+)=0.000 (205.5s)
+[06:16:37]   [class_weight] Random Forest: PR-AUC=0.0047±0.0022 | ROC-AUC=0.4728 | Recall(+)=0.084 (211.0s)
+[06:20:34]   [custom] Random Forest: PR-AUC=0.0049±0.0018 | ROC-AUC=0.5092 | Recall(+)=0.000 (237.0s)
+[06:24:06]   [smote_class_weight] Random Forest: PR-AUC=0.0059±0.0038 | ROC-AUC=0.4921 | Recall(+)=0.075 (211.4s)
+[06:26:22]   [none] XGBoost: PR-AUC=0.0053±0.0049 | ROC-AUC=0.4890 | Recall(+)=0.000 (136.3s)
+[06:28:38]   [class_weight] XGBoost: PR-AUC=0.0044±0.0040 | ROC-AUC=0.4805 | Recall(+)=0.050 (136.4s)
+[06:31:06]   [custom] XGBoost: PR-AUC=0.0049±0.0031 | ROC-AUC=0.4949 | Recall(+)=0.000 (147.6s)
+[06:33:31]   [smote_class_weight] XGBoost: PR-AUC=0.0057±0.0044 | ROC-AUC=0.4893 | Recall(+)=0.043 (144.5s)
+[06:36:26]   [none] LightGBM: PR-AUC=0.0034±0.0017 | ROC-AUC=0.4874 | Recall(+)=0.000 (175.5s)
+[06:40:46]   [class_weight] LightGBM: PR-AUC=0.0042±0.0045 | ROC-AUC=0.4803 | Recall(+)=0.045 (260.2s)
+[06:45:43]   [custom] LightGBM: PR-AUC=0.0044±0.0029 | ROC-AUC=0.4913 | Recall(+)=0.000 (297.0s)
+[06:48:29]   [smote_class_weight] LightGBM: PR-AUC=0.0057±0.0053 | ROC-AUC=0.4867 | Recall(+)=0.035 (165.3s)
+[07:29:08]   [none] CatBoost: PR-AUC=0.0060±0.0023 | ROC-AUC=0.5521 | Recall(+)=0.000 (2439.2s)

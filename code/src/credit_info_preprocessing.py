@@ -1,7 +1,7 @@
-"""Tiền xử lý cho tập dữ liệu "Thông tin tín dụng" (train 20260430 / test 20260507).
+"""Tiền xử lý cho tập dữ liệu "Thông tin tín dụng" (train 20260430 / test 20260531).
 
 Target = "Nhóm nợ tự phân loại" (1-5). Tập đặc trưng chỉ được xây từ 33 cột
-chung giữa 2 file train/test — 20260507 (test) thiếu 8 cột so với 20260430
+chung giữa 2 file train/test — 20260531 (test) thiếu 8 cột so với 20260430
 (train), nên mọi cột chỉ có ở train đều bị loại để mô hình huấn luyện vẫn
 chấm điểm được trên tập test độc lập.
 """
@@ -259,7 +259,7 @@ def engineer_business_features(df: pd.DataFrame) -> tuple[pd.DataFrame, list]:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Bài toán bổ sung: dự báo chuyển nhóm nợ trong 1 tháng (20260430 → 20260507).
+# Bài toán bổ sung: dự báo chuyển nhóm nợ trong 31 ngày (20260430 → 20260531).
 # ══════════════════════════════════════════════════════════════════════════════
 TRANSITION_LABEL_COL = "TRANSITION_WORSENED"
 TRANSITION_GRP_T1_COL = "TRANSITION_GRP_T1"
@@ -270,7 +270,7 @@ def build_transition_dataset(df_t_raw: pd.DataFrame,
                              id_col: str = "Số khế ước",
                              target_col: str = TARGET_COL) -> pd.DataFrame:
     """
-    Ghép khoản vay giữa kỳ T (20260430) và kỳ T+1 tháng (20260507) qua khoá
+    Ghép khoản vay giữa kỳ T (20260430) và kỳ T+31 ngày (20260531) qua khoá
     "Số khế ước" (duy nhất tuyệt đối ở cả hai kỳ, kiểm chứng thực nghiệm —
     0 trùng lặp) để xây nhãn chuyển nhóm nợ thật, thay vì phân loại lại nhóm
     nợ hiện tại (điều CIC đã cho biết).

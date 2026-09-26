@@ -1,57 +1,42 @@
-\documentclass[pt,a4paper]{report}
+\documentclass[a4paper]{report}
 \usepackage[utf8]{vietnam}
+\usepackage[fontsize=13pt]{fontsize}  % cỡ chữ thân bài 13pt theo quy cách luận văn
 \usepackage{natbib}
-\usepackage{amsmath, amsthm, 
+\usepackage{amsmath, amsthm,
 amssymb,latexsym,amscd,amsfonts,enumerate}
 \usepackage[top=3.5cm, bottom=3.0cm, left=3.5cm, right=2.0cm]
 {geometry}  % căn lề theo quy chuẩn KLTN
 \usepackage{microtype}
-\let\oldsubsection\subsection
-\renewcommand\subsection[1]{\oldsubsection{\Large{}#1}}
-\usepackage[font=large]{caption}
+\usepackage{caption}
+\usepackage{etoolbox}
+% Bảng trình bày nhỏ hơn thân bài một bậc để vừa khổ giấy
+\AtBeginEnvironment{tabular}{\footnotesize}
+\AtBeginEnvironment{longtable}{\footnotesize}
+\setlength{\tabcolsep}{4pt}
 \usepackage[unicode]{hyperref}
 \usepackage{color, fancyhdr, graphicx, wrapfig}
-\newtheorem{thuattoan}{Thuật toán}[chapter]
-\newtheorem{dn}{Định nghĩa}[chapter]
-\newtheorem{bang}{Bảng}[section]
-\newtheorem{tc}[dn]{Tính chất}
-\newtheorem{dl}{Định lí}[section]
-\newtheorem{md}{Mệnh đề}
-\newtheorem{bd}[dn]{Bổ đề}
-\newtheorem{hq}[dn]{Hệ quả}
-\newtheorem{vd}{Ví dụ}
-\newtheorem{cy}{Chú ý}[section]
-\newtheorem{nx}{Nhận xét}
 \pagenumbering{roman}\pagestyle{plain}
 %\pagestyle{fancy}
 %\rhead{\it }
 %\lfoot{\it Nguyễn Thanh Hải} 			         
 %\renewcommand{\headrulewidth}{1,2pt} 			
 %\renewcommand{\footrulewidth}{1,2pt}   % Cái này là tiêu đề chạy
-\usepackage{subfigure}
-\usepackage[utf8]{vietnam}
 \usepackage{setspace}
-\setstretch{1.5}
-\usepackage{graphicx}
+\setstretch{1.5}       % giãn dòng 1,5 theo quy cách luận văn
 \usepackage{placeins}
 \usepackage{float}
-\usepackage{subfigure}
-\usepackage{fancybox,graphicx}
-\usepackage{mathptmx}
-\usepackage{mathrsfs} 
+\usepackage{fancybox}
+\usepackage{mathptmx}  % font chữ hệ Times
+\usepackage{mathrsfs}
 \usepackage{amsfonts}
-\usepackage{setspace} % sử dụng gói lệnh này để điều chỉnh khoảng cách giữa các dòng
-\usepackage{soul} 
+\usepackage{soul}
 \usepackage{longtable,array}
 \usepackage{seqsplit}
 \usepackage{multirow}
 \setlength{\emergencystretch}{3em}
-\usepackage{wrapfig}
-\usepackage{lipsum}
 \usepackage{tikz}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.7}
-\usepackage{float}
 \usepackage{listings}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -102,17 +87,6 @@ amssymb,latexsym,amscd,amsfonts,enumerate}
   breakatwhitespace=true,
   tabsize=3
 }
-\newcommand{\inserttitle}{\@title}
-\newcommand{\insertproject}{\@project}
-\newcommand{\insertgroup}{\@group}
-\newcommand{\insertauthor}{\@author}
-\newcommand{\insertmajor}{\@major}
-\newcommand{\insertbranch}{\@branch}
-\newcommand{\insertsupervisor}{\@supervisor}
-\newcommand{\insertdate}{\@date}
-\newcommand{\insertaddress}{\@address}
-\newcommand{\insertinstitute}{\@institute}
-\makeatother
 \begin{document}
 \thispagestyle{empty}
 
@@ -161,11 +135,9 @@ amssymb,latexsym,amscd,amsfonts,enumerate}
 \begin{center}
 \LARGE \bf HÀ NỘI - 2026
 \end{center}
-\fontsize{14pt}{18pt}\selectfont 
 
 \newpage
-\thispagestyle{empty} 
-\pagenumbering{arabic}
+\thispagestyle{empty}
 \begin{center}
 \fontsize{15pt}{18pt}\selectfont \bf{CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM}\\
 \underline{Độc lập – Tự do – Hạnh phúc}
@@ -216,16 +188,17 @@ NGHIÊN CỨU TỪ MỘT NGÂN HÀNG THƯƠNG MẠI Ở VIỆT NAM
 \end{center}
 
 \newpage
+\chapter*{Lời cam đoan}
+\addcontentsline{toc}{chapter}{Lời cam đoan}
+\input{sections/Loicamdoan}
+
+\newpage
 \chapter*{Lời cảm ơn}
+\addcontentsline{toc}{chapter}{Lời cảm ơn}
 \input{sections/Loicamon}
 
 \newpage
-\input{sections/Loimodau}
-
-\input{sections/Tomtatnoidung}
-
-\newpage
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{2}
 \tableofcontents
 \clearpage
 \chapter*{Một số thuật ngữ viết tắt}
@@ -244,34 +217,49 @@ AI & Artificial Intelligence & Trí tuệ nhân tạo\\ \hline
 ML & Machine Learning & Học máy\\ \hline
 NHTM & Commercial Bank & Ngân hàng thương mại\\ \hline
 NHNN & State Bank of Vietnam & Ngân hàng Nhà nước Việt Nam\\ \hline
+TCTD & Credit Institution & Tổ chức tín dụng\\ \hline
 XHTD & Credit Rating & Xếp hạng tín dụng\\ \hline
+CIC & Credit Information Center & Trung tâm Thông tin tín dụng Quốc gia Việt Nam\\ \hline
 PD & Probability of Default & Xác suất khách hàng không thực hiện nghĩa vụ trả nợ\\ \hline
 LGD & Loss Given Default & Tỷ lệ tổn thất khi xảy ra vỡ nợ\\ \hline
 EAD & Exposure at Default & Giá trị dư nợ tại thời điểm vỡ nợ\\ \hline
 IV & Information Value & Giá trị thông tin, dùng đánh giá sức phân biệt của đặc trưng\\ \hline
+WOE & Weight of Evidence & Trọng số bằng chứng, cơ sở để tính Information Value\\ \hline
+EDA & Exploratory Data Analysis & Phân tích khám phá dữ liệu\\ \hline
+IQR & Interquartile Range & Khoảng tứ phân vị, dùng phát hiện giá trị ngoại lệ\\ \hline
+ETL & Extract -- Transform -- Load & Quy trình trích xuất, chuyển đổi và nạp dữ liệu; \texttt{ETL\_DATE} là ngày chốt dữ liệu của kỳ báo cáo\\ \hline
 SMOTE & Synthetic Minority Over-sampling Technique & Kỹ thuật sinh mẫu tổng hợp cho lớp thiểu số\\ \hline
 SHAP & SHapley Additive exPlanations & Phương pháp giải thích đóng góp của đặc trưng dựa trên giá trị Shapley\\ \hline
 ROC & Receiver Operating Characteristic & Đường cong biểu diễn quan hệ giữa tỷ lệ dương tính thật và dương tính giả\\ \hline
 AUC & Area Under the Curve & Diện tích dưới đường cong đánh giá khả năng phân biệt\\ \hline
-PR-AUC & Precision--Recall Area Under the Curve & Diện tích dưới đường cong Precision--Recall\\ \hline
+AP / PR-AUC & Average Precision / Precision--Recall Area Under the Curve & Luận văn tính average precision (AP); ký hiệu PR-AUC trong các bảng\\ \hline
 F1 & F1-score & Trung bình điều hòa của Precision và Recall\\ \hline
+MAE & Mean Absolute Error & Sai số tuyệt đối trung bình; Ordinal MAE đo số bậc sai lệch trung bình giữa nhóm dự báo và nhóm thực\\ \hline
 CV & Cross-validation & Kiểm định chéo\\ \hline
 API & Application Programming Interface & Giao diện lập trình ứng dụng\\ \hline
 RF & Random Forest & Thuật toán rừng ngẫu nhiên\\ \hline
 XGBoost & Extreme Gradient Boosting & Thuật toán tăng cường gradient tối ưu\\ \hline
 \textit{LightGBM} & Light Gradient Boosting Machine & Thuật toán tăng cường gradient dạng cây tối ưu cho hiệu năng\\ \hline
+CatBoost & Categorical Boosting & Thuật toán tăng cường gradient xử lý trực tiếp biến phân loại\\ \hline
 \end{longtable}
 }
 
 \clearpage
+\renewcommand{\listtablename}{Danh mục bảng}
+\listoftables
+\addcontentsline{toc}{chapter}{{\bf  Danh mục bảng}\rm}
+\clearpage
 \renewcommand{\listfigurename}{Danh mục hình vẽ}
 \listoffigures
 \addcontentsline{toc}{chapter}{{\bf  Danh mục hình vẽ}\rm}
+
+\input{sections/Tomtatnoidung}
+
 \clearpage
-\renewcommand{\listtablename}{Danh mục bảng}
-\listoftables
-\addcontentsline{toc}{chapter}{{\bf  Danh mục bảng}\rm} 
-% \chapter{Đồ thị tri thức và đồ thị tri thức theo miền}        
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\input{sections/Loimodau}
 
 \newpage
 
@@ -283,13 +271,14 @@ XGBoost & Extreme Gradient Boosting & Thuật toán tăng cường gradient tố
 
 \input{sections/Chuong4}
 
-\input{sections/Chuong5}
-
 \newpage
 \phantomsection
 \addcontentsline{toc}{chapter}{Tài liệu tham khảo}
 
 \bibliographystyle{plain}
-\bibliography{references}  
+\bibliography{references}
+
+\newpage
+\input{sections/Phuluc}
 
 \end{document}

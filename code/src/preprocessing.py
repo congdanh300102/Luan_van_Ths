@@ -12,8 +12,21 @@ REFERENCE_DATE = datetime(2021, 12, 31)
 
 
 def _parse_date(s):
+    """Ngày tháng trong file Excel gốc lưu ở hai dạng lẫn lộn trong cùng một
+    cột: chuỗi "dd/mm/YYYY" (khi ô định dạng Text) và số serial ngày kiểu
+    Excel (khi ô định dạng Date — pandas đọc về int/float thô, không tự động
+    parse). Bỏ sót nhánh số serial khiến _parse_date trả về NaT cho MỌI ô
+    dạng này — batch kiểm tra trên Data_credit_rating_VN.xlsx cho thấy đây là
+    36.6% số dòng ở NGAYDENHAN và 36.8% ở OPEN_DATE, không phải một số ít
+    ngoại lệ có thể bỏ qua."""
     if pd.isnull(s):
         return pd.NaT
+    if isinstance(s, (int, float, np.integer, np.floating)):
+        # Excel serial date, epoch 1899-12-30 (bù trừ sẵn lỗi năm nhuận 1900
+        # huyền thoại của Lotus 1-2-3 mà Excel kế thừa).
+        return pd.to_datetime(float(s), unit="D", origin="1899-12-30")
+    if isinstance(s, (pd.Timestamp, datetime)):
+        return pd.Timestamp(s)
     s = str(s).strip()
     for fmt in ("%d/%m/%Y", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
         try:
@@ -60,7 +73,14 @@ class CreditPreprocessor(BaseEstimator, TransformerMixin):
         self.num_present_ = [c for c in self.numerical_cols   if c in X.columns]
 
         self.cat_imputer_ = SimpleImputer(strategy="most_frequent")
-        self.num_imputer_ = SimpleImputer(strategy="median")
+        # keep_empty_features=True: nếu một cột số toàn NaN trên phần train của
+        # một fold (dễ gặp với sự kiện cực hiếm như bài toán chuyển nhóm nợ),
+        # SimpleImputer mặc định ÂM THẦM LOẠI BỎ cột đó khỏi transform() —
+        # np.hstack() ở transform() bên dưới không kiểm tra số cột nên không
+        # báo lỗi, chỉ lặng lẽ huấn luyện thiếu 1 đặc trưng ở đúng fold đó.
+        # keep_empty_features giữ nguyên số cột (điền 0) để hành vi nhất quán
+        # giữa mọi fold, đồng thời khớp với CatBoostPreprocessor bên dưới.
+        self.num_imputer_ = SimpleImputer(strategy="median", keep_empty_features=True)
         self.scaler_      = StandardScaler()
         self.label_encoders_ = {}
 
@@ -111,7 +131,12 @@ class CatBoostPreprocessor(BaseEstimator, TransformerMixin):
     def fit(self, X: pd.DataFrame, y=None):
         self.cat_present_ = [c for c in self.categorical_cols if c in X.columns]
         self.num_present_ = [c for c in self.numerical_cols   if c in X.columns]
-        self.num_imputer_ = SimpleImputer(strategy="median")
+        # keep_empty_features=True: xem giải thích ở CreditPreprocessor.fit()
+        # phía trên — ở đây việc cột bị loại còn nghiêm trọng hơn, vì
+        # transform() gán thẳng vào X[self.num_present_] theo TÊN cột nên số
+        # cột lệch sẽ ValueError ngay ("Columns must be same length as key"),
+        # thay vì âm thầm sai lệch như ở CreditPreprocessor.
+        self.num_imputer_ = SimpleImputer(strategy="median", keep_empty_features=True)
         if self.num_present_:
             self.num_imputer_.fit(X[self.num_present_])
         return self

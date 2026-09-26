@@ -1,0 +1,163 @@
+[04:45:24] Đang tải dữ liệu train (20260430) và test (20260531)…
+[04:47:18] Train: (100617, 33), Test: (100274, 33)
+[04:47:18] Phân phối nhóm nợ (train, 100,617 hồ sơ hợp lệ):
+Nhóm nợ tự phân loại
+1    88875
+2     6321
+3      998
+4     1446
+5     2977
+Name: count, dtype: int64
+[04:47:18] Imbalance ratio: 89.1x
+[04:47:18] Tập đặc trưng: 12 numerical (gồm 4 engineered) + 8 categorical = 20 tổng.
+[04:47:18]   numerical: ['Số dư nợ theo nguyên tệ', 'Lãi phải thu hạch toán nội bảng', 'Lãi chưa thu hạch toán ngoại bảng', 'Lãi suất', 'Số lần cơ cấu lại thời hạn trả nợ', 'Số tiền nợ gốc cơ cấu', 'Số tiền nợ lãi cơ cấu', 'Mã chi nhánh TCTD', 'ENG_LOAN_AGE_DAYS', 'ENG_DAYS_TO_MATURITY', 'ENG_TENOR_ACTUAL_DAYS', 'ENG_HAS_RESTRUCTURE']
+[04:47:18]   categorical: ['Mã thời hạn cấp tín dụng', 'Hình thức cấp tín dụng', 'Phương thức cho vay', 'Mã tiền tệ', 'Mục đích sử dụng tiền vay phân theo ngành kinh tế', 'Mô tả mục đích sử dụng tiền vay', 'Nguồn cấp tín dụng', 'Hoạt động cấp tín dụng bằng phương tiện điện tử']
+[04:47:18] Đang tính Information Value…
+[04:47:25] IV table đã lưu — phân bố mức: 
+level
+Useless                     7
+Weak                        6
+Strong                      3
+Medium                      2
+⚠️ Suspicious (leakage?)    1
+Very strong                 1
+Name: count, dtype: int64
+[04:47:25] Top 5 IV cao nhất:
+                           feature      iv                     level
+0                ENG_LOAN_AGE_DAYS  1.1170  ⚠️ Suspicious (leakage?)
+1  Lãi phải thu hạch toán nội bảng  0.5420               Very strong
+2            ENG_TENOR_ACTUAL_DAYS  0.3793                    Strong
+3  Mô tả mục đích sử dụng tiền vay  0.3611                    Strong
+4                         Lãi suất  0.3130                    Strong
+[04:47:25] Đang tính thống kê missing/outlier/correlation…
+[04:47:25] Top 5 cặp tương quan mạnh nhất:
+                           feature_1              feature_2      corr
+118             ENG_DAYS_TO_MATURITY  ENG_TENOR_ACTUAL_DAYS  0.975051
+5            Số dư nợ theo nguyên tệ  Số tiền nợ gốc cơ cấu  0.907574
+6            Số dư nợ theo nguyên tệ  Số tiền nợ lãi cơ cấu  0.850447
+41                          Lãi suất  Số tiền nợ gốc cơ cấu -0.613420
+18   Lãi phải thu hạch toán nội bảng  Số tiền nợ lãi cơ cấu  0.481933
+[04:47:26] Đã lưu 3 hình EDA vào luanvan_latex/figures/
+[04:47:26] Train: (80493, 20), Validation: (20124, 20)
+[04:47:26] Test độc lập (20260531): (100274, 20)
+[04:47:26] Đang huấn luyện & so sánh các mô hình (cấu hình mặc định)…
+[04:47:26] Mô hình khả dụng trong môi trường hiện tại: ['Logistic Regression', 'Decision Tree', 'Random Forest', 'XGBoost', 'LightGBM', 'CatBoost']
+[04:47:59]   Logistic Regression: val Macro-F1=0.3959 | holdout Macro-F1=0.3455 (32.9s)
+[04:48:02]   Decision Tree: val Macro-F1=0.6590 | holdout Macro-F1=0.4693 (3.3s)
+[04:48:14]   Random Forest: val Macro-F1=0.6587 | holdout Macro-F1=0.5065 (11.5s)
+[04:48:38]   XGBoost: val Macro-F1=0.6846 | holdout Macro-F1=0.4911 (23.8s)
+[04:49:10]   LightGBM: val Macro-F1=0.6930 | holdout Macro-F1=0.4995 (31.9s)
+[04:50:43]   CatBoost: val Macro-F1=0.6046 | holdout Macro-F1=0.4105 (93.6s)
+[04:50:43] Mô hình tốt nhất (theo validation Macro-F1): LightGBM
+[04:50:53] Chi tiết theo nhóm nợ (validation):
+              precision    recall  f1-score       support
+Nhóm 1         0.945231  0.999044  0.971393  17776.000000
+Nhóm 2         0.813333  0.193038  0.312020   1264.000000
+Nhóm 3         0.582857  0.510000  0.544000    200.000000
+Nhóm 4         0.717770  0.712803  0.715278    289.000000
+Nhóm 5         0.939024  0.905882  0.922156    595.000000
+accuracy       0.936693  0.936693  0.936693      0.936693
+macro avg      0.799643  0.664153  0.692969  20124.000000
+weighted avg   0.929895  0.936693  0.920596  20124.000000
+[04:50:53] Chi tiết theo nhóm nợ (holdout 20260531):
+              precision    recall  f1-score        support
+Nhóm 1         0.941226  0.987699  0.963902   88527.000000
+Nhóm 2         0.807292  0.171163  0.282442    6339.000000
+Nhóm 3         0.264430  0.540868  0.355202     991.000000
+Nhóm 4         0.349861  0.794511  0.485800    1421.000000
+Nhóm 5         0.994859  0.258344  0.410175    2996.000000
+accuracy       0.907134  0.907134  0.907134       0.907134
+macro avg      0.671533  0.550517  0.499504  100274.000000
+weighted avg   0.919292  0.907134  0.891487  100274.000000
+[04:50:53] Đang đánh giá hiệu năng theo số lượng đặc trưng (top-k)…
+[04:53:10] Top-k:
+    k  accuracy  f1_macro  f1_weighted   roc_auc
+0   3  0.934158  0.660620     0.917001  0.908526
+1   5  0.935301  0.676710     0.918785  0.928940
+2   8  0.936792  0.696088     0.920962  0.940625
+3  11  0.936891  0.701653     0.920869  0.941024
+4  14  0.937040  0.700865     0.921223  0.940714
+5  17  0.937488  0.703448     0.921806  0.941036
+6  20  0.936693  0.692969     0.920596  0.941129
+[04:53:10] Số đặc trưng để giữ 95% importance: 8/20 | 99%: 9/20
+[04:53:10] Group importance (Gain):
+                             group     importance   pct
+0               Dư nợ & Thanh toán  948810.014594  69.3
+1  Đặc trưng kỹ thuật (engineered)  286501.083038  20.9
+2                        Chi nhánh   59852.858259   4.4
+3                         Lãi suất   54717.366350   4.0
+4         Hình thức & Mục đích vay   10227.223628   0.7
+5              Kỳ hạn & Cơ cấu lại    9325.383896   0.7
+[04:53:10] Priority đầu tư dữ liệu:
+   ưu_tiên  ... Điểm ưu tiên
+0        1  ...     6.930000
+1        2  ...     2.090000
+2        3  ...     0.593497
+3        4  ...     0.440000
+4        5  ...     0.400000
+5        6  ...     0.070046
+
+[6 rows x 5 columns]
+[04:53:10] Đang tính SHAP values cho mô hình tốt nhất…
+[04:53:16] SHAP top 15:
+                                              feature  mean_abs_shap
+2                   Lãi chưa thu hạch toán ngoại bảng       1.084570
+8                                   ENG_LOAN_AGE_DAYS       0.844863
+9                                ENG_DAYS_TO_MATURITY       0.243010
+0                             Số dư nợ theo nguyên tệ       0.234355
+3                                            Lãi suất       0.211700
+7                                   Mã chi nhánh TCTD       0.185427
+10                              ENG_TENOR_ACTUAL_DAYS       0.179782
+1                     Lãi phải thu hạch toán nội bảng       0.161067
+16  Mục đích sử dụng tiền vay phân theo ngành kinh tế       0.058070
+17                    Mô tả mục đích sử dụng tiền vay       0.039899
+12                           Mã thời hạn cấp tín dụng       0.037774
+14                                Phương thức cho vay       0.030898
+19    Hoạt động cấp tín dụng bằng phương tiện điện tử       0.009045
+11                                ENG_HAS_RESTRUCTURE       0.001998
+6                               Số tiền nợ lãi cơ cấu       0.001619
+[04:53:16] SHAP group importance:
+                             group  importance   pct
+0               Dư nợ & Thanh toán    1.479991  44.5
+1  Đặc trưng kỹ thuật (engineered)    1.269653  38.2
+2                         Lãi suất    0.211700   6.4
+3                        Chi nhánh    0.185427   5.6
+4         Hình thức & Mục đích vay    0.137957   4.1
+5              Kỳ hạn & Cơ cấu lại    0.041954   1.3
+[04:53:16] Đang chạy grid search hyperparameter…
+[04:55:31]   Grid search Logistic Regression hoàn tất (4 cấu hình).
+[04:55:50]   Grid search Decision Tree hoàn tất (8 cấu hình).
+[04:57:27]   Grid search Random Forest hoàn tất (12 cấu hình).
+[05:01:13]   Grid search XGBoost hoàn tất (12 cấu hình).
+[05:06:11]   Grid search LightGBM hoàn tất (12 cấu hình).
+[05:38:19]   Grid search CatBoost hoàn tất (12 cấu hình).
+[05:38:19] Best per model (grid search):
+                  model  ...  f1_macro
+43             LightGBM  ...  0.696010
+34              XGBoost  ...  0.687406
+11        Decision Tree  ...  0.665298
+14        Random Forest  ...  0.664518
+59             CatBoost  ...  0.622808
+2   Logistic Regression  ...  0.395936
+
+[6 rows x 3 columns]
+[05:38:19] Độ nhạy hyperparameter:
+                 model       min       max      mean       std     range
+0             CatBoost  0.553373  0.622808  0.585278  0.022987  0.069435
+1        Decision Tree  0.586631  0.665298  0.638771  0.032952  0.078668
+2             LightGBM  0.641881  0.696010  0.681163  0.016935  0.054129
+3  Logistic Regression  0.326407  0.395936  0.370403  0.031979  0.069530
+4        Random Forest  0.624829  0.664518  0.646840  0.014039  0.039689
+5              XGBoost  0.611100  0.687406  0.668850  0.023624  0.076307
+[05:38:19] Default vs Best:
+                 model  f1_macro_default  f1_macro_best  improve_pct
+0             LightGBM          0.692969       0.696010         0.44
+1              XGBoost          0.684582       0.687406         0.41
+2        Decision Tree          0.659036       0.665298         0.95
+3        Random Forest          0.658672       0.664518         0.89
+4             CatBoost          0.604561       0.622808         3.02
+5  Logistic Regression          0.395936       0.395936         0.00
+[05:38:19] HOÀN TẤT. Tất cả bảng số liệu đã lưu vào code/results/credit_info_*.csv
+[05:38:19] Hình EDA đã lưu vào luanvan_latex/figures/eda_credit_info_*.png
+
+[exited with code 0]

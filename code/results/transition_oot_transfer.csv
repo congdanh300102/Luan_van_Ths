@@ -1,0 +1,2 @@
+﻿model,strategy,n_train_pair1,n_test_pair2,n_pos_pair2,pr_auc,roc_auc,recall_pos,precision_pos
+XGBoost,none,98968,98620,258,0.0032134422967395214,0.5639187921408485,0.0,0.0

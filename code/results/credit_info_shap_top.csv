@@ -1,21 +1,21 @@
 ﻿feature,mean_abs_shap
-Lãi chưa thu hạch toán ngoại bảng,1.0869824815300413
-ENG_LOAN_AGE_DAYS,0.8514133100761007
-Số dư nợ theo nguyên tệ,0.24819556982120444
-ENG_DAYS_TO_MATURITY,0.24610863071858352
-Lãi suất,0.21930420237673479
-ENG_TENOR_ACTUAL_DAYS,0.18824945839600665
-Mã chi nhánh TCTD,0.18443251421717305
-Lãi phải thu hạch toán nội bảng,0.1615943377161041
-Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.04876048703011068
-Mô tả mục đích sử dụng tiền vay,0.04674309098109442
-Mã thời hạn cấp tín dụng,0.03453527801442251
-Phương thức cho vay,0.027156689889468878
-Hoạt động cấp tín dụng bằng phương tiện điện tử,0.007832143620745104
-ENG_HAS_RESTRUCTURE,0.0025220666931488563
-Số tiền nợ gốc cơ cấu,0.0018269341850604462
-Số tiền nợ lãi cơ cấu,0.0017511182362142971
-Số lần cơ cấu lại thời hạn trả nợ,0.001356419854179124
-Hình thức cấp tín dụng,6.632129065124213e-05
-Mã tiền tệ,1.4299759195454497e-06
+Lãi chưa thu hạch toán ngoại bảng,1.0845699594712264
+ENG_LOAN_AGE_DAYS,0.8448629103100924
+ENG_DAYS_TO_MATURITY,0.24300954230939265
+Số dư nợ theo nguyên tệ,0.23435456981829433
+Lãi suất,0.21170033430562676
+Mã chi nhánh TCTD,0.18542687027244675
+ENG_TENOR_ACTUAL_DAYS,0.1797822695870225
+Lãi phải thu hạch toán nội bảng,0.16106672486035403
+Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.058070234499580216
+Mô tả mục đích sử dụng tiền vay,0.03989862553251816
+Mã thời hạn cấp tín dụng,0.037774324152151234
+Phương thức cho vay,0.03089806909534825
+Hoạt động cấp tín dụng bằng phương tiện điện tử,0.009044898390876516
+ENG_HAS_RESTRUCTURE,0.0019978696080551143
+Số tiền nợ lãi cơ cấu,0.0016191298241203214
+Số tiền nợ gốc cơ cấu,0.0015626531223258302
+Số lần cơ cấu lại thời hạn trả nợ,0.0009975056119541936
+Hình thức cấp tín dụng,4.448702637443352e-05
+Mã tiền tệ,6.753466981445805e-07
 Nguồn cấp tín dụng,0.0
