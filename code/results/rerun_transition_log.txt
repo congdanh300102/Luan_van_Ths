@@ -1,0 +1,10 @@
+[18:07:09] cặp 2: 98,620 khớp, 258 sự kiện (0.262%), ENG thiếu {'ENG_LOAN_AGE_DAYS': np.float64(0.0), 'ENG_DAYS_TO_MATURITY': np.float64(0.0), 'ENG_TENOR_ACTUAL_DAYS': np.float64(0.0), 'ENG_HAS_RESTRUCTURE': np.float64(0.0)}
+[18:07:09] cặp 1: 98,968 khớp, 265 sự kiện (0.268%), ENG thiếu {'ENG_LOAN_AGE_DAYS': np.float64(0.0), 'ENG_DAYS_TO_MATURITY': np.float64(0.0), 'ENG_TENOR_ACTUAL_DAYS': np.float64(0.0), 'ENG_HAS_RESTRUCTURE': np.float64(0.0)}
+[18:09:20] T cap2 XGBoost (none): AP=0.0047±0.0023 ROC-AUC=0.4843 (131s)
+[18:11:34] T cap2 LightGBM (custom): AP=0.0037±0.0011 ROC-AUC=0.5006 (134s)
+[18:15:48] T cap2 Random Forest (none): AP=0.0042±0.0010 ROC-AUC=0.5000 (254s)
+[18:16:56] T cap2 Decision Tree (custom): AP=0.0036±0.0011 ROC-AUC=0.5060 (68s)
+[18:18:59] T cap2 Logistic Regression (none): AP=0.0028±0.0004 ROC-AUC=0.4904 (123s)
+[18:51:46] T cap2 CatBoost (none): AP=0.0063±0.0023 ROC-AUC=0.5546 (1967s)
+[18:54:04] T cap1 XGBoost (none): AP=0.1806±0.0491 ROC-AUC=0.8458 (138s)
+[18:57:25] T cap1 LightGBM (custom): AP=0.1761±0.0488 ROC-AUC=0.8399 (201s)

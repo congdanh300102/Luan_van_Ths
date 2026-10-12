@@ -1,0 +1,69 @@
+[16:59:27] A1 Logistic Regression: F1m=0.4204 ordMAE=0.2785 (5s)
+[16:59:28] A1 Decision Tree: F1m=0.5896 ordMAE=0.2085 (0s)
+[16:59:30] A1 Random Forest: F1m=0.6179 ordMAE=0.1711 (2s)
+[16:59:34] A1 XGBoost: F1m=0.6442 ordMAE=0.1576 (4s)
+[16:59:39] A1 LightGBM: F1m=0.6484 ordMAE=0.1529 (5s)
+[17:00:19] A1 CatBoost: F1m=0.5454 ordMAE=0.3366 (40s)
+[17:00:30] A2 group Gain vs SHAP:
+                           gain_pct   shap_pct
+group                                         
+Kỳ hạn khoản vay          56.451050  40.968014
+Dư nợ và hạn mức sử dụng  16.285317  26.834557
+Đơn vị/Chi nhánh          12.657924  14.738345
+Lãi suất                   6.411817   8.808838
+Sản phẩm và mục đích vay   8.193892   8.650246
+rho_feat=0.755 p=0.0073
+[17:00:48] A3:
+       strategy  f1_macro  roc_auc_macro
+0         SMOTE  0.644237       0.920128
+1   Không xử lý  0.625695       0.926547
+2       Kết hợp  0.589328       0.909632
+3  Trọng số lớp  0.601622       0.916699
+[17:01:20] A4:
+    k  f1_macro  roc_auc_macro
+0   3  0.602073       0.882606
+1   5  0.614018       0.900686
+2   7  0.641117       0.919693
+3   9  0.638844       0.920209
+4  11  0.633638       0.920661
+5  13  0.643405       0.919157
+[17:02:10] B3:
+                                 bien  ... ty_le_nhom2_5_trong_so_duong_pct
+0   Lãi chưa thu hạch toán ngoại bảng  ...                              NaN
+1   Lãi chưa thu hạch toán ngoại bảng  ...                              NaN
+2   Lãi chưa thu hạch toán ngoại bảng  ...                              NaN
+3   Lãi chưa thu hạch toán ngoại bảng  ...                              NaN
+4   Lãi chưa thu hạch toán ngoại bảng  ...                              NaN
+5   Lãi chưa thu hạch toán ngoại bảng  ...                        99.859111
+6     Lãi phải thu hạch toán nội bảng  ...                              NaN
+7     Lãi phải thu hạch toán nội bảng  ...                              NaN
+8     Lãi phải thu hạch toán nội bảng  ...                              NaN
+9     Lãi phải thu hạch toán nội bảng  ...                              NaN
+10    Lãi phải thu hạch toán nội bảng  ...                              NaN
+11    Lãi phải thu hạch toán nội bảng  ...                         3.744992
+
+[12 rows x 5 columns]
+[17:02:10]   Số lần cơ cấu lại thời hạn trả nợ: thiếu 99.60%, trung vị phần quan sát = 1.00
+[17:02:10]   Số tiền nợ gốc cơ cấu: thiếu 99.72%, trung vị phần quan sát = 341.50
+[17:02:10]   Số tiền nợ lãi cơ cấu: thiếu 99.82%, trung vị phần quan sát = 216.00
+[17:02:33] B2 median (hiện tại) LightGBM: val F1m=0.6930 ho F1m=0.4995
+[17:02:48] B2 median (hiện tại) XGBoost: val F1m=0.6846 ho F1m=0.4911
+[17:02:57] B2 median (hiện tại) Random Forest: val F1m=0.6587 ho F1m=0.5065
+[17:03:14] B2 điền 0 LightGBM: val F1m=0.6989 ho F1m=0.4957
+[17:03:30] B2 điền 0 XGBoost: val F1m=0.6797 ho F1m=0.4855
+[17:03:40] B2 điền 0 Random Forest: val F1m=0.6610 ho F1m=0.5067
+[17:04:37] T2 (n_pos=53):
+              mau  ...  mean_abs_shap
+41  phan tang 500  ...       0.931235
+40  phan tang 500  ...       0.652184
+49  phan tang 500  ...       0.546572
+50  phan tang 500  ...       0.465105
+48  phan tang 500  ...       0.444886
+47  phan tang 500  ...       0.399527
+43  phan tang 500  ...       0.365655
+42  phan tang 500  ...       0.240376
+57  phan tang 500  ...       0.090931
+56  phan tang 500  ...       0.070929
+
+[10 rows x 4 columns]
+[17:04:37] HOÀN TẤT

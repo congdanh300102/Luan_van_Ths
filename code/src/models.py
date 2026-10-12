@@ -20,7 +20,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from imblearn.pipeline import Pipeline as ImbPipeline
-from imblearn.over_sampling import SMOTE, BorderlineSMOTE, ADASYN
+from imblearn.over_sampling import SMOTE, SMOTENC, BorderlineSMOTE, ADASYN
 from imblearn.combine import SMOTETomek
 from imblearn.under_sampling import RandomUnderSampler
 
@@ -240,6 +240,19 @@ def build_pipeline(model_key: str,
     elif imbalance_strategy == "smote_class_weight":
         sampler = SMOTE(sampling_strategy=custom_smote_strategy or _SMOTE_MODERATE,
                         random_state=random_state, k_neighbors=3)
+    elif imbalance_strategy == "smote_nc":
+        # SMOTE thường nội suy tuyến tính MỌI cột, kể cả cột phân loại đã được
+        # label-encode — sinh ra giá trị không ứng với danh mục hợp lệ nào (VD
+        # mã sản phẩm 12,7). SMOTENC xử lý riêng: cột số vẫn nội suy, cột phân
+        # loại lấy giá trị xuất hiện nhiều nhất trong các láng giềng. Vị trí cột
+        # phân loại trong đầu ra của CreditPreprocessor.transform() là các cột
+        # CUỐI CÙNG (np.hstack([X_num, X_cat])), nên chỉ số của chúng là
+        # [len(numerical_cols), len(numerical_cols)+len(categorical_cols)).
+        cat_idx = list(range(len(numerical_cols),
+                             len(numerical_cols) + len(categorical_cols)))
+        sampler = SMOTENC(categorical_features=cat_idx,
+                          sampling_strategy=custom_smote_strategy or _SMOTE_MODERATE,
+                          random_state=random_state, k_neighbors=3)
     elif imbalance_strategy == "borderline_smote":
         sampler = BorderlineSMOTE(random_state=random_state, k_neighbors=3)
     elif imbalance_strategy == "smote_tomek":

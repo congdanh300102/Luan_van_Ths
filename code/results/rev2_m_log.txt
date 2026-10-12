@@ -1,0 +1,26 @@
+[18:55:04] M: kiểm tra điền 0 — trung vị ba biến cơ cấu nay bằng [0.0, 0.0, 0.0], tỷ lệ thiếu [np.float64(0.0), np.float64(0.0), np.float64(0.0)]
+[18:55:33] M  Logistic Regression: val=0.4098 ngoài TG=0.3840 (29s)
+[18:55:36] M  Decision Tree: val=0.6566 ngoài TG=0.5903 (3s)
+[18:55:45] M  Random Forest: val=0.6610 ngoài TG=0.6618 (9s)
+[18:56:02] M  XGBoost: val=0.6797 ngoài TG=0.6826 (17s)
+[18:56:25] M  LightGBM: val=0.6989 ngoài TG=0.7023 (23s)
+[18:58:10] M  CatBoost: val=0.6009 ngoài TG=0.5812 (105s)
+[18:58:10] M: mô hình tham chiếu = LightGBM
+[18:58:26] M SHAP n=5000; nhóm nghiệp vụ:
+                                 gain_pct  shap_pct
+group                                              
+Dư nợ & Thanh toán                   69.2      43.5
+Đặc trưng kỹ thuật (engineered)      21.0      38.8
+Chi nhánh                             4.3       5.5
+Lãi suất                              4.0       6.5
+Kỳ hạn & Cơ cấu lại                   0.7       1.3
+Hình thức & Mục đích vay              0.7       4.5
+Spearman biến rho=0.964 p=8.654e-12 | nhóm rho=0.886 p=0.01885
+[18:58:44] M  Top-3: Macro-F1=0.6606
+[18:59:02] M  Top-5: Macro-F1=0.6767
+[18:59:24] M  Top-8: Macro-F1=0.6961
+[18:59:37] M  Top-11: Macro-F1=0.7017
+[18:59:47] M  Top-14: Macro-F1=0.6959
+[18:59:58] M  Top-17: Macro-F1=0.6935
+[19:00:08] M  Top-20: Macro-F1=0.6989
+[19:00:08] HOÀN TẤT

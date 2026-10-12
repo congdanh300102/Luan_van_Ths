@@ -33,6 +33,8 @@ amssymb,latexsym,amscd,amsfonts,enumerate}
 \usepackage{longtable,array}
 \usepackage{seqsplit}
 \usepackage{multirow}
+\usepackage{makecell}
+\usepackage{chngcntr}
 \setlength{\emergencystretch}{3em}
 \usepackage{tikz}
 \usepackage{pgfplots}
@@ -232,7 +234,7 @@ SMOTE & Synthetic Minority Over-sampling Technique & Kỹ thuật sinh mẫu t�
 SHAP & SHapley Additive exPlanations & Phương pháp giải thích đóng góp của đặc trưng dựa trên giá trị Shapley\\ \hline
 ROC & Receiver Operating Characteristic & Đường cong biểu diễn quan hệ giữa tỷ lệ dương tính thật và dương tính giả\\ \hline
 AUC & Area Under the Curve & Diện tích dưới đường cong đánh giá khả năng phân biệt\\ \hline
-AP / PR-AUC & Average Precision / Precision--Recall Area Under the Curve & Luận văn tính average precision (AP); ký hiệu PR-AUC trong các bảng\\ \hline
+AP & Average Precision & Độ chính xác trung bình, xấp xỉ diện tích dưới đường Precision--Recall; thước đo chính của bài toán chuyển nhóm\\ \hline
 F1 & F1-score & Trung bình điều hòa của Precision và Recall\\ \hline
 MAE & Mean Absolute Error & Sai số tuyệt đối trung bình; Ordinal MAE đo số bậc sai lệch trung bình giữa nhóm dự báo và nhóm thực\\ \hline
 CV & Cross-validation & Kiểm định chéo\\ \hline

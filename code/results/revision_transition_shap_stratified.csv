@@ -1,0 +1,61 @@
+﻿mau,n,feature,mean_abs_shap
+duong (xau di),53,Số dư nợ theo nguyên tệ,0.76926833
+duong (xau di),53,Lãi phải thu hạch toán nội bảng,1.0425634
+duong (xau di),53,Lãi chưa thu hạch toán ngoại bảng,0.372609
+duong (xau di),53,Lãi suất,0.4022944
+duong (xau di),53,Số lần cơ cấu lại thời hạn trả nợ,0.0
+duong (xau di),53,Số tiền nợ gốc cơ cấu,0.0
+duong (xau di),53,Số tiền nợ lãi cơ cấu,0.0
+duong (xau di),53,Mã chi nhánh TCTD,0.4604263
+duong (xau di),53,ENG_LOAN_AGE_DAYS,0.41572013
+duong (xau di),53,ENG_DAYS_TO_MATURITY,0.516757
+duong (xau di),53,ENG_TENOR_ACTUAL_DAYS,0.35621178
+duong (xau di),53,ENG_HAS_RESTRUCTURE,0.0
+duong (xau di),53,Mã thời hạn cấp tín dụng,0.016548011
+duong (xau di),53,Hình thức cấp tín dụng,0.0
+duong (xau di),53,Phương thức cho vay,0.025305467
+duong (xau di),53,Mã tiền tệ,0.0
+duong (xau di),53,Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.111931466
+duong (xau di),53,Mô tả mục đích sử dụng tiền vay,0.124126375
+duong (xau di),53,Nguồn cấp tín dụng,0.0
+duong (xau di),53,Hoạt động cấp tín dụng bằng phương tiện điện tử,0.0005351337
+am,447,Số dư nợ theo nguyên tệ,0.6383014
+am,447,Lãi phải thu hạch toán nội bảng,0.91803527
+am,447,Lãi chưa thu hạch toán ngoại bảng,0.22469778
+am,447,Lãi suất,0.3613101
+am,447,Số lần cơ cấu lại thời hạn trả nợ,0.0
+am,447,Số tiền nợ gốc cơ cấu,0.0
+am,447,Số tiền nợ lãi cơ cấu,0.0
+am,447,Mã chi nhánh TCTD,0.39230683
+am,447,ENG_LOAN_AGE_DAYS,0.44834426
+am,447,ENG_DAYS_TO_MATURITY,0.5501072
+am,447,ENG_TENOR_ACTUAL_DAYS,0.478016
+am,447,ENG_HAS_RESTRUCTURE,0.0
+am,447,Mã thời hạn cấp tín dụng,0.01553663
+am,447,Hình thức cấp tín dụng,0.0
+am,447,Phương thức cho vay,0.025803803
+am,447,Mã tiền tệ,0.0
+am,447,Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.06606714
+am,447,Mô tả mục đích sử dụng tiền vay,0.086994685
+am,447,Nguồn cấp tín dụng,0.0
+am,447,Hoạt động cấp tín dụng bằng phương tiện điện tử,0.001745697
+phan tang 500,500,Số dư nợ theo nguyên tệ,0.65218425
+phan tang 500,500,Lãi phải thu hạch toán nội bảng,0.9312352
+phan tang 500,500,Lãi chưa thu hạch toán ngoại bảng,0.24037634
+phan tang 500,500,Lãi suất,0.36565453
+phan tang 500,500,Số lần cơ cấu lại thời hạn trả nợ,0.0
+phan tang 500,500,Số tiền nợ gốc cơ cấu,0.0
+phan tang 500,500,Số tiền nợ lãi cơ cấu,0.0
+phan tang 500,500,Mã chi nhánh TCTD,0.3995275
+phan tang 500,500,ENG_LOAN_AGE_DAYS,0.444886
+phan tang 500,500,ENG_DAYS_TO_MATURITY,0.546572
+phan tang 500,500,ENG_TENOR_ACTUAL_DAYS,0.46510476
+phan tang 500,500,ENG_HAS_RESTRUCTURE,0.0
+phan tang 500,500,Mã thời hạn cấp tín dụng,0.015643843
+phan tang 500,500,Hình thức cấp tín dụng,0.0
+phan tang 500,500,Phương thức cho vay,0.025750998
+phan tang 500,500,Mã tiền tệ,0.0
+phan tang 500,500,Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.07092874
+phan tang 500,500,Mô tả mục đích sử dụng tiền vay,0.09093062
+phan tang 500,500,Nguồn cấp tín dụng,0.0
+phan tang 500,500,Hoạt động cấp tín dụng bằng phương tiện điện tử,0.0016173772

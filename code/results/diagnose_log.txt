@@ -1,0 +1,71 @@
+[18:16:38] Đang tải ba kỳ báo cáo…
+[18:18:10] D1 toàn vẹn dữ liệu (danh mục cột trùng khớp: True):
+         ky  so_dong  ...  target_thieu  danh_muc_cot_trung_khop_3_ky
+0  20260430   100617  ...             0                          True
+1  20260531   100274  ...             0                          True
+2  20260630    98620  ...             0                          True
+
+[3 rows x 9 columns]
+[18:18:10] cap1 (20260430->20260531): 98,968 khoản vay khớp, 265 sự kiện (0.268%), 20 đặc trưng
+[18:18:11] cap2 (20260531->20260630): 98,620 khoản vay khớp, 258 sự kiện (0.262%), 20 đặc trưng
+[18:18:11] D2 cap1: xấu đi 265, cải thiện 166, giữ nguyên 98537
+[18:18:11] D2 cap2: xấu đi 258, cải thiện 151, giữ nguyên 98211
+[18:18:13] D3/D4 tỷ lệ thiếu và PSI (kỳ T cặp 1 so với kỳ T cặp 2):
+                                            dac_trung  ...       kieu
+2                   Lãi chưa thu hạch toán ngoại bảng  ...         số
+8                                   ENG_LOAN_AGE_DAYS  ...         số
+9                                ENG_DAYS_TO_MATURITY  ...         số
+15                                         Mã tiền tệ  ...  phân loại
+1                     Lãi phải thu hạch toán nội bảng  ...         số
+17                    Mô tả mục đích sử dụng tiền vay  ...  phân loại
+10                              ENG_TENOR_ACTUAL_DAYS  ...         số
+12                           Mã thời hạn cấp tín dụng  ...         số
+3                                            Lãi suất  ...         số
+14                                Phương thức cho vay  ...         số
+0                             Số dư nợ theo nguyên tệ  ...         số
+7                                   Mã chi nhánh TCTD  ...         số
+13                             Hình thức cấp tín dụng  ...         số
+19    Hoạt động cấp tín dụng bằng phương tiện điện tử  ...         số
+16  Mục đích sử dụng tiền vay phân theo ngành kinh tế  ...         số
+5                               Số tiền nợ gốc cơ cấu  ...         số
+6                               Số tiền nợ lãi cơ cấu  ...         số
+4                   Số lần cơ cấu lại thời hạn trả nợ  ...         số
+11                                ENG_HAS_RESTRUCTURE  ...         số
+18                                 Nguồn cấp tín dụng  ...         số
+
+[20 rows x 5 columns]
+[18:18:14] D5 AUC đơn biến theo cặp:
+                                            dac_trung  ...  chenh_lech
+1                     Lãi phải thu hạch toán nội bảng  ...      0.1190
+0                             Số dư nợ theo nguyên tệ  ...      0.0533
+15  Mục đích sử dụng tiền vay phân theo ngành kinh tế  ...      0.0470
+9                                ENG_DAYS_TO_MATURITY  ...      0.0245
+2                   Lãi chưa thu hạch toán ngoại bảng  ...      0.0242
+3                                            Lãi suất  ...      0.0222
+10                              ENG_TENOR_ACTUAL_DAYS  ...      0.0062
+17    Hoạt động cấp tín dụng bằng phương tiện điện tử  ...      0.0018
+14                                Phương thức cho vay  ...      0.0015
+11                                ENG_HAS_RESTRUCTURE  ...      0.0002
+5                               Số tiền nợ gốc cơ cấu  ...      0.0000
+16                                 Nguồn cấp tín dụng  ...     -0.0000
+4                   Số lần cơ cấu lại thời hạn trả nợ  ...     -0.0000
+13                             Hình thức cấp tín dụng  ...     -0.0000
+6                               Số tiền nợ lãi cơ cấu  ...     -0.0019
+7                                   Mã chi nhánh TCTD  ...     -0.0042
+8                                   ENG_LOAN_AGE_DAYS  ...     -0.0082
+12                           Mã thời hạn cấp tín dụng  ...     -0.0124
+
+[18 rows x 4 columns]
+[18:18:18] D6 cap1->cap2: AP=0.0031 (ngẫu nhiên 0.0026), ROC-AUC=0.5526
+[18:18:23] D6 cap2->cap1: AP=0.0034 (ngẫu nhiên 0.0027), ROC-AUC=0.5425
+[18:18:27] D6 cap1->cap1: AP=0.8425 (ngẫu nhiên 0.0027), ROC-AUC=0.9975
+[18:18:31] D6 cap2->cap2: AP=0.5572 (ngẫu nhiên 0.0026), ROC-AUC=0.9884
+[18:18:38] D7 AP theo loại chuyển nhóm:
+    cap          nhom_su_kien      n  n_pos      ap  ap_ngau_nhien  roc_auc
+0  cap1        tất cả sự kiện  19794     53  0.1705         0.0027   0.8487
+1  cap1              chỉ 1->2  19785     44  0.1617         0.0022   0.8220
+2  cap1  chỉ 2->3, 3->4, 4->5  19750      9  0.0583         0.0005   0.9792
+3  cap2        tất cả sự kiện  19724     52  0.0029         0.0026   0.4569
+4  cap2              chỉ 1->2  19711     39  0.0015         0.0020   0.3780
+5  cap2  chỉ 2->3, 3->4, 4->5  19685     13  0.0030         0.0007   0.6935
+[18:18:38] HOÀN TẤT. Kết quả ở code/results/diagnose_*.csv

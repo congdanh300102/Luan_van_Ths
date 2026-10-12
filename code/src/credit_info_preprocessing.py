@@ -21,6 +21,16 @@ def load_credit_info(path_or_bytes) -> pd.DataFrame:
 
 TARGET_COL = "Nhóm nợ tự phân loại"
 
+# Ba biến chỉ phát sinh giá trị khi khế ước ĐÃ từng được cơ cấu lại thời hạn trả
+# nợ; giá trị thiếu nghĩa là "chưa từng cơ cấu", tức bằng 0 về mặt nghiệp vụ.
+# Xem engineer_business_features() để biết vì sao không để bước điền trung vị
+# mặc định xử lý ba cột này.
+RESTRUCTURE_COLS = [
+    "Số lần cơ cấu lại thời hạn trả nợ",
+    "Số tiền nợ gốc cơ cấu",
+    "Số tiền nợ lãi cơ cấu",
+]
+
 # Cột định danh — không mang tín hiệu rủi ro, chỉ dùng để join/tra cứu nội bộ.
 ID_LEAKAGE_COLS = [
     "Mã khách hàng do TCTD cấp", "Tên khách hàng",
@@ -67,7 +77,37 @@ RAW_CATEGORICAL_COLS = [
 
 
 def _parse_yyyymmdd(s: pd.Series) -> pd.Series:
-    return pd.to_datetime(s.astype("Int64").astype(str), format="%Y%m%d", errors="coerce")
+    """Phân tích cột ngày của bộ Thông tin tín dụng, chịu được HAI định dạng số
+    lẫn lộn giữa các kỳ báo cáo.
+
+    Kỳ 20260430 lưu ngày dưới dạng số nguyên yyyymmdd (VD 20220817), nhưng kỳ
+    20260531 và 20260630 lưu "Ngày giải ngân"/"Ngày kết thúc khế ước" dưới dạng
+    số thứ tự ngày kiểu Excel (VD 45965 = 04/11/2025) do khác định dạng ô tính
+    khi xuất dữ liệu nguồn. Phiên bản trước chỉ nhận dạng yyyymmdd nên trả về
+    NaT cho TOÀN BỘ hai cột này ở hai kỳ sau — kéo theo ba đặc trưng kỹ thuật
+    (ENG_LOAN_AGE_DAYS, ENG_DAYS_TO_MATURITY, ENG_TENOR_ACTUAL_DAYS) rỗng 100%
+    ở mọi phân tích dùng kỳ 20260531 hoặc 20260630, mà không phát sinh lỗi nào
+    nhìn thấy được. Đây là cùng một lớp lỗi đã xử lý ở bộ A (_parse_date trong
+    preprocessing.py).
+
+    Quy ước phân biệt: giá trị >= 19000101 được hiểu là yyyymmdd; giá trị dương
+    nhỏ hơn 100000 được hiểu là số thứ tự ngày kiểu Excel với mốc gốc
+    30/12/1899. Hai miền giá trị không giao nhau nên phép phân biệt là xác định.
+    """
+    v = pd.to_numeric(s, errors="coerce")
+    out = pd.Series(pd.NaT, index=s.index, dtype="datetime64[ns]")
+
+    is_ymd = v >= 19000101
+    if is_ymd.any():
+        out.loc[is_ymd] = pd.to_datetime(
+            v[is_ymd].astype("Int64").astype(str), format="%Y%m%d", errors="coerce")
+
+    is_serial = (v > 0) & (v < 100000)
+    if is_serial.any():
+        out.loc[is_serial] = pd.to_datetime(
+            v[is_serial], unit="D", origin="1899-12-30", errors="coerce")
+
+    return out
 
 
 def parse_dates(df: pd.DataFrame) -> pd.DataFrame:
@@ -240,6 +280,18 @@ def engineer_business_features(df: pd.DataFrame) -> tuple[pd.DataFrame, list]:
     def _add(name, series):
         df[name] = series
         new_cols.append(name)
+
+    # Ba biến cơ cấu nợ thiếu 99,6-99,8% vì phần lớn khế ước CHƯA TỪNG được cơ
+    # cấu lại thời hạn trả nợ — giá trị thiếu ở đây mang nghĩa nghiệp vụ "không
+    # phát sinh sự kiện", nên giá trị đúng là 0. Để nguyên cho SimpleImputer
+    # (strategy="median") xử lý ở bước sau sẽ gán trung vị CỦA PHẦN QUAN SÁT
+    # ĐƯỢC — tức 1 lần cơ cấu, 341,5 và 216 đơn vị tiền — cho toàn bộ hồ sơ
+    # chưa từng cơ cấu, và mâu thuẫn trực tiếp với ENG_HAS_RESTRUCTURE (trung
+    # bình 0,004, tức chỉ ~400/100.617 hồ sơ từng cơ cấu). Điền 0 tại đây, TRƯỚC
+    # khi vào pipeline, để mọi mô hình và mọi script dùng chung một quy ước.
+    for c in RESTRUCTURE_COLS:
+        if c in df.columns:
+            df[c] = df[c].fillna(0)
 
     ref = df["ETL_DATE"] if "ETL_DATE" in df.columns else None
 

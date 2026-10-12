@@ -1,145 +1,112 @@
 \chapter{KẾT LUẬN VÀ KIẾN NGHỊ}
 
-Chương này tổng hợp kết quả theo bốn câu hỏi nghiên cứu, xác định đóng góp và giới hạn của luận văn, đồng thời đề xuất yêu cầu dữ liệu và kiểm định trước khi xem xét ứng dụng mô hình.
+Chương này rút ra kết luận theo bốn câu hỏi nghiên cứu, nêu đóng góp và hạn chế của luận văn, đề xuất kiến nghị đối với ngân hàng và hướng nghiên cứu tiếp theo. Số liệu chi tiết đã trình bày ở Chương 3 và chỉ được dẫn chiếu khi cần.
 
-\section{Kết luận chung}
+\section{Kết luận theo bốn câu hỏi nghiên cứu}
 
-Luận văn đã tổ chức thực nghiệm phân loại năm nhóm nợ trên hai bộ dữ liệu của một ngân hàng thương mại và xây dựng bài toán dự báo chuyển nhóm nợ trong các tháng tiếp theo trên bộ B. Kết quả cho thấy mô hình học máy khai thác được tín hiệu phân loại và xếp hạng trong phạm vi mẫu khảo sát, nhưng hiệu năng phụ thuộc vào cấu hình, kỳ dữ liệu và cách đánh giá.
+Luận văn đã xây dựng và đánh giá sáu mô hình học máy cho bài toán phân loại năm nhóm nợ trên hai bộ dữ liệu thực tế của một ngân hàng thương mại Việt Nam, và bài toán dự báo chuyển nhóm nợ trên hai cặp kỳ báo cáo. Các kết luận dưới đây chỉ có giá trị trong phạm vi dữ liệu và cấu hình đã khảo sát.
 
-Trong các bảng so sánh chính, LightGBM có Macro-F1 cao nhất trên tập kiểm định của bộ A và bộ B, lần lượt bằng 0,6484 và 0,6930. Khi đánh giá ở kỳ sau của bộ B, Random Forest có Macro-F1 cao nhất (0,5065), còn LightGBM đạt 0,4995. Mức giảm tương đối của Macro-F1 trên sáu mô hình nằm trong khoảng 12,7--32,1\%. Hai kỳ có nhiều khoản vay trùng nhau; vì vậy, kết quả phản ánh sự thay đổi hiệu năng trên danh mục qua thời gian, chưa chứng minh khả năng dự báo cho khách hàng mới.
+\noindent\textbf{Về CH1.} Các mô hình cây tổ hợp (LightGBM, XGBoost, Random Forest) phù hợp nhất với cả hai bộ dữ liệu, vượt rõ Logistic Regression và Decision Tree. LightGBM dẫn đầu Macro-F1 ở cả hai bộ (0,6484 và 0,6989) và giữ vị trí này cả trên tập ngoài thời gian của bộ B (0,7023). Tuy nhiên khác biệt giữa ba mô hình tổ hợp nhỏ hơn biên độ dao động do siêu tham số của chính chúng, nên chưa đủ để kết luận về ưu thế của một thuật toán. Tương tự, không có chiến lược mất cân bằng tốt nhất tuyệt đối: SMOTE vừa phải cho Macro-F1 cao nhất, trọng số lớp cho Recall nhóm hiếm cao nhất, còn kết hợp hai cách không mang lại lợi ích. Lựa chọn cần xuất phát từ mục tiêu nghiệp vụ và chi phí sai số.
 
-Bài toán chuyển nhóm được kiểm định trên hai cặp kỳ báo cáo thật độc lập của bộ B. Trên cặp 1 (20260430$\to$20260531, 98.968 khoản vay, 265 sự kiện dương), XGBoost đạt average precision trung bình 0,1806 qua kiểm định chéo 5 phần, lặp 10 lần — cao hơn khoảng 67 lần tỷ lệ sự kiện nền. Trên cặp 2 độc lập (20260531$\to$20260630, 98.620 khoản vay, 258 sự kiện dương), cùng cấu hình chỉ đạt PR-AUC 0,0053, và không mô hình nào trong sáu mô hình khảo sát vượt ROC-AUC 0,5521 — xấp xỉ một bộ phân loại ngẫu nhiên. Kiểm định chuyển giao ngoài thời gian (huấn luyện trên cặp 1, chấm điểm trực tiếp trên cặp 2) xác nhận kết luận này. Tín hiệu dự báo quan sát được ở cặp 1 vì vậy chưa được chứng minh là ổn định qua thời gian.
+\noindent\textbf{Về CH2.} Nhiều đặc trưng hơn không đồng nghĩa với kết quả tốt hơn: tập 7--8 biến quan trọng nhất đạt hiệu năng tương đương tập đầy đủ ở cả hai bộ. Hai khối thông tin chi phối kết quả là thời hạn/tuổi khoản vay và dư nợ--lãi. Tuy nhiên, rà soát rò rỉ cho thấy một phần lớn hiệu năng phân loại năm nhóm dựa vào các biến hình thành cùng lúc với nhãn: bỏ biến lãi chưa thu ngoại bảng làm Macro-F1 của bộ B giảm từ 0,6989 xuống 0,4742, và bỏ \mbox{\texttt{DAYS\_TO\_MATURITY}} làm Macro-F1 của bộ A giảm từ 0,6442 xuống 0,5153. Vì vậy kết quả phân loại năm nhóm phản ánh khả năng \emph{tái hiện} trạng thái nhóm nợ từ dữ liệu kế toán và thời hạn, không phải năng lực \emph{dự báo} rủi ro; khi cần một mốc tham chiếu cho mục tiêu cảnh báo sớm, cấu hình thận trọng ở Mục~\ref{sec:conservative-config} mới là con số phù hợp.
 
-\section{Trả lời các câu hỏi nghiên cứu}
+\noindent\textbf{Về CH3.} Kết luận về nhóm thông tin quan trọng ổn định khi đổi thước đo: trên cùng một mô hình, Gain và SHAP thống nhất cao về thứ hạng nhóm, chỉ khác về mức độ tập trung. Giữa hai bộ dữ liệu, hai nhóm dẫn đầu trùng khớp, nhưng với năm nhóm so sánh, mức tương quan hạng chưa đạt ý nghĩa thống kê. Kết quả giải thích vì vậy đủ tin cậy để định hướng ưu tiên dữ liệu ở cấp nhóm, chưa đủ để kết luận về tỷ trọng cụ thể hay khái quát sang dữ liệu khác.
 
-Bốn câu hỏi nghiên cứu đã được đối chiếu chi tiết với bằng chứng thực nghiệm tại Mục~\ref{sec:research-questions}, Mục~\ref{sec:shap-overlap} và Mục~\ref{sec:transition-results} của Chương 3. Mục này tổng hợp lại câu trả lời ở mức kết luận; các nhận định chỉ có giá trị trong phạm vi dữ liệu và cấu hình đã khảo sát.
-
-Với câu hỏi thứ nhất, không có mô hình hay chiến lược xử lý mất cân bằng nào vượt trội tuyệt đối. LightGBM đạt Macro-F1 cao nhất ở cấu hình mặc định trên cả hai bộ dữ liệu, song chênh lệch với XGBoost nhỏ hơn biên độ dao động theo siêu tham số của chính hai mô hình nên chưa đủ vững để kết luận về thuật toán. Tương tự, SMOTE tối đa hóa Macro-F1 trong khi trọng số lớp và chiến lược kết hợp lại cho Recall nhóm hiếm cao hơn. Việc lựa chọn vì vậy phải gắn với mục tiêu đánh giá và chi phí sai số cụ thể của ngân hàng.
-
-Với câu hỏi thứ hai, quan hệ giữa số lượng đặc trưng và hiệu năng không tăng đơn điệu: một số tập rút gọn đạt Macro-F1 ngang bằng hoặc cao hơn tập đầy đủ, tuy vẫn cần xác nhận trên dữ liệu chưa tham gia lựa chọn. Về nhóm thông tin quan trọng, hai khối kỳ hạn/thời hạn khoản vay và dư nợ chiếm phần lớn tỷ trọng giải thích, còn thông tin nhân khẩu học hay thủ tục hành chính đóng góp không đáng kể. Do các nhóm dẫn đầu đã tương đối đầy đủ dữ liệu, ngân hàng nên ưu tiên duy trì chất lượng và tính nhất quán của những trường này thay vì mở rộng thu thập biến mới.
-
-Với câu hỏi thứ ba, độ tin cậy của kết quả giải thích phụ thuộc vào cấp độ kết luận được rút ra. Đối chiếu SHAP giữa hai bộ dữ liệu độc lập cho kết quả nhất quán cao (Top-2 trùng khớp hoàn toàn, tương quan hạng Spearman 0,80), nên kết luận về nhóm thông tin dẫn đầu không phụ thuộc đặc thù của một mẫu dữ liệu. Ngược lại, hai thước đo Gain và SHAP trên cùng một mô hình chỉ thống nhất ở nhóm dẫn đầu mà khác nhau đáng kể về tỷ trọng và thứ hạng của các nhóm tiếp theo, rõ nhất ở bộ A. Kết quả giải thích vì vậy đủ vững để định hướng ưu tiên dữ liệu ở cấp nhóm, nhưng chưa đủ vững để xếp hạng chi tiết; mọi khuyến nghị đầu tư dữ liệu nên được đối chiếu bằng ít nhất hai thước đo. Các tỷ trọng này phản ánh cách mô hình sử dụng dữ liệu, không phải bằng chứng nhân quả (Mục~\ref{sec:limit-importance}).
-
-Với câu hỏi thứ tư, câu trả lời phụ thuộc giai đoạn quan sát. Mô hình khai thác được tín hiệu dự báo rõ rệt ở cặp kỳ thứ nhất nhưng không lặp lại được ở cặp kỳ thứ hai, kể cả khi huấn luyện lại riêng cho cặp này hoặc chuyển giao mô hình ngoài thời gian. Khả năng dự báo chuyển nhóm nợ do đó chưa được chứng minh là ổn định theo thời gian; kết luận về giá trị ứng dụng của công cụ cảnh báo sớm cần thận trọng và chờ thêm bằng chứng từ nhiều kỳ quan sát hơn (Mục~\ref{sec:limit-transition-stability}).
+\noindent\textbf{Về CH4.} Mô hình học máy \emph{có thể} dự báo chuyển nhóm nợ trong tháng tiếp theo trong một số giai đoạn: ở cặp kỳ thứ nhất, rà soát 5\% danh mục bắt được hơn một nửa số khoản vay sắp xấu đi. Nhưng khả năng này \emph{chưa ổn định}: ở cặp kỳ thứ hai, với số lượng và cơ cấu sự kiện gần như giống hệt, mọi mô hình đều chỉ đạt mức ngẫu nhiên, kể cả khi chuyển giao mô hình từ cặp thứ nhất. Công cụ cảnh báo sớm dựa trên học máy vì vậy chưa sẵn sàng triển khai; điều kiện tiên quyết là dữ liệu nhiều kỳ để kiểm định độ ổn định.
 
 \section{Đóng góp của nghiên cứu}
 
-\subsection{Đóng góp phương pháp}
+\subsection{Đóng góp về phương pháp}
 
-Nghiên cứu xây dựng hai quy trình thực nghiệm độc lập dựa trên cùng một hệ nguyên tắc, bao gồm lựa chọn biến theo phân nhóm nghiệp vụ, xây dựng đặc trưng, điền khuyết, chuẩn hóa, mã hóa, xử lý mất cân bằng lớp và huấn luyện mô hình. Việc loại \texttt{NHOMNO} khỏi bộ A, đồng thời loại các trường phản ánh trực tiếp nhóm nợ hoặc số ngày quá hạn khỏi bộ B, nhằm hạn chế khả năng mô hình học lại quy tắc hình thành nhãn.
-
-Nghiên cứu cũng tách ba khái niệm thường bị đồng nhất: số cột thô, số đặc trưng hợp lệ và số đặc trưng rút gọn theo hiệu năng. Sự phân biệt này giúp câu hỏi ``có cần giữ toàn bộ số cột thô không'' được trả lời chặt chẽ hơn. Việc đối chiếu các câu hỏi nghiên cứu trên hai cấu trúc dữ liệu còn cho thấy kết luận về số lượng và nhóm đặc trưng không nên được khái quát từ một bộ dữ liệu duy nhất. Ở bộ B, việc bổ sung một tập kiểm tra ở kỳ sau theo thời gian còn cho thấy ngay cả kết luận rút ra từ một bộ dữ liệu cũng có thể không giữ nguyên khi kiểm tra ngoài thời gian thu thập dữ liệu huấn luyện.
-
-Một đóng góp phương pháp của nghiên cứu là xây dựng thực nghiệm dự báo chuyển nhóm nợ bằng cách ghép các kỳ báo cáo liên tiếp của bộ B theo khóa định danh khế ước và xác định nhãn $Y_i=\mathbb{I}(G_{i,T+h}>G_{i,T})$, áp dụng đồng nhất cho hai cặp kỳ độc lập để kiểm tra được độ ổn định của kết quả thay vì chỉ báo cáo một cặp duy nhất. Thiết kế đặc trưng và nhãn được kiểm tra nhằm hạn chế rò rỉ thông tin (Mục~\ref{sec:transition-leakage}). Đồng thời, phương pháp chia mẫu và hệ thống chỉ tiêu đánh giá được điều chỉnh cho phù hợp với tỷ lệ sự kiện dương rất thấp (dưới 0,3\%), thay vì áp dụng trực tiếp cách đánh giá của bài toán phân loại năm lớp.
+Thứ nhất, luận văn xây dựng quy trình thực nghiệm thống nhất cho hai bộ dữ liệu có cấu trúc khác nhau, trong đó kiểm soát rò rỉ được thực hiện theo ba lớp và lớp cuối --- rà soát bằng thí nghiệm loại biến --- phát hiện được những biến mà phép lọc theo tên trường hay IV đơn biến bỏ sót. Thứ hai, luận văn đánh giá bài toán năm nhóm nợ theo cả thứ tự (Ordinal MAE, ma trận nhầm lẫn) và theo thời gian (kỳ báo cáo sau), qua đó xác định được nhóm 2 là điểm yếu thực sự của mọi mô hình, còn sai số ở các nhóm rủi ro cao hầu hết chỉ lệch một bậc. Thứ ba, luận văn kiểm tra độ ổn định của kết quả giải thích bằng cách đối chiếu Gain và SHAP trên cùng mô hình và đối chiếu SHAP giữa hai bộ dữ liệu, kèm kiểm định ý nghĩa. Thứ tư, luận văn xây dựng bài toán dự báo chuyển nhóm từ các kỳ báo cáo liên tiếp, đánh giá trên hai cặp kỳ độc lập bằng kiểm định chéo lặp, kiểm định thống kê có hiệu chỉnh và kiểm định chuyển giao, thay vì báo cáo một cặp kỳ duy nhất.
 
 \subsection{Đóng góp thực tiễn}
 
-Kết quả cung cấp:
-
-\begin{itemize}
-    \item kết quả đối sánh sáu mô hình được thực thi thành công trên bộ B (và năm mô hình trên bộ A);
-    \item bảng hiệu năng theo lớp trên cả tập kiểm định và tập kiểm tra ở kỳ sau của bộ B, cho thấy rõ khoảng cách giữa hiệu năng ``trong phân phối'' và hiệu năng ngoài thời gian;
-    \item hai đường cong hiệu quả theo số lượng đặc trưng, trong đó cấu hình 8 biến của bộ B đạt Macro-F1 cao hơn một lượng nhỏ so với tập đầy đủ 20 biến;
-    \item xếp hạng nhóm thông tin nghiệp vụ riêng cho từng bộ, đối chiếu chéo giữa Gain và SHAP;
-    \item khuyến nghị duy trì dữ liệu kỳ hạn ở bộ A, đồng thời duy trì chất lượng dữ liệu Dư nợ \& Thanh toán và Đặc trưng kỹ thuật ở bộ B (không phải thu thập thêm, vì hai nhóm này đã không thiếu dữ liệu);
-    \item kết quả thăm dò về dự báo chuyển nhóm nợ trong các tháng tiếp theo từ dữ liệu nội bộ, kèm Recall/Precision theo tỷ lệ hồ sơ được ưu tiên rà soát (Mục~\ref{sec:transition-results}).
-\end{itemize}
-
-Những kết quả này có thể hỗ trợ thiết kế thí nghiệm cảnh báo sớm tiếp theo, nhưng chưa nên tích hợp tự động vào quyết định tín dụng. Đặc biệt với bộ B, bằng chứng về khoảng cách hiệu năng ngoài thời gian (mục \ref{sec:limit-holdout}) và việc kết quả dự báo chuyển nhóm không ổn định giữa hai cặp kỳ quan sát độc lập (Mục~\ref{sec:transition-results}) là hai lý do trực tiếp để thận trọng.
+Kết quả cung cấp cho ngân hàng: (i) bằng chứng đối sánh sáu mô hình và bốn chiến lược mất cân bằng trên dữ liệu của chính ngân hàng, kèm hiệu năng theo từng nhóm nợ; (ii) nhận diện nhóm 2 (nợ cần chú ý) là điểm yếu nhất của mọi mô hình, phần lớn bị nhầm với nhóm 1; (iii) danh sách nhóm dữ liệu cần duy trì chất lượng (thời hạn, dư nợ, lãi) và các trường gần như không đóng góp; (iv) kết quả thăm dò về cảnh báo sớm theo tỷ lệ rà soát, cùng bằng chứng rằng kết quả này chưa ổn định --- thông tin quan trọng để tránh đầu tư triển khai quá sớm.
 
 \section{Hạn chế của nghiên cứu}
 
-\subsection{Kết quả dự báo chuyển nhóm không ổn định giữa hai cặp kỳ quan sát}
+\subsection{Dữ liệu và độ ổn định theo thời gian}
 \label{sec:limit-transition-stability}
-
-Ba kỳ báo cáo liên tiếp của bộ B (20260430, 20260531, 20260630) được ghép thành hai cặp $(T,T+h)$ độc lập để xây dựng nhãn $Y_i=\mathbb{I}(G_{i,T+h}>G_{i,T})$, huấn luyện mô hình và đánh giá khả năng dự báo chuyển nhóm (Mục~\ref{sec:transition-results}). Trong khi đó, bộ A chỉ có một mốc thời gian nên không đáp ứng điều kiện xây dựng nhãn cho bài toán này.
-
-Đối chiếu cùng cấu hình mô hình giữa hai cặp (Bảng~\ref{tab:transition-stability}) cho thấy PR-AUC giảm từ 0,1806 (cặp 1, XGBoost) xuống 0,0053 (cặp 2) — mức giảm tương đối hơn 97\%; ROC-AUC giảm từ 0,8458 xuống 0,4890, không còn khác biệt có ý nghĩa so với 0,5. Kết quả này nhất quán qua ba phép kiểm tra độc lập: đối chiếu cùng cấu hình, chọn mô hình tốt nhất riêng cho cặp 2 (CatBoost, PR-AUC cao nhất chỉ 0,0060), và kiểm định chuyển giao ngoài thời gian (huấn luyện một lần trên cặp 1, chấm điểm trực tiếp trên cặp 2, PR-AUC 0,0032, Recall và Precision đều bằng 0 tại ngưỡng 0,5).
-
-Ba nguyên nhân khả dĩ, không loại trừ lẫn nhau, được xem xét: (1) số sự kiện dương rất thưa (265 và 258) khiến cấu hình được chọn ở cặp 1 có thể phản ánh đặc điểm ngẫu nhiên riêng của mẫu đó hơn một quy luật tổng quát, dù đã qua kiểm định chéo $5\times10$; (2) hai giai đoạn quan sát (tháng 4--5 và tháng 5--6 năm 2026) có thể khác nhau về đặc điểm khách hàng chuyển nhóm do yếu tố mùa vụ hoặc kinh tế không quan sát được trong tập đặc trưng hiện có; (3) cấu hình tốt nhất của cặp 1 có thể đã khớp với đặc điểm riêng của chính giai đoạn đó hơn là học được quan hệ ổn định giữa đặc trưng và khả năng chuyển nhóm. Với chỉ hai cặp kỳ quan sát, luận văn chưa đủ cơ sở để phân biệt và định lượng đóng góp của từng nguyên nhân — đây là hạn chế cốt lõi cần thêm dữ liệu nhiều kỳ hơn để khắc phục.
-
-\subsection{Khoảng cách tổng quát hóa ngoài thời gian ở bộ B}
 \label{sec:limit-holdout}
+\label{sec:limit-datefix}
 
-Bộ B có 998 hồ sơ ở nhóm 3 và 1.446 hồ sơ ở nhóm 4, do đó quy mô tuyệt đối của các lớp này không còn là hạn chế chính. Tuy nhiên, trên tập kiểm tra ở kỳ sau kỳ 20260531 (Mục \ref{sec:holdout-b}), Macro-F1 của các mô hình giảm từ 12,7--32,1\% so với tập kiểm định nội bộ và thứ hạng mô hình thay đổi. Random Forest đạt kết quả cao nhất trên tập kiểm tra ở kỳ sau, trong khi LightGBM chuyển từ vị trí cao nhất trên tập kiểm định xuống vị trí thứ ba.
+Hạn chế cốt lõi là độ dài chuỗi thời gian. Bộ A chỉ có một thời điểm và không có ngày trích xuất chính xác; bộ B có ba kỳ liên tiếp, đủ để tạo hai cặp kỳ chuyển nhóm và một kỳ kiểm tra cho bài toán năm lớp. Với chuỗi ngắn như vậy, luận văn quan sát được hiện tượng tín hiệu dự báo chuyển nhóm không lặp lại giữa hai cặp kỳ (Mục~\ref{sec:transition-stability}) nhưng chưa phân biệt được nguyên nhân trong ba cách giải thích đã nêu. Ngoài ra, tập ngoài thời gian có 98\% khoản vay trùng với kỳ huấn luyện, nên kết luận về độ ổn định của bài toán năm lớp chỉ áp dụng cho danh mục đang theo dõi, chưa đánh giá được khả năng tổng quát hóa sang khách hàng mới. Nhãn chuyển nhóm cũng chỉ xác định được cho khoản vay có mặt ở cả hai kỳ, nên chưa loại trừ sai lệch chọn mẫu do tất toán hoặc xóa nợ.
 
-Kết quả cho thấy phép chia ngẫu nhiên có phân tầng trong cùng một kỳ dữ liệu có thể ước lượng lạc quan hơn khả năng tổng quát hóa theo thời gian. Nguyên nhân có thể bao gồm sự thay đổi quan hệ giữa đầu vào và biến đích, đặc thù của cặp kỳ báo cáo 20260430--20260531 hoặc hiện tượng mô hình khớp với các đặc điểm riêng của kỳ huấn luyện. Do chỉ có hai kỳ báo cáo, luận văn chưa đủ cơ sở để phân biệt và định lượng từng nguyên nhân.
+\noindent\textit{Chất lượng dữ liệu nguồn và rủi ro lỗi xử lý âm thầm.} Quá trình rà soát phát hiện một lỗi xử lý có ảnh hưởng lớn tới kết luận: hai kỳ báo cáo 20260531 và 20260630 lưu trường ngày giải ngân và ngày kết thúc khế ước theo định dạng số thứ tự Excel, khác với định dạng \texttt{yyyymmdd} của kỳ 20260430, trong khi bộ phân tích cú pháp chỉ nhận dạng định dạng thứ hai (Mục~\ref{sec:date-format-b}). Hậu quả là ba trong hai mươi đặc trưng rỗng hoàn toàn ở mọi phân tích dùng hai kỳ sau, nhưng không phát sinh thông báo lỗi nào: các giá trị rỗng được bước điền khuyết thay bằng trung vị của tập huấn luyện, nên mô hình vẫn chạy và vẫn cho ra kết quả trông hợp lý.
 
-\subsection{Thiết kế kiểm định}
+Trước khi sửa, bảng đánh giá ngoài thời gian cho thấy Macro-F1 giảm 12,7--32,1\% và Recall nhóm 5 giảm từ 0,906 xuống 0,258; luận văn đã suy ra từ đó rằng phép chia ngẫu nhiên trong cùng kỳ ước lượng lạc quan khả năng tổng quát hóa theo thời gian. Sau khi sửa, khoảng cách này gần như biến mất (Mục~\ref{sec:holdout-b}) và kết luận trên bị bác bỏ. Ngược lại, kết luận về bài toán chuyển nhóm không thay đổi sau khi sửa lỗi, nên vẫn giữ nguyên.
 
-Các bảng so sánh chính của bài toán năm lớp dựa trên một phép chia ngẫu nhiên có phân tầng, kèm đánh giá kỳ sau đối với bộ B. Bài toán chuyển nhóm sử dụng kiểm định chéo 5 phần, lặp 10 lần cho mỗi cặp kỳ quan sát, nay đã có hai cặp độc lập. Các phần kiểm định có dữ liệu dùng chung qua các lần lặp trong cùng một cặp; độ lệch chuẩn của chỉ tiêu không phải khoảng tin cậy của hiệu năng trên các kỳ tương lai. Việc chọn mô hình và chiến lược trên chính kết quả kiểm định của cặp 1 còn có thể tạo thiên lệch lựa chọn khi áp dụng sang cặp 2.
+Hai bài học rút ra. Thứ nhất, với dữ liệu nhiều kỳ, tính nhất quán về \emph{định dạng} giữa các kỳ quan trọng ngang tính nhất quán về \emph{danh mục cột}, nhưng khó phát hiện hơn nhiều vì danh mục cột lệch sẽ gây lỗi ngay còn định dạng lệch thì không. Thứ hai, mọi kết luận dạng ``hiệu năng suy giảm theo thời gian'' cần được kiểm tra bằng thống kê mô tả trên chính tập đánh giá --- ở đây chỉ cần đối chiếu tỷ lệ giá trị thiếu của từng đặc trưng giữa hai kỳ là đủ phát hiện lỗi. Luận văn đã bổ sung phép kiểm tra này thành một bước bắt buộc trong quy trình (Mục~\ref{sec:transition-stability}) và kiến nghị ngân hàng áp dụng khi giám sát mô hình (Mục~\ref{sec:recommend-governance}).
 
-Các giá trị $k$ được khảo sát trên cùng một tập kiểm định trước khi lựa chọn cấu hình có kết quả cao nhất, vì vậy có thể phát sinh thiên lệch lựa chọn. Tập 9 biến của bộ A và tập 8 biến của bộ B chỉ được xem là các cấu hình ứng viên từ phân tích khám phá. Giá trị $k$ cần được lựa chọn trên tập xác thực hoặc thông qua kiểm định chéo lồng nhau, sau đó đánh giá một lần trên tập kiểm tra ở kỳ sau. Đối với bộ B, kỳ 20260531 đã được dùng để phân tích khả năng tổng quát hóa của các mô hình; đánh giá xác nhận cuối cùng nên sử dụng một kỳ mới chưa tham gia phát triển mô hình.
+\subsection{Thiết kế kiểm định và lựa chọn mô hình}
 
-\subsection{Mã hóa biến phân loại}
+Bảng so sánh chính của bài toán năm lớp dựa trên một phép chia 80/20; số đặc trưng $k$, siêu tham số và chiến lược mất cân bằng đều được chọn trên cùng tập kiểm định, nên các cấu hình ``tốt nhất'' mang tính khám phá và có thể lạc quan do thiên lệch lựa chọn. Luận văn chưa áp dụng kiểm định chéo lồng nhau và chưa đánh giá hiệu chỉnh xác suất. Kỳ 20260531 của bộ B đã được dùng để phân tích, nên đánh giá xác nhận cuối cùng cần một kỳ mới chưa tham gia phát triển mô hình. Với bài toán chuyển nhóm, độ lệch chuẩn qua các phần kiểm định không phải khoảng tin cậy của hiệu năng tương lai; kiểm định $t$ hiệu chỉnh giảm nhưng không loại bỏ hoàn toàn vấn đề phụ thuộc giữa các phần.
 
-Label Encoding có thể tạo thứ tự số giả cho các danh mục. SMOTE sau mã hóa còn có thể nội suy ra giá trị không tương ứng danh mục hợp lệ. Cần so sánh One-Hot Encoding, encoding theo xác suất hoặc mô hình xử lý danh mục nguyên bản.
-
-\subsection{Tối ưu và hiệu chỉnh mô hình}
-
-Nghiên cứu chưa áp dụng kiểm định chéo lồng nhau và chưa đánh giá hiệu chỉnh xác suất. Bộ A còn giới hạn về tái lập: Logistic Regression chưa có kết quả chạy lại trong cùng quy trình với bảng chính, và Macro-F1 XGBoost/SMOTE khác nhau giữa bảng chính và thí nghiệm bổ sung. Nguyên nhân chưa được xác định đầy đủ nên cần lưu cấu hình, phiên bản dữ liệu và môi trường của từng lần chạy trước khi thống nhất lại các kết quả. Việc lựa chọn hệ số điều chỉnh xác suất lớp hiếm trên chính tập đánh giá chỉ có ý nghĩa khám phá; hệ số cần được chọn trong tầng xác thực, cố định rồi đánh giá trên dữ liệu mới.
-
-\subsection{Mức độ quan trọng của đặc trưng không phản ánh quan hệ nhân quả}
+\subsection{Tiền xử lý và diễn giải kết quả}
 \label{sec:limit-importance}
 
-Mức độ quan trọng của đặc trưng và SHAP phản ánh cách mô hình sử dụng dữ liệu, không chứng minh quan hệ nhân quả \cite{lundberg2017unified}. Các biến tương quan có thể chia sẻ hoặc thay thế mức độ đóng góp của nhau; chỉ số ưu tiên dữ liệu được sử dụng trong luận văn mới mang tính quy ước và chưa được liên kết với chi phí kinh tế.
-
-Ở bộ B, Gain của LightGBM và SHAP cùng xác định Dư nợ \& Thanh toán và Đặc trưng kỹ thuật là hai nhóm quan trọng nhất, nhưng khác nhau về mức độ tập trung: Gain dồn 90,2\% vào hai nhóm này trong khi SHAP phân bổ đều hơn (44,5\% và 38,2\%); hai vị trí kế tiếp cũng đổi chỗ giữa Chi nhánh và Lãi suất. Ở bộ A, mức độ đồng thuận thấp hơn khi nhóm Sản phẩm và mục đích vay rơi từ hạng 2 theo Gain xuống hạng 5 theo SHAP, còn nhóm Dư nợ và hạn mức sử dụng tăng từ 12,9\% lên 27,3\%. Kết quả diễn giải vì vậy có thể nhạy cảm với thước đo, đặc biệt đối với biến phân loại có nhiều danh mục. Vì chỉ số ưu tiên dữ liệu tại Chương 3 được tính từ Gain, mọi kiến nghị đầu tư dữ liệu cần được đối chiếu bằng nhiều phương pháp giải thích trước khi áp dụng.
-
-Đối với bài toán chuyển nhóm, SHAP được tính trên 500 quan sát lấy ngẫu nhiên từ tập kiểm định, giải thích đầu ra của lớp chuyển nhóm; không chỉ tính trên các quan sát dương. Trong dữ liệu mất cân bằng mạnh, mẫu này có thể chứa rất ít sự kiện. Thứ hạng đặc trưng cần được kiểm tra bằng lấy mẫu có phân tầng, mẫu lớn hơn và dữ liệu từ các kỳ khác. Lãi phải thu nội bảng có đóng góp trung bình cao nhất trong mẫu SHAP, nhưng chưa đủ căn cứ để đồng nhất trường này với lãi quá hạn hoặc kết luận về nguyên nhân khó khăn thanh toán.
+Về tiền xử lý, ba lựa chọn có thể cải thiện đã được kiểm chứng bằng thực nghiệm chứ không chỉ nêu ra (Mục~\ref{sec:preprocess-sensitivity}): mã hóa biến định danh bằng One-Hot thay cho Label Encoding, xử lý mã chi nhánh như biến phân loại, và dùng SMOTE-NC thay cho SMOTE. Cả ba đều làm Macro-F1 thay đổi không quá 0,018 và không đổi thứ hạng mô hình, nên cấu hình chính được giữ nguyên; riêng One-Hot cải thiện rõ Logistic Regression và nên được dùng nếu mô hình tuyến tính được chọn triển khai. Lỗi điền khuyết ba biến cơ cấu nợ đã được sửa và toàn bộ kết quả bộ B chạy lại. Về diễn giải, các kết quả phân loại năm nhóm phụ thuộc đáng kể vào biến lãi ngoại bảng và số ngày đến đáo hạn. Với biến lãi ngoại bảng, quan hệ với nhãn đã được truy về căn cứ pháp lý chứ không chỉ suy đoán từ số liệu: Điều 5 khoản 2 điểm a Thông tư số 16/2018/TT-BTC lấy chính kết quả phân loại nợ làm điều kiện để lãi phải thu được hạch toán vào thu nhập hay chuyển theo dõi ngoại bảng \cite{btc2018tt16}, nên biến này là hệ quả kế toán đồng thời với nhãn (Mục~\ref{sec:leakage-a}). Phần chưa xác minh được thu hẹp lại thành một chi tiết vận hành --- thứ tự và độ trễ giữa bước làm mới trường kế toán và bước chạy phân loại nợ trong quy trình chốt số cuối kỳ --- và chi tiết này chỉ ảnh hưởng tới việc dùng trường đó làm đầu vào cho mô hình chuyển nhóm tại thời điểm $T$. Với \mbox{\texttt{DAYS\_TO\_MATURITY}} thì không có căn cứ pháp lý tương ứng, nên kết luận vẫn dừng ở bằng chứng thực nghiệm. Cuối cùng, Gain và SHAP chỉ mô tả cách mô hình sử dụng dữ liệu, không chứng minh quan hệ nhân quả, và có thể chia sẻ đóng góp giữa các biến tương quan như hai biến kỳ hạn ($r>0,94$ ở cả hai bộ) \cite{lundberg2017unified}.
 
 \section{Kiến nghị đối với ngân hàng}
 
-\subsection{Xây dựng dữ liệu ảnh chụp theo thời gian}
+\subsection{Dữ liệu ảnh chụp theo thời gian và chất lượng trường dữ liệu}
 
-Ngân hàng cần lưu trữ dữ liệu ảnh chụp trạng thái khoản vay tại các kỳ cố định, sử dụng khóa định danh khoản vay và khách hàng nhất quán. Mỗi quan sát cần bao gồm ngày ghi nhận, nhóm nợ tại thời điểm ghi nhận và nhóm nợ tại các khoảng dự báo 1, 3, 6 hoặc 12 tháng. Đây là điều kiện tiên quyết để chuyển từ phân loại trạng thái hiện tại sang dự báo khả năng chuyển nhóm nợ.
+Lợi thế của luận văn là đã làm việc trực tiếp trên dữ liệu thật của ngân hàng, nên các kiến nghị dưới đây không dừng ở nguyên tắc chung mà gắn với những vấn đề cụ thể đã phát hiện trong quá trình xử lý (Bảng~\ref{tab:recommend-data}).
 
-\subsection{Ưu tiên chất lượng trước khi mở rộng số lượng biến}
+\begin{longtable}{|p{6.0cm}|p{7.4cm}|}
+\caption{Kiến nghị về dữ liệu, gắn với phát hiện cụ thể trong luận văn}
+\label{tab:recommend-data}\\
+\hline
+\textbf{Phát hiện trong luận văn} & \textbf{Kiến nghị}\\
+\hline
+\endfirsthead
+\hline
+\textbf{Phát hiện trong luận văn} & \textbf{Kiến nghị}\\
+\hline
+\endhead
+Hai kỳ 20260531 và 20260630 lưu trường ngày theo định dạng khác kỳ 20260430, gây lỗi xử lý âm thầm làm rỗng ba đặc trưng (Mục~\ref{sec:limit-datefix}) & Cố định kiểu dữ liệu của từng trường trong quy trình trích xuất; thêm bước kiểm tra tự động kiểu dữ liệu và miền giá trị ở mỗi kỳ, không chỉ kiểm tra danh mục cột\\
+\hline
+36,84\% bản ghi \mbox{\texttt{OPEN\_DATE}} và 36,63\% \mbox{\texttt{NGAYDENHAN}} của bộ A lưu sai định dạng ngày (Bảng~\ref{tab:date-cleaning-a}) & Chuẩn hóa định dạng ngày ngay tại khâu kết xuất thay vì để khâu phân tích tự suy đoán; quy định một định dạng duy nhất cho toàn hệ thống\\
+\hline
+Ba biến cơ cấu nợ thiếu 99,6--99,8\%, trong đó giá trị thiếu mang nghĩa ``chưa từng cơ cấu'' chứ không phải ``không có dữ liệu'' (Mục~\ref{sec:preprocessing-examples}) & Phân biệt rõ trong từ điển dữ liệu giữa giá trị thiếu do không phát sinh sự kiện và giá trị thiếu do lỗi ghi nhận; với loại thứ nhất nên ghi giá trị 0 thay vì để trống\\
+\hline
+Trường \texttt{Thời điểm truy đòi} trùng khớp 100\% với \texttt{Ngày kết thúc khế ước}; cột \texttt{Số tiền đã thanh toán} bằng 0 ở toàn bộ bản ghi & Rà soát và loại bỏ các trường trùng lặp hoặc không được ghi nhận trong thực tế, vì chúng làm tăng chi phí xử lý mà không mang thông tin\\
+\hline
+1.649 khoản vay biến mất giữa hai kỳ, không phân biệt được tất toán, xóa nợ hay bán nợ (Mục~\ref{sec:transition-exclusion}) & Bổ sung trường lý do rời danh mục; đây là điều kiện để loại trừ sai lệch chọn mẫu trong mọi mô hình dự báo theo thời gian\\
+\hline
+Biến lãi ngoại bảng là hệ quả kế toán của phân loại nợ (Điều 5 Thông tư số 16/2018/TT-BTC), nhưng thứ tự hai bước khi chốt số cuối kỳ chưa rõ (Mục~\ref{sec:leakage-a}) & Xác nhận với bộ phận kế toán và công nghệ thông tin: trường lãi ngoại bảng được làm mới trước hay sau khi chương trình phân loại nợ chạy, độ trễ giữa hai bước, và ảnh chụp giao cho bộ phận phân tích lấy ở bước nào. Trên cơ sở đó đánh dấu trong từ điển dữ liệu mỗi trường là \emph{sẵn có trước} hay \emph{hệ quả của} phân loại nợ\\
+\hline
+Nhóm thời hạn và nhóm dư nợ--lãi dẫn đầu ổn định ở cả hai bộ và cả hai thước đo giải thích (Mục~\ref{sec:shap-overlap}) & Ưu tiên duy trì chất lượng các trường ngày giải ngân, ngày kết thúc khế ước, dư nợ và lãi, thay vì mở rộng thu thập các trường nhân khẩu học hay thủ tục có đóng góp gần 0\\
+\hline
+Kết quả dự báo chuyển nhóm không lặp lại giữa hai cặp kỳ (Mục~\ref{sec:transition-stability}) & Lưu ảnh chụp danh mục hằng tháng với khóa khế ước và khóa khách hàng nhất quán, để dựng được nhãn chuyển nhóm cho nhiều giai đoạn và nhiều cửa sổ dự báo\\
+\hline
+\end{longtable}
 
-Thay vì bổ sung nhiều trường rời rạc, ngân hàng nên:
-
-\begin{enumerate}
-    \item chuẩn hóa ngày giải ngân, ngày kết thúc hợp đồng/khế ước và lịch sử thay đổi kỳ hạn;
-    \item duy trì tính nhất quán về cấu trúc cột giữa các kỳ báo cáo liên tiếp: ba kỳ của bộ B có danh mục 33 cột trùng khớp hoàn toàn, nhờ đó mô hình huấn luyện ở một kỳ áp dụng được cho các kỳ sau mà không phải thu hẹp tập đặc trưng; đây là điều kiện cần được giữ ổn định khi mở rộng chuỗi kỳ báo cáo, vì mọi cột vắng mặt ở một kỳ đều bị loại khỏi tập đặc trưng dùng chung;
-    \item thống nhất danh mục sản phẩm, mục đích vay và hình thức cấp tín dụng;
-    \item ghi nhận nguồn gốc và lịch sử cập nhật để xác định thời điểm biến thực sự sẵn có;
-    \item giám sát sự thay đổi phân bố và tỷ lệ thiếu theo từng kỳ; đồng thời kiểm định hồi cứu mô hình trên nhiều kỳ báo cáo liên tiếp trước khi triển khai;
-    \item đối chiếu ít nhất hai thước đo mức độ quan trọng, chẳng hạn Gain và SHAP, trước khi quyết định đầu tư thu thập một nhóm dữ liệu cụ thể.
-\end{enumerate}
-
-\subsection{Thiết kế cảnh báo theo chi phí}
+\subsection{Thiết kế ngưỡng cảnh báo theo chi phí}
 \label{sec:recommend-cost}
 
-Ngưỡng cảnh báo phải dựa trên năng lực xử lý và chi phí sai lầm. Có thể tối ưu:
+Kết quả Recall@k (Mục~\ref{sec:transition-recallk}) cho thấy ngưỡng xác suất 0,5 không phù hợp với sự kiện hiếm: ở cặp 1, ngưỡng này chỉ bắt được 11\% sự kiện, trong khi rà soát 5\% danh mục bắt được 56,6\%. Ngân hàng nên xác định ngưỡng theo năng lực rà soát và chi phí sai lầm, chẳng hạn bằng cách chọn ngưỡng $\tau$ tối thiểu hóa
 \[
-\mathcal{C}(\tau)
-=c_{\mathrm{FN}}FN(\tau)+c_{\mathrm{FP}}FP(\tau),
+\mathcal{C}(\tau)=c_{\mathrm{FN}}\,FN(\tau)+c_{\mathrm{FP}}\,FP(\tau),
 \]
-trong đó $\tau$ là ngưỡng cảnh báo; $FN(\tau)$ là số khoản vay chuyển nhóm nhưng bị bỏ sót; $FP(\tau)$ là số cảnh báo sai; $c_{\mathrm{FN}}$ là chi phí trung bình của bỏ sót; và $c_{\mathrm{FP}}$ là chi phí rà soát/cơ hội của cảnh báo sai. Ngưỡng tối ưu là giá trị làm $\mathcal{C}(\tau)$ nhỏ nhất dưới các ràng buộc nghiệp vụ.
+trong đó $FN(\tau)$ là số khoản vay chuyển nhóm bị bỏ sót, $FP(\tau)$ là số cảnh báo sai, $c_{\mathrm{FN}}$ là chi phí trung bình của một lần bỏ sót (dự phòng tăng thêm, tổn thất) và $c_{\mathrm{FP}}$ là chi phí rà soát một hồ sơ. Với Precision@5\% chỉ khoảng 3\%, bài toán chỉ có lợi khi chi phí bỏ sót lớn hơn nhiều chi phí rà soát --- một điều kiện cần được lượng hóa bằng số liệu nội bộ.
 
-\subsection{Quản trị mô hình}
+\subsection{Quản trị và giám sát mô hình}
+\label{sec:recommend-governance}
 
-Mô hình cần được triển khai dưới vai trò hỗ trợ quyết định, với sự kiểm tra và phê duyệt của cán bộ có thẩm quyền. Ngân hàng cần lưu vết phiên bản dữ liệu, mã nguồn, mô hình, nguyên nhân cảnh báo và kết quả xử lý; theo dõi Macro-F1, Recall của các lớp rủi ro, mức độ hiệu chỉnh xác suất và sự thay đổi phân bố; đồng thời thiết lập lịch tái huấn luyện phù hợp.
+Mô hình chỉ nên được dùng làm công cụ hỗ trợ, có cán bộ có thẩm quyền kiểm tra và phê duyệt. Song song với phần thực nghiệm, luận văn có xây dựng một ứng dụng minh họa bằng Streamlit gồm các chức năng phân tích khám phá, huấn luyện và đối sánh mô hình, phân tích đặc trưng kèm giải thích SHAP, và dự báo hàng loạt từ tệp Excel hoặc CSV do người dùng tải lên. Ứng dụng dùng lại đúng các hàm tiền xử lý và huấn luyện của phần thực nghiệm nên không phát sinh nhánh xử lý riêng. Đây là công cụ minh họa quy trình, chưa phải sản phẩm triển khai: hệ thống lưu mô hình dưới dạng tệp \texttt{pickle}, chưa có phân quyền người dùng, chưa lưu vết yêu cầu dự báo, và chưa có cơ chế giám sát. Trước khi triển khai, ngân hàng cần lưu vết phiên bản dữ liệu, mã nguồn và mô hình; thiết lập ngưỡng cảnh báo khi hiệu năng suy giảm và lịch tái huấn luyện.
+
+Kinh nghiệm từ Mục~\ref{sec:limit-datefix} cho thấy việc giám sát nên bắt đầu từ lớp dữ liệu chứ không phải lớp mô hình. Cụ thể, ở mỗi kỳ chấm điểm cần tự động kiểm tra và cảnh báo khi: (i) tỷ lệ giá trị thiếu của bất kỳ đặc trưng nào thay đổi bất thường so với kỳ huấn luyện --- đây là phép kiểm tra rẻ nhất và đủ phát hiện lỗi định dạng đã nêu; (ii) chỉ số dịch chuyển phân bố của một đặc trưng vượt ngưỡng quy ước; và (iii) kiểu dữ liệu hoặc miền giá trị của một trường khác với kỳ trước. Chỉ khi ba kiểm tra này đạt thì các chỉ tiêu ở lớp mô hình (Macro-F1, Recall nhóm rủi ro, mức hiệu chỉnh xác suất) mới có ý nghĩa để so sánh giữa các kỳ.
 
 \section{Hướng nghiên cứu tiếp theo}
 
-Với bài toán chuyển nhóm nợ đã có bằng chứng thực nghiệm ban đầu (Mục~\ref{sec:transition-results}), hướng nghiên cứu ưu tiên chuyển từ ``xây dựng nhãn'' sang ``kiểm định độ ổn định và mở rộng cửa sổ dự báo'' trước khi xem xét triển khai. Các bước tiếp theo gồm:
-
 \begin{enumerate}
-    \item thu thập thêm kỳ báo cáo liên tiếp để có nhiều hơn hai cặp $(T,T+h)$, có kiểm soát chồng lấn giữa các khoảng dự báo; đây là cơ sở để kiểm định độ ổn định của mô hình theo thời gian một cách chắc chắn hơn hai cặp quan sát hiện có;
-    \item xây nhãn $Y_{i,t}^{(h)}$ cho nhiều cửa sổ dự báo $h$ (1, 3, 6, 12 tháng) khi có đủ chuỗi kỳ báo cáo, thay vì chỉ $h=31$ ngày như hiện tại;
-    \item chia dữ liệu theo thời gian và theo khách hàng khi có nhiều kỳ báo cáo hơn;
-    \item hiệu chỉnh xác suất dự báo (calibration) và gắn ngưỡng/tỷ lệ ưu tiên top-$k$\% với chi phí bỏ sót--rà soát thực tế (Mục~\ref{sec:recommend-cost}), thay vì chỉ báo cáo Recall@k mô tả như hiện tại;
-    \item thực hiện thí nghiệm loại bỏ nhóm đặc trưng và đánh giá mức độ quan trọng bằng hoán vị trên tập kiểm định, đối với cả bài toán 5 lớp và bài toán chuyển nhóm;
-    \item làm rõ nguyên nhân loại trừ của 1.649 khoản vay không khớp giữa hai kỳ (Mục~\ref{sec:transition-exclusion}); cần trường dữ liệu phân biệt tất toán và xóa nợ mà hai file hiện tại không có;
-    \item thử nghiệm mô hình ordinal, survival hoặc multi-state cho bài toán phân loại 5 lớp vì các nhóm nợ có thứ tự.
+    \item Thu thập thêm kỳ báo cáo để có nhiều cặp $(T,T+h)$, kiểm định độ ổn định của dự báo chuyển nhóm theo cửa sổ trượt và phân biệt ba cách giải thích đã nêu ở Mục~\ref{sec:transition-stability}.
+    \item Mở rộng cửa sổ dự báo lên 3, 6, 12 tháng và chia mẫu đồng thời theo thời gian và theo khách hàng.
+    \item Xây dựng lại bài toán năm lớp và bài toán chuyển nhóm chỉ với các trường đã xác minh là sẵn có trước khi phân loại nợ, để đo năng lực dự báo không bị rò rỉ.
+    \item Thử nghiệm mô hình có thứ tự và mô hình đa trạng thái cho ma trận chuyển nhóm \cite{lando2002analyzing}, ước lượng trực tiếp xác suất $p_{ab}^{(h)}=P(G_{i,t+h}=b\mid G_{i,t}=a,\mathbf{X}_{i,t})$ thay vì phân loại độc lập.
+    \item Hiệu chỉnh xác suất, lựa chọn mô hình bằng kiểm định chéo lồng nhau, và thí nghiệm loại bỏ từng nhóm đặc trưng một cách hệ thống cho cả hai bài toán.
+    \item Mở rộng tổng quan và đối sánh với các nghiên cứu trong nước khi có dữ liệu hoặc kết quả công bố tương đương.
+    \item Phát triển ứng dụng minh họa thành công cụ dùng được trong nghiệp vụ: bổ sung phân quyền, lưu vết yêu cầu dự báo và kết quả xử lý, kiểm thử với người dùng thật là cán bộ tín dụng, và đo các chỉ tiêu vận hành như thời gian xử lý một lô hồ sơ. Đây là hướng mở, chưa được đánh giá trong luận văn.
 \end{enumerate}
-
-Mô hình đa trạng thái có thể mô tả xác suất:
-\[
-p_{ab}^{(h)}
-=P(G_{i,t+h}=b\mid G_{i,t}=a,\mathbf{X}_{i,t}),
-\]
-trong đó $a$ là nhóm nợ tại thời điểm quan sát; $b$ là nhóm đích sau khoảng dự báo $h$; $\mathbf{X}_{i,t}$ là véc-tơ thông tin sẵn có tại $t$; và $p_{ab}^{(h)}$ là xác suất chuyển từ $a$ sang $b$. Cách tiếp cận này phù hợp hơn phân loại độc lập nếu mục tiêu cuối cùng là ma trận chuyển nhóm.
-
-Các kết quả của luận văn tạo cơ sở để thiết kế những thí nghiệm tiếp theo về phân loại và cảnh báo chuyển nhóm nợ. Ưu tiên trước khi ứng dụng là thống nhất khả năng tái lập, bổ sung dữ liệu qua nhiều kỳ, kiểm định quy trình lựa chọn mô hình trên dữ liệu mới và lượng hóa chi phí của cảnh báo đúng, cảnh báo sai và bỏ sót.

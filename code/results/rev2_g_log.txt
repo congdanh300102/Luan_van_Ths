@@ -1,0 +1,7 @@
+[22:03:45] G Logistic Regression: mặc định=0.4098 tốt nhất=0.4451 nhỏ nhất=0.3266 biên độ=0.1185 (160s)
+[22:04:03] G Decision Tree: mặc định=0.6566 tốt nhất=0.6614 nhỏ nhất=0.5859 biên độ=0.0755 (18s)
+[22:06:17] G Random Forest: mặc định=0.6610 tốt nhất=0.6687 nhỏ nhất=0.6297 biên độ=0.0390 (135s)
+[22:09:08] G XGBoost: mặc định=0.6797 tốt nhất=0.6935 nhỏ nhất=0.6102 biên độ=0.0833 (171s)
+[22:11:59] G LightGBM: mặc định=0.6989 tốt nhất=0.7030 nhỏ nhất=0.6417 biên độ=0.0613 (171s)
+[23:26:13] G CatBoost: mặc định=0.6009 tốt nhất=0.6191 nhỏ nhất=0.5522 biên độ=0.0669 (4454s)
+[23:26:13] HOÀN TẤT

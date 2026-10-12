@@ -1,0 +1,31 @@
+﻿,pred_1,pred_2,pred_3,pred_4,pred_5,model
+true_1,4132,2,0,7,53,Logistic Regression
+true_2,247,0,0,7,3,Logistic Regression
+true_3,98,0,1,15,7,Logistic Regression
+true_4,104,0,0,38,15,Logistic Regression
+true_5,107,0,0,19,546,Logistic Regression
+true_1,4051,78,18,41,6,Decision Tree
+true_2,170,63,7,16,1,Decision Tree
+true_3,50,12,44,14,1,Decision Tree
+true_4,54,8,13,68,14,Decision Tree
+true_5,61,7,3,49,552,Decision Tree
+true_1,4142,27,14,6,5,Random Forest
+true_2,185,56,10,5,1,Random Forest
+true_3,59,10,42,8,2,Random Forest
+true_4,64,4,9,66,14,Random Forest
+true_5,55,2,2,30,583,Random Forest
+true_1,4125,31,16,13,9,XGBoost
+true_2,182,62,9,3,1,XGBoost
+true_3,57,9,47,7,1,XGBoost
+true_4,60,4,5,76,12,XGBoost
+true_5,33,3,2,31,603,XGBoost
+true_1,4127,33,13,11,10,LightGBM
+true_2,177,63,11,3,3,LightGBM
+true_3,56,8,48,8,1,LightGBM
+true_4,55,8,4,76,14,LightGBM
+true_5,29,5,1,29,608,LightGBM
+true_1,3188,818,90,90,8,CatBoost
+true_2,67,161,15,13,1,CatBoost
+true_3,11,41,50,16,3,CatBoost
+true_4,21,30,12,86,8,CatBoost
+true_5,10,18,5,75,564,CatBoost
