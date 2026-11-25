@@ -6,9 +6,10 @@
 > thật (bộ A và hai kỳ 20260430, 20260531 của bộ B); các chỗ số liệu trong
 > văn bản được điền bằng `python3 -m src.fill_thesis_numbers`.
 >
-> Các file ở cấp thư mục này (`credit_info_*`, `rev2_*`, `revision_*`,
-> `fixed_*`, `transition_*`) là kết quả của các lần chạy TRƯỚC,
-> giữ lại để đối chiếu lịch sử. Một số còn mang lỗi đã sửa (định dạng ngày,
+> **25/11/2026: đã xoá toàn bộ file CSV ở cấp thư mục này** (`credit_info_*`,
+> `rev2_*`, `revision_*`, `fixed_*`, `transition_*`, `grid_search_*`, ...).
+> Các mục mô tả chúng bên dưới chỉ còn giá trị lịch sử; muốn xem lại thì lấy
+> từ lịch sử git (commit 2465cea trở về trước). Đó là kết quả của các lần chạy TRƯỚC. Một số còn mang lỗi đã sửa (định dạng ngày,
 > điền khuyết biến cơ cấu, cách chia khoảng IV) hoặc được chạy trên máy khác
 > nên lệch vài phần nghìn. Ngày 25/11/2026 đã xoá mọi script và kết quả dùng
 > kỳ 20260630 (dữ liệu MÔ PHỎNG: `transition_pair2_*`, `diagnose_*`,
