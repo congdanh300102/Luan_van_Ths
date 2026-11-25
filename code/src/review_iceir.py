@@ -1,10 +1,8 @@
 """Phân tích bổ sung theo góp ý bản thảo ICEIR 2026 (bản 14/10/2026).
 
-  M0  Kiểm tra dữ liệu kỳ 20260630: (1) tỷ lệ lãi ngoại bảng > 0 theo nhóm nợ
-      cho cả ba kỳ, mức trùng khớp các trường giữa kỳ 5 và kỳ 6; (2) xếp hạng
-      chuyển nhóm theo số ngày quá hạn (DPD) tại t cho cặp 1 (thật) và cặp 2.
   M1  Tách tập ngoài thời gian (kỳ 5) thành ba tập con: thuộc tập train tháng 4,
-      thuộc tập test tháng 4, hợp đồng mới.
+      thuộc tập test tháng 4, hợp đồng mới; tỷ lệ lãi ngoại bảng > 0 theo nhóm
+      nợ ở hai kỳ (m0_offbalance_by_group.csv).
   M2  Baseline nghiệp vụ cho cảnh báo sớm (DPD, khoảng cách tới ngưỡng chuyển
       nhóm, đơn biến theo hai trường lãi, scorecard WOE-logistic) và XGBoost có
       thêm các trường quá hạn tại T; tách ca chuyển nhóm cơ học / không cơ học.
@@ -12,8 +10,7 @@
   M5  Learning-to-rank (XGBoost rank:pairwise) và NDCG@5% có trọng số mức độ.
   M6  Độ nhạy: coi hợp đồng rời danh mục từ nhóm >= 2 là sự kiện.
 
-Kỳ 20260630 CHỈ được đọc trong M0 để kiểm tra tính xác thực; không dùng làm
-bằng chứng trong bài.
+Chỉ dùng hai kỳ dữ liệu thật 20260430 và 20260531.
 
 Chạy:  cd code && python3 -m src.review_iceir
 """
@@ -33,7 +30,7 @@ from sklearn.model_selection import RepeatedStratifiedKFold, train_test_split
 from xgboost import XGBRanker
 
 from config.config import (
-    RANDOM_STATE, TEST_SIZE, DATA_CREDIT_INFO_TRAIN, DATA_CREDIT_INFO_TEST, DATA_CREDIT_INFO_TEST2,
+    RANDOM_STATE, TEST_SIZE, DATA_CREDIT_INFO_TRAIN, DATA_CREDIT_INFO_TEST,
     CREDIT_INFO_TARGET_COL as TGT, CREDIT_INFO_SMOTE_STRATEGY, TRANSITION_ID_COL as KEY,
 )
 from src.credit_info_preprocessing import (
@@ -114,49 +111,14 @@ def woe_transform(Xtr, ytr, Xte, cats, bins=10, eps=0.5):
     return Ztr, Zte
 
 
-# ── M0 ───────────────────────────────────────────────────────────────────────
-def m0(a, b):
-    j = pd.read_excel(DATA_CREDIT_INFO_TEST2)  # đọc thô, không parse ngày
+def offbalance_by_group(a, b):
+    """Tỷ lệ khoản vay có lãi ngoại bảng > 0 theo nhóm nợ, kỳ 30/4 và 31/5/2026."""
     rows = []
-    for name, d in [("2026-04-30", a), ("2026-05-31", b), ("2026-06-30", j)]:
+    for name, d in [("2026-04-30", a), ("2026-05-31", b)]:
         for g in range(1, 6):
             sub = d[d[TGT].astype(int) == g]
             rows.append({"snapshot": name, "group": g, "n": len(sub), "pct_offbalance_pos": (sub[OFF] > 0).mean() * 100})
     save(pd.DataFrame(rows), "m0_offbalance_by_group.csv")
-    mm = b.merge(j, on=KEY, suffixes=("_5", "_6"))
-    cols = [c for c in b.columns if c not in (KEY, TGT, "ETL_DATE") and c in j.columns
-            and not c.startswith(("Ngày", "Thời điểm"))]  # cột ngày khác định dạng giữa hai tệp
-    same = {c: float((mm[c + "_5"].astype(str) == mm[c + "_6"].astype(str)).mean()) for c in cols}
-    worse = mm[mm[TGT + "_6"].astype(int) > mm[TGT + "_5"].astype(int)]
-    prov = "Dự phòng cụ thể phải trích nội bảng"
-    summary = {"june_rows": len(j), "june_rows_in_may": int(j[KEY].isin(b[KEY]).sum()),
-               "may_rows_not_in_april": int((~b[KEY].isin(a[KEY])).sum()),
-               "share_columns_identical_may_june_min": min(same.values()),
-               "n_worsened_may_june": len(worse),
-               "worsened_with_unchanged_provision": int((worse[prov + "_5"] == worse[prov + "_6"]).sum())}
-    am = a.merge(b, on=KEY, suffixes=("_4", "_5"))
-    for c in ["Số dư nợ theo nguyên tệ", ON, OFF, prov]:
-        summary[f"identical_apr_may::{c}"] = float((am[c + "_4"].astype(str) == am[c + "_5"].astype(str)).mean())
-        summary[f"identical_may_jun::{c}"] = same.get(c)
-    save(pd.DataFrame([summary]).T.reset_index().rename(columns={"index": "check", 0: "value"}), "m0_june_integrity.csv")
-    log(f"M0 toàn vẹn: {summary}")
-
-    rows = []
-    for pair, t_df, t1_groups in [("pair1 (Apr->May, real)", a, b[[KEY, TGT]]), ("pair2 (May->Jun, file 20260630)", b, j[[KEY, TGT]])]:
-        d = t_df.merge(t1_groups.rename(columns={TGT: "G1"}), on=KEY)
-        y = (d["G1"].astype(int) > d[TGT].astype(int)).astype(int).values
-        ov = overdue_features(d, d["ETL_DATE"] if np.issubdtype(d["ETL_DATE"].dtype, np.datetime64) else ymd(d["ETL_DATE"]))
-        g0 = d[TGT].astype(int).values
-        for score_name, sc in [("DPD_MAX", ov["DPD_MAX"]), ("-DIST_NEXT", -ov["DIST_NEXT"].replace(np.inf, 1e6))]:
-            for sub, mask in [("all events", np.ones(len(y), bool)), ("1->2 only", (g0 == 1) | (y == 0))]:
-                yy = (y * ((g0 == 1) if sub == "1->2 only" else 1))[mask]
-                m = rank_metrics(yy, sc.values[mask])
-                rows.append({"pair": pair, "score": score_name, "subset": sub, "n": int(mask.sum()), "events": int(yy.sum()),
-                             "base_rate": yy.mean(), **{k: m[k] for k in ["ap", "roc", "recall@5"]}})
-        rows.append({"pair": pair, "score": "share_events_mechanical", "subset": "all events", "events": int(y.sum()),
-                     "ap": float(ov["MECHANICAL"].values[y == 1].mean())})
-    save(pd.DataFrame(rows), "m0_dpd_ranking.csv")
-    log(f"M0 DPD:\n{pd.DataFrame(rows).round(4)}")
 
 
 # ── M1 ───────────────────────────────────────────────────────────────────────
@@ -254,10 +216,9 @@ def task2_review(a, b):
 
 if __name__ == "__main__" and "EXTRA" not in {x.upper() for x in sys.argv[1:]}:
     a, b = load_credit_info(DATA_CREDIT_INFO_TRAIN), load_credit_info(DATA_CREDIT_INFO_TEST)
-    want = {x.upper() for x in sys.argv[1:]} or {"M0", "M1", "T2"}
-    if "M0" in want:
-        m0(a, b)
+    want = {x.upper() for x in sys.argv[1:]} or {"M1", "T2"}
     if "M1" in want:
+        offbalance_by_group(a, b)
         m1(a, b)
     if "T2" in want:
         task2_review(a, b)

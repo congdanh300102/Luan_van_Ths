@@ -1,7 +1,7 @@
 """Tái tạo toàn bộ kết quả của bài báo ICEIR 2026 từ HAI kỳ dữ liệu thật
 (20260430, 20260531), sau khi chuẩn hóa ngày của tệp 20260531 về yyyymmdd.
 
-Không dùng tệp 20260630 (kỳ mô phỏng) và không dùng bộ dữ liệu A.
+Không dùng bộ dữ liệu A.
 Kết quả ghi vào code/results/iceir/ (không ghi đè kết quả cũ của luận văn).
 
   T1  Bài toán 5 nhóm: 6 mô hình (nội bộ + ngoài thời gian), theo nhóm, ma trận

@@ -21,6 +21,10 @@ def _resolve_raw(filename: str) -> Path:
     direct = raw_dir / filename
     if direct.exists():
         return direct
+    if not raw_dir.is_dir():
+        # Streamlit Cloud: data/raw không có trong git (dữ liệu ngân hàng) →
+        # trả đường dẫn dự kiến; src/data_loader.py sẽ hiện ô upload.
+        return direct
     target_nfc = unicodedata.normalize("NFC", filename)
     for p in raw_dir.iterdir():
         if unicodedata.normalize("NFC", p.name) == target_nfc:
@@ -90,15 +94,6 @@ MODEL_OPTIONS = {
 # ── Dataset 2: Thông tin tín dụng (train 20260430 / test 20260531) ───────────
 DATA_CREDIT_INFO_TRAIN = _resolve_raw("Thông tin tín dụng 20260430.xlsx")
 DATA_CREDIT_INFO_TEST  = _resolve_raw("Thông tin tín dụng 20260531.xlsx")
-
-# Kỳ 20260630: KHÔNG phải dữ liệu ngân hàng. Mọi phiên bản của tệp này đều có
-# dấu hiệu của dữ liệu mô phỏng từ kỳ 20260531 (generate_synthetic_period*.py
-# trong lịch sử git): không có khoản vay mới nào, ma trận chuyển nhóm khớp xác
-# suất của bộ sinh, đặc trưng sao chép từ kỳ trước. Luận văn và bài ICEIR chỉ
-# dùng hai kỳ thật 20260430/20260531. Ngày 25/11/2026 đã xoá các tệp 20260630
-# khỏi data/raw/; biến này chỉ còn để tham chiếu lịch sử và phần M0 của
-# src/review_iceir.py (kiểm tra tính xác thực) sẽ không chạy được nữa.
-DATA_CREDIT_INFO_TEST2 = _resolve_raw("Thông tin tín dụng 20260630.xlsx")
 
 CREDIT_INFO_TARGET_COL = "Nhóm nợ tự phân loại"
 

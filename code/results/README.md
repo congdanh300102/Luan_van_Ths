@@ -9,13 +9,11 @@
 > **25/11/2026: đã xoá toàn bộ file CSV ở cấp thư mục này** (`credit_info_*`,
 > `rev2_*`, `revision_*`, `fixed_*`, `transition_*`, `grid_search_*`, ...).
 > Các mục mô tả chúng bên dưới chỉ còn giá trị lịch sử; muốn xem lại thì lấy
-> từ lịch sử git (commit 2465cea trở về trước). Đó là kết quả của các lần chạy TRƯỚC. Một số còn mang lỗi đã sửa (định dạng ngày,
-> điền khuyết biến cơ cấu, cách chia khoảng IV) hoặc được chạy trên máy khác
-> nên lệch vài phần nghìn. Ngày 25/11/2026 đã xoá mọi script và kết quả dùng
-> kỳ 20260630 (dữ liệu MÔ PHỎNG: `transition_pair2_*`, `diagnose_*`,
-> `transition_multiperiod_demo.csv`, ...), thư mục sao lưu
-> `_backup_credit_info_pre_accuracy/` và các log của lần chạy cũ; bản cũ vẫn
-> còn trong lịch sử git.
+> từ lịch sử git (commit 2465cea trở về trước). Đó là kết quả của các lần
+> chạy TRƯỚC; một số còn mang lỗi đã sửa (định dạng ngày, điền khuyết biến cơ
+> cấu, cách chia khoảng IV) hoặc được chạy trên máy khác nên lệch vài phần
+> nghìn. Thư mục sao lưu `_backup_credit_info_pre_accuracy/` và các log của lần
+> chạy cũ cũng đã được xoá.
 
 Thư mục này chứa các file được **sinh tự động** từ những lần chạy huấn luyện /
 phân tích trong app Streamlit (chủ yếu từ trang **7 — Phân tích & Lựa chọn Đặc

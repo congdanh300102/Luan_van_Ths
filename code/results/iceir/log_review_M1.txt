@@ -1,0 +1,29 @@
+[09:16:56] M1 lightgbm full xong
+[09:17:06] M1 lightgbm conservative xong
+[09:17:13] M1 xgboost full xong
+[09:17:19] M1 xgboost conservative xong
+[09:17:19] M1:
+       model        config  ... macro_f1_present  macro_f1_5class
+0   lightgbm          full  ...           0.6935           0.6935
+1   lightgbm          full  ...           0.7144           0.7144
+2   lightgbm          full  ...           0.6349           0.6349
+3   lightgbm          full  ...           0.4987           0.1995
+4   lightgbm          full  ...           0.6985           0.6985
+5   lightgbm  conservative  ...           0.4290           0.4290
+6   lightgbm  conservative  ...           0.4899           0.4899
+7   lightgbm  conservative  ...           0.4043           0.4043
+8   lightgbm  conservative  ...           0.4981           0.1992
+9   lightgbm  conservative  ...           0.4728           0.4728
+10   xgboost          full  ...           0.6942           0.6942
+11   xgboost          full  ...           0.6969           0.6969
+12   xgboost          full  ...           0.6369           0.6369
+13   xgboost          full  ...           0.4996           0.1998
+14   xgboost          full  ...           0.6849           0.6849
+15   xgboost  conservative  ...           0.4230           0.4230
+16   xgboost  conservative  ...           0.4663           0.4663
+17   xgboost  conservative  ...           0.4071           0.4071
+18   xgboost  conservative  ...           0.4985           0.1994
+19   xgboost  conservative  ...           0.4545           0.4545
+
+[20 rows x 6 columns]
+[09:17:19] HOÀN TẤT

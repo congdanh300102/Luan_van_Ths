@@ -2,9 +2,7 @@
 một lần chạy, chỉ dùng dữ liệu THẬT:
 
   * bộ A  — Data_credit_rating_VN.xlsx
-  * bộ B  — hai kỳ 20260430 và 20260531 (KHÔNG dùng tệp 20260630: mọi phiên bản
-            của tệp này đều là dữ liệu mô phỏng, xem generate_synthetic_period.py
-            trong lịch sử git).
+  * bộ B  — hai kỳ 20260430 và 20260531.
 
 Các phần (chạy độc lập, có thể song song bằng nhiều tiến trình):
 
