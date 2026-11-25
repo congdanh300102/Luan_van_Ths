@@ -12,7 +12,6 @@ Bài chỉ dùng hai kỳ dữ liệu thật 30/4/2026 và 31/5/2026: bài toán
 - Tệp `Thông tin tín dụng 20260531.xlsx` đã chuẩn hóa 5 cột ngày về `yyyymmdd` (bản gốc ở `code/data/raw/_backup_original/`); `_parse_yyyymmdd` nay báo lỗi khi gặp định dạng khác.
 - Kết quả chính: `code/src/rerun_iceir.py` → `code/results/iceir/t1_*`, `t2_*`; phân tích theo góp ý: `code/src/review_iceir.py` → `m0_offbalance_by_group.csv`, `m1_*`, `m2_*`, `m6_*`.
 - Bài đổi tên thành "Reproducing or Predicting? ...".
-- `ICEIR2026_paper_review.*` và `ICEIR2026_giai_thich_bai_bao.docx` được tạo từ phiên bản trước, chưa cập nhật theo bản này.
 - Abstract: câu seen/unseen chuyển sang cấu hình bảo thủ (0,49/0,40), cho khớp góp ý M3.
 - Pháp lý đã đối chiếu: NĐ 135/2025/NĐ-CP ngày 12/6/2025 (đã được NĐ 316/2026/NĐ-CP ngày 11/8/2026 sửa đổi, sau hai kỳ dữ liệu); TT 37/2025/TT-NHNN ngày 31/10/2025, hiệu lực 15/12/2025. Ngày của 27/VBHN-NHNN (bài ghi 21/11/2025) và nguyên văn Điều 13(2)(a) vẫn cần kiểm tra tay.
 - Sửa chú thích hình SHAP (màu của mã chi nhánh), ghi rõ đơn vị VND, câu "no missing values" và nhận định về ca không cơ học.
