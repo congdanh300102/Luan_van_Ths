@@ -236,7 +236,7 @@ def main(src, dst):
 <h2 style='font-size:13px'>2. Các đoạn tô vàng: việc tác giả cần làm</h2>
 <ul style='font-size:10px'>{yellow}</ul>
 <h2 style='font-size:13px'>3. Ghi chú về dữ liệu</h2>
-<p style='font-size:10px'>Bài chỉ dùng hai kỳ thật 30/04 và 31/05/2026. Kỳ 20260630 KHÔNG được dùng: cả 30 cột dữ liệu của 98.620 khế ước trùng 100% với kỳ tháng 5, chỉ khác cột nhóm nợ, tức là kỳ mô phỏng. Toàn bộ số liệu thống kê mô tả đã được tính lại trực tiếp từ hai tệp Excel gốc và khớp với bài.</p>
+<p style='font-size:10px'>Bài chỉ dùng hai kỳ thật 30/04 và 31/05/2026. Toàn bộ số liệu thống kê mô tả đã được tính lại trực tiếp từ hai tệp Excel gốc và khớp với bài.</p>
 <h2 style='font-size:13px'>4. Bảng nhận xét chi tiết theo từng đoạn</h2>
 <table style='font-size:8.5px;border-collapse:collapse' border='1' cellpadding='3'>
 <tr><th>#</th><th>Vị trí</th><th>Màu</th><th>Nhận xét</th></tr>{rows}</table>
