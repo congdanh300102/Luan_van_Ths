@@ -265,11 +265,8 @@ def part_t1():
     out = []
     best = {"XGBoost": "none", "LightGBM": "custom", "Random Forest": "none",
             "CatBoost": "none", "Decision Tree": "custom", "Logistic Regression": "none"}
-    for pair, f in [("cap1", "transition_cv_per_repeat.csv"), ("cap2", "transition_pair2_cv_per_repeat.csv")]:
+    for pair, f in [("cap1", "transition_cv_per_repeat.csv")]:  # chỉ cặp thật 20260430->20260531
         df = pd.read_csv(RES / f)
-        if pair == "cap2" and (RES / "transition_pair2_catboost_per_repeat.csv").exists():
-            cb = pd.read_csv(RES / "transition_pair2_catboost_per_repeat.csv")
-            df = pd.concat([df[df["model"] != "CatBoost"], cb], ignore_index=True)
         ref = df[(df["model"] == "XGBoost") & (df["strategy"] == "none")]["pr_auc"].values
         for m, s in best.items():
             if m == "XGBoost":

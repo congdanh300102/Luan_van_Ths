@@ -32,7 +32,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 from config.config import (
     DATA_RAW, TARGET_COL, RANDOM_STATE, TEST_SIZE,
-    DATA_CREDIT_INFO_TRAIN, DATA_CREDIT_INFO_TEST, DATA_CREDIT_INFO_TEST2,
+    DATA_CREDIT_INFO_TRAIN, DATA_CREDIT_INFO_TEST,
     CREDIT_INFO_TARGET_COL, CREDIT_INFO_SMOTE_STRATEGY,
     TRANSITION_ID_COL, TRANSITION_SMOTE_STRATEGY,
     TRANSITION_CV_SPLITS, TRANSITION_CV_REPEATS,
@@ -324,10 +324,9 @@ def part_i():
 # ── T ────────────────────────────────────────────────────────────────────────
 def part_t():
     """Xác nhận bài toán chuyển nhóm không đổi sau khi sửa C.1."""
-    r1, r2, r3 = (load_credit_info(f) for f in
-                  (DATA_CREDIT_INFO_TRAIN, DATA_CREDIT_INFO_TEST, DATA_CREDIT_INFO_TEST2))
+    r1, r2 = (load_credit_info(f) for f in (DATA_CREDIT_INFO_TRAIN, DATA_CREDIT_INFO_TEST))
     rows = []
-    for nm, (a, b) in {"cap1": (r1, r2), "cap2": (r2, r3)}.items():
+    for nm, (a, b) in {"cap1": (r1, r2)}.items():  # chỉ cặp thật 20260430->20260531
         dm = build_transition_dataset(a, b, id_col=TRANSITION_ID_COL,
                                       target_col=CREDIT_INFO_TARGET_COL)
         num_raw, cat_raw = build_raw_feature_pool(dm)

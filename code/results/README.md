@@ -7,12 +7,14 @@
 > văn bản được điền bằng `python3 -m src.fill_thesis_numbers`.
 >
 > Các file ở cấp thư mục này (`credit_info_*`, `rev2_*`, `revision_*`,
-> `fixed_*`, `transition_*`, `diagnose_*`) là kết quả của các lần chạy TRƯỚC,
+> `fixed_*`, `transition_*`) là kết quả của các lần chạy TRƯỚC,
 > giữ lại để đối chiếu lịch sử. Một số còn mang lỗi đã sửa (định dạng ngày,
 > điền khuyết biến cơ cấu, cách chia khoảng IV) hoặc được chạy trên máy khác
-> nên lệch vài phần nghìn. Mọi file `transition_pair2_*`, `diagnose_*` và
-> phần "cặp 2" dùng kỳ 20260630 — đây là dữ liệu MÔ PHỎNG, không phải dữ liệu
-> ngân hàng, và không được dùng làm bằng chứng.
+> nên lệch vài phần nghìn. Ngày 25/11/2026 đã xoá mọi script và kết quả dùng
+> kỳ 20260630 (dữ liệu MÔ PHỎNG: `transition_pair2_*`, `diagnose_*`,
+> `transition_multiperiod_demo.csv`, ...), thư mục sao lưu
+> `_backup_credit_info_pre_accuracy/` và các log của lần chạy cũ; bản cũ vẫn
+> còn trong lịch sử git.
 
 Thư mục này chứa các file được **sinh tự động** từ những lần chạy huấn luyện /
 phân tích trong app Streamlit (chủ yếu từ trang **7 — Phân tích & Lựa chọn Đặc
@@ -284,7 +286,6 @@ lại).
   hoặc từ `credit_info_*.csv`, **không** từ `grid_search_*.csv`.
 - **Số liệu Bộ B đã được chạy lại ngày 13/09/2026** để bổ sung Accuracy cho cả
   6 mô hình và cả 60 cấu hình grid search (trước đó script chỉ ghi Macro-F1 /
-  Weighted-F1 / ROC-AUC). Bản trước khi chạy lại nằm ở
-  `_backup_credit_info_pre_accuracy/`, log lần chạy ở
-  `credit_info_rerun_log.txt`. Xem mục "Đối chiếu lần chạy lại" bên dưới —
+  Weighted-F1 / ROC-AUC). Bản trước khi chạy lại và log lần chạy đã được xoá
+  khỏi thư mục (còn trong lịch sử git). Xem mục "Đối chiếu lần chạy lại" bên dưới —
   **một số con số trong Chương 4 cần cập nhật theo lần chạy này**.

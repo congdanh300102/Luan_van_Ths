@@ -95,8 +95,8 @@ DATA_CREDIT_INFO_TEST  = _resolve_raw("Thông tin tín dụng 20260531.xlsx")
 # dấu hiệu của dữ liệu mô phỏng từ kỳ 20260531 (generate_synthetic_period*.py
 # trong lịch sử git): không có khoản vay mới nào, ma trận chuyển nhóm khớp xác
 # suất của bộ sinh, đặc trưng sao chép từ kỳ trước. Luận văn và bài ICEIR chỉ
-# dùng hai kỳ thật 20260430/20260531; biến này chỉ còn để các script cũ
-# (generate_transition_report_pair2.py, diagnose_transition_pairs.py) chạy được.
+# dùng hai kỳ thật 20260430/20260531; biến này chỉ còn cho phần kiểm tra tính
+# xác thực M0 của src/review_iceir.py (không dùng để huấn luyện hay đánh giá).
 DATA_CREDIT_INFO_TEST2 = _resolve_raw("Thông tin tín dụng 20260630.xlsx")
 
 CREDIT_INFO_TARGET_COL = "Nhóm nợ tự phân loại"
@@ -157,9 +157,3 @@ TRANSITION_SMOTE_STRATEGY = {1: 1200}
 
 TRANSITION_CV_SPLITS = 5
 TRANSITION_CV_REPEATS = 10  # đồng bộ 5x10 với repeated_stratified_recall() của bài toán 5 lớp
-
-# Chỉ dùng cho Phụ lục minh họa mở rộng đánh giá đa kỳ — KHÔNG phải dữ liệu
-# thật, KHÔNG dùng trong pipeline chính (generate_credit_info_report.py,
-# generate_transition_report.py, Streamlit app). Sinh bởi
-# src/generate_synthetic_period.py từ cặp kỳ thật 20260430/20260531.
-DATA_CREDIT_INFO_SIM = _resolve_raw("Thông tin tín dụng 20260630 (mô phỏng).xlsx")

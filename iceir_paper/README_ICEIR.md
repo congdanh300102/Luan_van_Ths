@@ -80,3 +80,7 @@ Nghị định 86/2024. Vậy tệp này là kỳ mô phỏng, và cần sửa M
 - Hình mới: `figures/fig2_recall_at_k_rev1.*` (make_figures_rev1.py), `figures/fig3_shap_beeswarm_rev1.*` (EXTRA).
 - Cần tải lên Overleaf: tex rev1, references_rev1.bib, thư mục figures (có hai hình _rev1).
 - 25/11: biên dịch bằng Tectonic 0.17 (XeTeX, tải tạm vào scratchpad) → `ICEIR2026_paper_rev1.pdf`, 15 trang. Để vừa 15 trang: bỏ sơ đồ quy trình (Hình 1 cũ), rút gọn vài đoạn; bản trước khi rút ở `.ICEIR2026_paper_rev1_before_trim.tex.bak`. Hình Recall@k nay là Hình 1, SHAP là Hình 2.
+
+## Dọn dẹp 25/11/2026
+
+- Đã xoá `code/src/review_iceir2.py` và các kết quả dùng kỳ 20260630 mô phỏng (`p2_*`, `tr_transfer.csv`, `t1_june_subsets.csv`, ...). `p1_cost_benefit.csv` và `figures/fig3_shap_beeswarm.*` của bản nộp gốc vẫn giữ; script tạo ra chúng còn trong lịch sử git (commit 4a42670). Bản sửa rev1 dùng `review_iceir_rev1.py`.

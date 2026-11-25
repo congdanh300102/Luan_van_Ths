@@ -26,3 +26,7 @@ env/
 .vscode/
 .idea/
 *.DS_Store
+
+# CatBoost training artefacts
+catboost_info/
+*.bak
