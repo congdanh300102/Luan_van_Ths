@@ -1,0 +1,21 @@
+﻿feature,psi_apr_may,missing_apr,missing_may
+ENG_LOAN_AGE_DAYS,0.04112954280148395,0.0,0.0
+Mã tiền tệ,0.011641469015871899,0.0,0.0
+ENG_DAYS_TO_MATURITY,0.009432975975065991,0.0,0.0
+Lãi phải thu hạch toán nội bảng,0.0016505334157497931,0.0,0.0
+Hình thức cấp tín dụng,0.0004746707103667832,0.0,0.0
+Lãi suất,0.00031290810055333826,0.0,0.0
+Mô tả mục đích sử dụng tiền vay,0.00013903655237481035,0.0,0.0
+ENG_TENOR_ACTUAL_DAYS,4.346727316212298e-05,0.0,0.0
+Hoạt động cấp tín dụng bằng phương tiện điện tử,3.506600662956988e-05,0.0,0.0
+Mã thời hạn cấp tín dụng,2.0197310914368663e-05,0.0,0.0
+Mã chi nhánh TCTD,8.637391451200982e-06,0.0,0.0
+Số dư nợ theo nguyên tệ,7.061008537144286e-06,0.0,0.0
+Phương thức cho vay,6.5845238148929705e-06,0.0004571792043094109,0.00040887966970500826
+Mục đích sử dụng tiền vay phân theo ngành kinh tế,1.4881688534379318e-07,0.0,0.0
+Số lần cơ cấu lại thời hạn trả nợ,1.0384795992744851e-07,0.0,0.0
+ENG_HAS_RESTRUCTURE,3.481236912006484e-09,0.0,0.0
+Nguồn cấp tín dụng,1.0549569425950939e-10,0.0,0.0
+Số tiền nợ lãi cơ cấu,0.0,0.0,0.0
+Số tiền nợ gốc cơ cấu,0.0,0.0,0.0
+Lãi chưa thu hạch toán ngoại bảng,0.0,0.0,0.0

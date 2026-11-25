@@ -1,0 +1,14 @@
+[09:20:16] EXTRA ablation no_offbalance: AP 0.3893 (đầy đủ 0.3932)
+[09:21:23] EXTRA ablation no_both_interest: AP 0.3981 (đầy đủ 0.3932)
+[09:21:28] EXTRA SHAP:
+                            feature  mean_abs_shap
+13                     DPD_INTEREST       1.848152
+0           Số dư nợ theo nguyên tệ       0.583550
+10            ENG_TENOR_ACTUAL_DAYS       0.435730
+3                          Lãi suất       0.430762
+9              ENG_DAYS_TO_MATURITY       0.425859
+8                 ENG_LOAN_AGE_DAYS       0.372136
+7                 Mã chi nhánh TCTD       0.328393
+15                 OVERDUE_INTEREST       0.262295
+1   Lãi phải thu hạch toán nội bảng       0.199465
+14                OVERDUE_PRINCIPAL       0.099640

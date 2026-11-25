@@ -1,0 +1,72 @@
+[22:22:32] === Phần B ===
+[22:23:02] T1 dữ liệu: train 80493, nội bộ 20124, ngoài thời gian 100274; thiếu ENG ngoài TG: {'ENG_LOAN_AGE_DAYS': 0.0, 'ENG_DAYS_TO_MATURITY': 0.0, 'ENG_TENOR_ACTUAL_DAYS': 0.0, 'ENG_HAS_RESTRUCTURE': 0.0}
+[22:23:22] T1 Logistic Regression: nội bộ 0.4029 | ngoài TG 0.3799
+[22:23:24] T1 Decision Tree: nội bộ 0.6566 | ngoài TG 0.5903
+[22:23:31] T1 Random Forest: nội bộ 0.6620 | ngoài TG 0.6608
+[22:23:44] T1 XGBoost: nội bộ 0.6942 | ngoài TG 0.6849
+[22:24:12] T1 LightGBM: nội bộ 0.6935 | ngoài TG 0.6985
+[22:25:29] T1 CatBoost: nội bộ 0.6009 | ngoài TG 0.5812
+[22:25:36] T1 Gain/SHAP: ρ biến 0.962, ρ nhóm 0.886 (p=0.019)
+[22:44:59] T1 lưới XGBoost: biên độ 0.0957
+[22:49:27] T1 lưới LightGBM: biên độ 0.0561
+[22:49:53] T1 PSI lớn nhất: 0.0411
+[22:50:17] B3:
+                                 bien  ... ty_le_nhom2_5_trong_so_duong_pct
+0   Lãi chưa thu hạch toán ngoại bảng  ...                              NaN
+1   Lãi chưa thu hạch toán ngoại bảng  ...                              NaN
+2   Lãi chưa thu hạch toán ngoại bảng  ...                              NaN
+3   Lãi chưa thu hạch toán ngoại bảng  ...                              NaN
+4   Lãi chưa thu hạch toán ngoại bảng  ...                              NaN
+5   Lãi chưa thu hạch toán ngoại bảng  ...                        99.859111
+6     Lãi phải thu hạch toán nội bảng  ...                              NaN
+7     Lãi phải thu hạch toán nội bảng  ...                              NaN
+8     Lãi phải thu hạch toán nội bảng  ...                              NaN
+9     Lãi phải thu hạch toán nội bảng  ...                              NaN
+10    Lãi phải thu hạch toán nội bảng  ...                              NaN
+11    Lãi phải thu hạch toán nội bảng  ...                         3.744992
+
+[12 rows x 5 columns]
+[22:50:17]   Số lần cơ cấu lại thời hạn trả nợ: thiếu 0.00%, trung vị phần quan sát = 0.00
+[22:50:17]   Số tiền nợ gốc cơ cấu: thiếu 0.00%, trung vị phần quan sát = 0.00
+[22:50:17]   Số tiền nợ lãi cơ cấu: thiếu 0.00%, trung vị phần quan sát = 0.00
+[22:50:44] B2 median (hiện tại) LightGBM: val F1m=0.6935 ho F1m=0.6985
+[22:50:58] B2 median (hiện tại) XGBoost: val F1m=0.6942 ho F1m=0.6849
+[22:54:12] B2 median (hiện tại) Random Forest: val F1m=0.6620 ho F1m=0.6608
+[22:54:45] B2 điền 0 LightGBM: val F1m=0.6935 ho F1m=0.6985
+[23:03:08] B2 điền 0 XGBoost: val F1m=0.6942 ho F1m=0.6849
+[23:03:20] B2 điền 0 Random Forest: val F1m=0.6620 ho F1m=0.6608
+[23:31:20] M1 lightgbm full xong
+[23:32:24] M1 lightgbm conservative xong
+[23:32:54] M1 xgboost full xong
+[23:33:20] M1 xgboost conservative xong
+[23:33:20] M1:
+       model        config  ... macro_f1_present  macro_f1_5class
+0   lightgbm          full  ...           0.6935           0.6935
+1   lightgbm          full  ...           0.7144           0.7144
+2   lightgbm          full  ...           0.6349           0.6349
+3   lightgbm          full  ...           0.4987           0.1995
+4   lightgbm          full  ...           0.6985           0.6985
+5   lightgbm  conservative  ...           0.4290           0.4290
+6   lightgbm  conservative  ...           0.4899           0.4899
+7   lightgbm  conservative  ...           0.4043           0.4043
+8   lightgbm  conservative  ...           0.4981           0.1992
+9   lightgbm  conservative  ...           0.4728           0.4728
+10   xgboost          full  ...           0.6942           0.6942
+11   xgboost          full  ...           0.6969           0.6969
+12   xgboost          full  ...           0.6369           0.6369
+13   xgboost          full  ...           0.4996           0.1998
+14   xgboost          full  ...           0.6849           0.6849
+15   xgboost  conservative  ...           0.4230           0.4230
+16   xgboost  conservative  ...           0.4663           0.4663
+17   xgboost  conservative  ...           0.4071           0.4071
+18   xgboost  conservative  ...           0.4985           0.1994
+19   xgboost  conservative  ...           0.4545           0.4545
+
+[20 rows x 6 columns]
+[23:35:01] lưới B Logistic Regression: mặc định 0.4029 tốt nhất 0.4071 biên độ 0.0801 (74s)
+[23:35:10] lưới B Decision Tree: mặc định 0.6566 tốt nhất 0.6614 biên độ 0.0755 (9s)
+[23:36:10] lưới B Random Forest: mặc định 0.6620 tốt nhất 0.6650 biên độ 0.0339 (60s)
+[23:38:31] lưới B XGBoost: mặc định 0.6942 tốt nhất 0.7003 biên độ 0.0957 (141s)
+[23:41:15] lưới B LightGBM: mặc định 0.6935 tốt nhất 0.7007 biên độ 0.0561 (164s)
+[23:53:56] lưới B CatBoost: mặc định 0.6009 tốt nhất 0.6191 biên độ 0.0669 (761s)
+[23:53:56] HOÀN TẤT

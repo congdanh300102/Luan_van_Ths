@@ -20,7 +20,7 @@ Bên cạnh đó, thông tin nhóm nợ mà ngân hàng nhận được, kể c�
     \item Làm sạch dữ liệu, kiểm soát rò rỉ, xây dựng đặc trưng nghiệp vụ và xử lý mất cân bằng lớp.
     \item So sánh sáu mô hình phân loại (Logistic Regression làm mô hình cơ sở, Decision Tree, Random Forest, XGBoost, LightGBM, CatBoost) theo cả chỉ tiêu tổng thể, từng nhóm nợ và sai lệch theo thứ tự.
     \item Xác định nhóm thông tin nghiệp vụ quan trọng và đánh giá độ ổn định của kết quả giải thích.
-    \item Xây dựng và kiểm chứng bài toán dự báo chuyển nhóm nợ trên hai cặp kỳ báo cáo thật.
+    \item Xây dựng và kiểm chứng bài toán dự báo chuyển nhóm nợ trên các kỳ báo cáo liên tiếp của cùng danh mục.
 \end{enumerate}
 
 \medskip
@@ -29,7 +29,7 @@ Bên cạnh đó, thông tin nhóm nợ mà ngân hàng nhận được, kể c�
 \textbf{CH1.} Chiến lược xử lý mất cân bằng lớp ảnh hưởng thế nào đến hiệu năng phân loại nhóm nợ, và mô hình nào phù hợp nhất trên từng bộ dữ liệu?\\[1mm]
 \textbf{CH2.} Nhiều đặc trưng hơn có luôn cải thiện hiệu quả phân loại hay không, và nhóm thông tin nghiệp vụ nào đóng góp nhiều nhất?\\[1mm]
 \textbf{CH3.} Kết luận về mức độ quan trọng của đặc trưng có ổn định khi đổi thước đo giải thích (Gain, SHAP) và khi chuyển sang bộ dữ liệu khác hay không?\\[1mm]
-\textbf{CH4.} Chỉ với thông tin sẵn có tại thời điểm đánh giá, mô hình có dự báo được khoản vay chuyển sang nhóm nợ cao hơn trong tháng tiếp theo hay không, và kết quả có ổn định giữa các kỳ quan sát?
+\textbf{CH4.} Chỉ với thông tin sẵn có tại thời điểm đánh giá, mô hình có dự báo được khoản vay chuyển sang nhóm nợ cao hơn trong tháng tiếp theo hay không, và tín hiệu dự báo dựa vào những thông tin nào?
 }}
 
 \section*{Đối tượng, phạm vi và dữ liệu nghiên cứu}
@@ -38,16 +38,16 @@ Bên cạnh đó, thông tin nhóm nợ mà ngân hàng nhận được, kể c�
 
 Nghiên cứu sử dụng hai bộ dữ liệu tín dụng đã ẩn danh của cùng một ngân hàng thương mại tại Việt Nam; tên ngân hàng và thông tin định danh trực tiếp không được công bố.
 \begin{itemize}
-    \item \textbf{Bộ A} (\path{Data_credit_rating_VN.xlsx}): 27.001 khoản vay, 21 cột, là ảnh chụp tại một thời điểm.
-    \item \textbf{Bộ B} (Thông tin tín dụng): ba kỳ báo cáo liên tiếp 30/04/2026, 31/05/2026 và 30/06/2026 của cùng một danh mục, mỗi kỳ khoảng 100 nghìn khế ước và 33 cột.
+    \item \textbf{Bộ A} (dữ liệu xếp hạng tín dụng): 27.001 khoản vay, 21 cột, là ảnh chụp tại một thời điểm.
+    \item \textbf{Bộ B} (Thông tin tín dụng): hai kỳ báo cáo liên tiếp 30/04/2026 và 31/05/2026 của cùng một danh mục, mỗi kỳ khoảng 100 nghìn khế ước và 33 cột.
 \end{itemize}
 Hai bộ khác nhau về quy mô, cấu trúc biến và phân bố nhóm nợ, nên kết quả giữa hai bộ chỉ được đối chiếu về xu hướng. Bài toán dự báo chuyển nhóm chỉ thực hiện trên bộ B, bộ duy nhất có nhiều kỳ báo cáo.
 
 \section*{Phương pháp và ý nghĩa của nghiên cứu}
 
-Luận văn kết hợp tổng quan tài liệu với phương pháp định lượng: làm sạch và xây dựng đặc trưng, huấn luyện sáu mô hình với bốn chiến lược xử lý mất cân bằng, đánh giá ngoài mẫu trên tập kiểm định và trên kỳ báo cáo sau, giải thích mô hình bằng Gain và SHAP. Với bài toán chuyển nhóm, ba kỳ của bộ B được ghép thành hai cặp kỳ độc lập theo khóa khế ước; mô hình được đánh giá bằng kiểm định chéo lặp và kiểm định chuyển giao giữa hai cặp. Chi tiết được trình bày ở Chương 2.
+Luận văn kết hợp tổng quan tài liệu với phương pháp định lượng: làm sạch và xây dựng đặc trưng, huấn luyện sáu mô hình với bốn chiến lược xử lý mất cân bằng, đánh giá ngoài mẫu trên tập kiểm định và trên kỳ báo cáo sau, giải thích mô hình bằng Gain và SHAP. Với bài toán chuyển nhóm, hai kỳ của bộ B được ghép theo khóa khế ước thành một cặp kỳ; mô hình được đánh giá bằng kiểm định chéo lặp, kiểm định thống kê có hiệu chỉnh và thí nghiệm loại biến. Chi tiết được trình bày ở Chương 2.
 
-Về khoa học, luận văn bổ sung bằng chứng thực nghiệm về phân loại năm nhóm nợ có thứ tự trên dữ liệu ngân hàng Việt Nam, đối chiếu kết quả giải thích giữa hai bộ dữ liệu độc lập và đánh giá khả năng dự báo chuyển nhóm trên hai cặp kỳ thật thay vì một cặp. Luận văn không đề xuất thuật toán mới; đóng góp nằm ở thiết kế bài toán và tổ chức kiểm chứng thực nghiệm (Mục~\ref{sec:ch1-gaps}).
+Về khoa học, luận văn bổ sung bằng chứng thực nghiệm về phân loại năm nhóm nợ có thứ tự trên dữ liệu ngân hàng Việt Nam, đối chiếu kết quả giải thích giữa hai bộ dữ liệu độc lập và xây dựng bài toán dự báo chuyển nhóm nợ từ các kỳ báo cáo liên tiếp của cùng danh mục. Luận văn không đề xuất thuật toán mới; đóng góp nằm ở thiết kế bài toán và tổ chức kiểm chứng thực nghiệm (Mục~\ref{sec:ch1-gaps}).
 
 Về thực tiễn, kết quả giúp ngân hàng xác định nhóm dữ liệu cần duy trì chất lượng, nhận diện điều kiện dữ liệu cần có trước khi xây dựng công cụ cảnh báo sớm nội bộ và thiết kế ngưỡng cảnh báo theo năng lực rà soát. Mô hình chỉ đóng vai trò hỗ trợ, không thay thế quyết định của cán bộ tín dụng hay quy trình phân loại nợ theo quy định.
 

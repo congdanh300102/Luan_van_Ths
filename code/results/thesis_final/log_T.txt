@@ -1,0 +1,48 @@
+[22:22:31] === Phần T ===
+[22:23:00] T: khớp 98968, bị loại 1649, khoản vay mới ở kỳ 05: 1306
+[22:23:37] T2: 98968 khoản vay, 265 sự kiện
+[22:24:37] T2 Logistic Regression (none): AP 0.0050±0.0008 ROC 0.6210 (58s)
+[22:28:00] T2 Logistic Regression (class_weight): AP 0.0048±0.0008 ROC 0.6244 (203s)
+[22:29:11] T2 Logistic Regression (custom): AP 0.0050±0.0009 ROC 0.6192 (71s)
+[22:32:09] T2 Logistic Regression (smote_class_weight): AP 0.0048±0.0008 ROC 0.6260 (178s)
+[22:32:50] T2 Decision Tree (none): AP 0.0759±0.0353 ROC 0.6562 (41s)
+[22:33:33] T2 Decision Tree (class_weight): AP 0.0175±0.0089 ROC 0.6643 (43s)
+[22:34:18] T2 Decision Tree (custom): AP 0.0789±0.0396 ROC 0.6879 (45s)
+[22:37:38] T2 Decision Tree (smote_class_weight): AP 0.0229±0.0183 ROC 0.6858 (200s)
+[22:40:52] T2 Random Forest (none): AP 0.1666±0.0481 ROC 0.8480 (195s)
+[22:43:42] T2 Random Forest (class_weight): AP 0.1317±0.0430 ROC 0.8291 (169s)
+[22:46:43] T2 Random Forest (custom): AP 0.1603±0.0477 ROC 0.8457 (181s)
+[22:49:23] T2 Random Forest (smote_class_weight): AP 0.1372±0.0476 ROC 0.8327 (160s)
+[22:54:46] T2 XGBoost (none): AP 0.1787±0.0459 ROC 0.8448 (323s)
+[23:08:00] T2 XGBoost (class_weight): AP 0.1563±0.0457 ROC 0.8271 (794s)
+[23:09:36] T2 XGBoost (custom): AP 0.1665±0.0468 ROC 0.8363 (97s)
+[23:11:25] T2 XGBoost (smote_class_weight): AP 0.1610±0.0461 ROC 0.8319 (109s)
+[23:14:55] T2 LightGBM (none): AP 0.1647±0.0469 ROC 0.8266 (209s)
+[23:17:07] T2 LightGBM (class_weight): AP 0.1478±0.0445 ROC 0.8236 (133s)
+[23:19:16] T2 LightGBM (custom): AP 0.1746±0.0477 ROC 0.8409 (129s)
+[23:21:33] T2 LightGBM (smote_class_weight): AP 0.1668±0.0484 ROC 0.8303 (137s)
+[23:33:25] T2 CatBoost (none): AP 0.1266±0.0440 ROC 0.8326 (713s)
+[23:33:26] T2 kiểm định:
+        reference                    comparator  ...  p_wilcoxon_naive        p_holm
+0  XGBoost (none)             LightGBM (custom)  ...      3.230278e-01  7.060778e-01
+1  XGBoost (none)          Random Forest (none)  ...      4.011463e-05  4.212674e-01
+2  XGBoost (none)               CatBoost (none)  ...      1.776357e-15  4.644890e-04
+3  XGBoost (none)        Decision Tree (custom)  ...      1.776357e-15  2.576508e-06
+4  XGBoost (none)  Logistic Regression (custom)  ...      1.776357e-15  9.524405e-09
+
+[5 rows x 7 columns]
+[23:33:27] T2 Recall@k:
+   k_pct  n_reviewed  found    recall  precision       lift
+0      1         198     16  0.301887   0.080808  30.188679
+1      2         396     21  0.396226   0.053030  19.811321
+2      5         990     28  0.528302   0.028283  10.566038
+3     10        1979     35  0.660377   0.017686   6.603774
+AP theo loại: [{'type': 'all', 'events': 53, 'ap': 0.1743696749429074, 'base': 0.0026775790643629384}, {'type': '1to2', 'events': 44, 'ap': 0.15888391483369205, 'base': 0.002223907000252717}, {'type': 'rarer', 'events': 9, 'ap': 0.07860101927661754, 'base': 0.00045569620253164554}]
+[23:35:15] T2 ablation XGBoost no_offbalance: AP 0.1708 (đầy đủ 0.1787, p=0.228)
+[23:38:09] T2 ablation XGBoost no_both_interest: AP 0.1285 (đầy đủ 0.1787, p=2.83e-05)
+[23:44:40] T2 ablation LightGBM no_offbalance: AP 0.1700 (đầy đủ 0.1746, p=0.575)
+[23:54:41] T2 ablation LightGBM no_both_interest: AP 0.1219 (đầy đủ 0.1746, p=0.000241)
+[23:57:00] T2 ablation Random Forest no_offbalance: AP 0.1627 (đầy đủ 0.1666, p=0.31)
+[23:59:15] T2 ablation Random Forest no_both_interest: AP 0.1221 (đầy đủ 0.1666, p=1.39e-05)
+[23:59:16] T2 Recall@k không biến lãi: [{'k_pct': 1, 'found': 11, 'recall': np.float64(0.20754716981132076)}, {'k_pct': 2, 'found': 14, 'recall': np.float64(0.2641509433962264)}, {'k_pct': 5, 'found': 18, 'recall': np.float64(0.33962264150943394)}, {'k_pct': 10, 'found': 25, 'recall': np.float64(0.4716981132075472)}]
+[23:59:16] HOÀN TẤT

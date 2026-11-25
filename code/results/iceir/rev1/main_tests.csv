@@ -1,0 +1,9 @@
+﻿a,b,mean_diff,p_corrected
+XGB + overdue fields + G_T,Rule: distance to next threshold,0.08539702720653491,0.004345172046303278
+XGB + overdue fields,Rule: distance to next threshold,-0.0028603134013693416,0.911958117407612
+"XGB, 20 features + G_T",Rule: distance to next threshold,-0.1624603941515847,6.4467286993250985e-09
+"XGB, 20 features",Rule: distance to next threshold,-0.1797586469151103,2.594936308968776e-10
+XGB + overdue fields + G_T,XGB + overdue fields,0.08825734060790422,5.401900635003059e-06
+XGB + overdue fields + G_T + rule score,XGB + overdue fields + G_T,0.12591923380715178,2.4589588101275936e-08
+XGB + overdue fields + G_T,XGB pairwise ranking (full information),0.11514595223149537,0.011962349292377212
+XGB + overdue fields + G_T,WOE-logistic scorecard (full information),0.26441273983516006,1.0891336256261707e-10

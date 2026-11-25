@@ -21,10 +21,26 @@ def _woe_iv_series(x: pd.Series, bad: pd.Series, bins: int = 10) -> pd.DataFrame
     df = pd.DataFrame({"x": x, "bad": bad.astype(int)})
 
     if pd.api.types.is_numeric_dtype(x):
-        try:
-            df["bucket"] = pd.qcut(x, q=bins, duplicates="drop").astype(str)
-        except Exception:
-            df["bucket"] = x.astype(str)
+        # Biến số: (1) giá trị thiếu thành một khoảng riêng; (2) mỗi "điểm khối"
+        # (giá trị chiếm ít nhất 1/bins số quan sát, điển hình là 0 ở các biến
+        # lãi/cơ cấu) thành một khoảng riêng; (3) phần còn lại chia theo phân vị.
+        # Bản cũ gọi thẳng pd.qcut(duplicates="drop"): với biến có 93,6% giá trị
+        # bằng 0, mọi ngưỡng phân vị trùng nhau nên toàn bộ quan sát bị dồn vào
+        # MỘT khoảng và IV bằng 0 dù biến phân tách rất mạnh.
+        bucket = pd.Series("MISSING", index=x.index, dtype=object)
+        obs = x.notna()
+        freq = x[obs].value_counts(normalize=True)
+        mass = set(freq[freq >= 1.0 / bins].index)
+        is_mass = obs & x.isin(mass)
+        bucket[is_mass] = "=" + x[is_mass].astype(str)
+        rest = obs & ~is_mass
+        if rest.sum() > 0:
+            n_rest_bins = max(1, int(round(bins * rest.mean())))
+            try:
+                bucket[rest] = pd.qcut(x[rest], q=n_rest_bins, duplicates="drop").astype(str)
+            except Exception:
+                bucket[rest] = x[rest].astype(str)
+        df["bucket"] = bucket
     else:
         df["bucket"] = x.fillna("MISSING").astype(str)
 

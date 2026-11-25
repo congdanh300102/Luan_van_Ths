@@ -1,0 +1,25 @@
+[15:51:38] LRN fold 5/50
+[15:53:04] LRN fold 10/50
+[15:54:30] LRN fold 15/50
+[15:55:57] LRN fold 20/50
+[15:57:26] LRN fold 25/50
+[16:06:03] LRN fold 30/50
+[16:07:32] LRN fold 35/50
+[16:12:10] LRN fold 40/50
+[16:35:19] LRN fold 45/50
+[16:36:48] LRN fold 50/50
+[16:36:48] LRN:
+                 model strategy    mean     std
+1             LightGBM   custom  0.3232  0.0564
+4        Random Forest     none  0.3099  0.0522
+5              XGBoost     none  0.2915  0.0588
+0        Decision Tree   custom  0.2526  0.0627
+3  Logistic Regression   custom  0.0055  0.0039
+           reference                    comparator  ...  p_wilcoxon_naive  p_holm
+0  LightGBM (custom)          Random Forest (none)  ...            0.0363  0.5580
+1  LightGBM (custom)                XGBoost (none)  ...            0.0000  0.2941
+2  LightGBM (custom)        Decision Tree (custom)  ...            0.0000  0.0514
+3  LightGBM (custom)  Logistic Regression (custom)  ...            0.0000  0.0000
+
+[4 rows x 7 columns]
+[16:36:48] HOÀN TẤT

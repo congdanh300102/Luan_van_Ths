@@ -1,6 +1,7 @@
 \chapter*{PHỤ LỤC}
 \addcontentsline{toc}{chapter}{Phụ lục}
 \renewcommand{\thesection}{P\arabic{section}}
+\renewcommand{\theHsection}{P\arabic{section}}% nhãn hyperref riêng, tránh trùng với các mục của Chương 4
 \setcounter{section}{0}
 % Bảng và hình của phụ lục đánh số theo mục (P1.1, P1.2, P2.1…) để không nối
 % tiếp dãy số của Chương 4.
@@ -42,6 +43,8 @@ OpenPyXL, Pickle & Đọc/ghi Excel và lưu mô hình đã huấn luyện.\\
 
 \section{Chi tiết khảo sát và làm sạch dữ liệu}
 \label{app:eda}
+
+Bộ A là tệp \path{Data_credit_rating_VN.xlsx}; bộ B gồm hai tệp \texttt{Thông tin tín dụng 20260430.xlsx} và \texttt{Thông tin tín dụng 20260531.xlsx}, đặt tên theo ngày chốt dữ liệu của từng kỳ.
 
 \begin{table}[H]
 \centering
@@ -109,7 +112,7 @@ Biến 1 & Biến 2 & $r$\\
 
 \begin{table}[H]
 \centering
-\caption{Thống kê mô tả, tỷ lệ thiếu và ngoại lệ IQR --- biến số của bộ dữ liệu B (kỳ 20260430)}
+\caption{Thống kê mô tả, tỷ lệ thiếu và ngoại lệ IQR --- biến số của bộ dữ liệu B (kỳ 30/04/2026)}
 \label{tab:eda-b-describe}
 \label{tab:eda-b-missing}
 \label{tab:eda-b-describe-eng}
@@ -142,6 +145,7 @@ Biến & Trung bình & Độ lệch chuẩn & Trung vị & Thiếu (\%) & Ngoạ
 \end{figure}
 
 \section{Information Value đầy đủ}
+\label{app:iv}
 
 \begin{table}[H]
 \centering
@@ -152,18 +156,18 @@ Biến & Trung bình & Độ lệch chuẩn & Trung vị & Thiếu (\%) & Ngoạ
 Biến & IV & Mức\\
 \hline
 \texttt{\seqsplit{DAYS\_TO\_MATURITY}} & 4,5541 & Nghi ngờ ($>1,0$)\\
+\texttt{\seqsplit{LOAN\_TENURE\_DAYS}} & 1,9981 & Nghi ngờ ($>1,0$)\\
 \texttt{\seqsplit{CURRMIACCTTYPCD}} & 1,9921 & Nghi ngờ ($>1,0$)\\
-\texttt{\seqsplit{LOAN\_TENURE\_DAYS}} & 1,9410 & Nghi ngờ ($>1,0$)\\
 \texttt{\seqsplit{MUCDICHVAY}} & 1,4141 & Nghi ngờ ($>1,0$)\\
-\texttt{\seqsplit{UTIL\_RATE}} & 1,3334 & Nghi ngờ ($>1,0$)\\
+\texttt{\seqsplit{UTIL\_RATE}} & 1,2513 & Nghi ngờ ($>1,0$)\\
 \texttt{\seqsplit{MJACCTTYPCD}} & 0,9695 & Rất mạnh\\
-\texttt{LAISUAT} & 0,7851 & Rất mạnh\\
+\texttt{\seqsplit{LAISUAT}} & 0,7540 & Rất mạnh\\
 \texttt{\seqsplit{BASE\_BAL}} & 0,5356 & Rất mạnh\\
-\texttt{\seqsplit{PARENTORGNBR}} & 0,3201 & Mạnh\\
 \texttt{\seqsplit{CURR\_BAL}} & 0,2585 & Trung bình\\
-\texttt{ORGNBR} & 0,1820 & Trung bình\\
-\texttt{SEX} & 0,0081 & Vô dụng\\
-\texttt{LOAIKH} & 0,0000 & Vô dụng\\
+\texttt{\seqsplit{PARENTORGNBR}} & 0,2392 & Trung bình\\
+\texttt{\seqsplit{ORGNBR}} & 0,1820 & Trung bình\\
+\texttt{\seqsplit{SEX}} & 0,0081 & Vô dụng\\
+\texttt{\seqsplit{LOAIKH}} & 0,0008 & Vô dụng\\
 \hline
 \end{tabular}
 \end{table}
@@ -172,33 +176,35 @@ Biến & IV & Mức\\
 \centering
 \caption{Information Value của 20 đặc trưng --- bộ dữ liệu B}
 \label{tab:iv-b-full}
-\begin{tabular}{|l|r|l|}
+\begin{tabular}{|p{9cm}|r|l|}
 \hline
 Biến & IV & Mức\\
 \hline
+\texttt{Lãi chưa thu hạch toán ngoại bảng} & 5,0901 & Nghi ngờ ($>1,0$)\\
 \texttt{\seqsplit{ENG\_LOAN\_AGE\_DAYS}} & 1,1170 & Nghi ngờ ($>1,0$)\\
-\texttt{Lãi phải thu hạch toán nội bảng} & 0,5420 & Rất mạnh\\
-\texttt{\seqsplit{ENG\_TENOR\_ACTUAL\_DAYS}} & 0,3793 & Mạnh\\
+\texttt{Lãi phải thu hạch toán nội bảng} & 0,8534 & Rất mạnh\\
+\texttt{\seqsplit{ENG\_TENOR\_ACTUAL\_DAYS}} & 0,3709 & Mạnh\\
 \texttt{Mô tả mục đích sử dụng tiền vay} & 0,3611 & Mạnh\\
 \texttt{Lãi suất} & 0,3130 & Mạnh\\
+\texttt{Mã thời hạn cấp tín dụng} & 0,2928 & Trung bình\\
 \texttt{\seqsplit{ENG\_DAYS\_TO\_MATURITY}} & 0,2549 & Trung bình\\
 \texttt{Số dư nợ theo nguyên tệ} & 0,1892 & Trung bình\\
-\texttt{Phương thức cho vay} & 0,0732 & Yếu\\
-\texttt{Số tiền nợ gốc cơ cấu} & 0,0626 & Yếu\\
-\texttt{Số lần cơ cấu lại thời hạn trả nợ} & 0,0620 & Yếu\\
-\texttt{Mục đích sử dụng tiền vay phân theo ngành kinh tế} & 0,0620 & Yếu\\
+\texttt{Phương thức cho vay} & 0,1417 & Trung bình\\
+\texttt{Số tiền nợ gốc cơ cấu} & 0,0640 & Yếu\\
+\texttt{Số lần cơ cấu lại thời hạn trả nợ} & 0,0487 & Yếu\\
+\texttt{\seqsplit{ENG\_HAS\_RESTRUCTURE}} & 0,0487 & Yếu\\
+\texttt{Mục đích sử dụng tiền vay phân theo ngành kinh tế} & 0,0435 & Yếu\\
 \texttt{Mã chi nhánh TCTD} & 0,0415 & Yếu\\
-\texttt{Số tiền nợ lãi cơ cấu} & 0,0320 & Yếu\\
-\texttt{Mã thời hạn cấp tín dụng} & 0,0107 & Vô dụng\\
+\texttt{Số tiền nợ lãi cơ cấu} & 0,0322 & Yếu\\
 \texttt{Mã tiền tệ} & 0,0039 & Vô dụng\\
-\texttt{\seqsplit{ENG\_HAS\_RESTRUCTURE}} & 0,0000 & Vô dụng\\
-\texttt{Hình thức cấp tín dụng} & 0,0000 & Vô dụng\\
-\texttt{Lãi chưa thu hạch toán ngoại bảng} & 0,0000 & Vô dụng\\
+\texttt{Hình thức cấp tín dụng} & 0,0010 & Vô dụng\\
+\texttt{Hoạt động cấp tín dụng bằng phương tiện điện tử} & 0,0001 & Vô dụng\\
 \texttt{Nguồn cấp tín dụng} & 0,0000 & Vô dụng\\
-\texttt{Hoạt động cấp tín dụng bằng phương tiện điện tử} & 0,0000 & Vô dụng\\
 \hline
 \end{tabular}
 \end{table}
+
+IV ở Chương 2 được tính trên toàn bộ mẫu để mô tả dữ liệu. Vì IV là đại lượng học từ nhãn, luận văn tính lại \emph{chỉ trên tập huấn luyện} cho cả hai bộ để kiểm tra ảnh hưởng của việc dùng cả phần kiểm định. Chênh lệch tuyệt đối lớn nhất là 0,090 (biến lãi chưa thu ngoại bảng của bộ B, từ 5,09 lên 5,18), và không biến nào đổi mức phân loại quanh ngưỡng cảnh báo 1,0. Điều này hợp lý vì IV chỉ đóng vai trò mô tả và sàng lọc rò rỉ, không được dùng làm tiêu chí chọn biến.
 
 \section{Ví dụ hồ sơ trước và sau xử lý}
 
@@ -320,11 +326,11 @@ CatBoost & depth$\in\{4,6,8\}$ $\times$ learning\_rate$\in\{0{,}03;0{,}1\}$ $\ti
 \cline{2-11}
  & 1 & 2 & 3 & 4 & 5 & 1 & 2 & 3 & 4 & 5\\
 \hline
-1 & \textbf{4.127} & 33 & 13 & 11 & 10 & \textbf{4.125} & 31 & 16 & 13 & 9\\
-2 & 177 & \textbf{63} & 11 & 3 & 3 & 182 & \textbf{62} & 9 & 3 & 1\\
-3 & 56 & 8 & \textbf{48} & 8 & 1 & 57 & 9 & \textbf{47} & 7 & 1\\
-4 & 55 & 8 & 4 & \textbf{76} & 14 & 60 & 4 & 5 & \textbf{76} & 12\\
-5 & 29 & 5 & 1 & 29 & \textbf{608} & 33 & 3 & 2 & 31 & \textbf{603}\\
+1 & \textbf{4.127} & 33 & 13 & 11 & 10 & \textbf{4.121} & 37 & 16 & 12 & 8\\
+2 & 177 & \textbf{63} & 11 & 3 & 3 & 177 & \textbf{67} & 9 & 3 & 1\\
+3 & 56 & 8 & \textbf{48} & 8 & 1 & 53 & 12 & \textbf{45} & 10 & 1\\
+4 & 55 & 8 & 4 & \textbf{76} & 14 & 57 & 6 & 6 & \textbf{74} & 14\\
+5 & 29 & 5 & 1 & 29 & \textbf{608} & 33 & 2 & 2 & 34 & \textbf{601}\\
 \hline
 \end{tabular}
 \end{table}
@@ -337,99 +343,78 @@ CatBoost & depth$\in\{4,6,8\}$ $\times$ learning\_rate$\in\{0{,}03;0{,}1\}$ $\ti
 \hline
 Biến & Trung bình $|\phi_j|$ & SHAP (\%) & Gain (\%)\\
 \hline
-\texttt{\seqsplit{DAYS\_TO\_MATURITY}} & 0,8991 & 31,3 & 45,0\\
-\texttt{\seqsplit{UTIL\_RATE}} & 0,3247 & 11,3 & 6,3\\
-\texttt{\seqsplit{LOAN\_TENURE\_DAYS}} & 0,2760 & 9,6 & 11,4\\
-\texttt{\seqsplit{CURR\_BAL}} & 0,2535 & 8,8 & 4,1\\
-\texttt{LAISUAT} & 0,2527 & 8,8 & 6,4\\
-\texttt{\seqsplit{PARENTORGNBR}} & 0,2114 & 7,4 & 6,0\\
-\texttt{ORGNBR} & 0,2113 & 7,4 & 6,6\\
-\texttt{\seqsplit{BASE\_BAL}} & 0,1914 & 6,7 & 5,9\\
-\texttt{\seqsplit{CURRMIACCTTYPCD}} & 0,1591 & 5,5 & 5,3\\
-\texttt{\seqsplit{MUCDICHVAY}} & 0,0669 & 2,3 & 2,3\\
-\texttt{\seqsplit{MJACCTTYPCD}} & 0,0221 & 0,8 & 0,7\\
+\texttt{\seqsplit{DAYS\_TO\_MATURITY}} & 0,9199 & 31,9 & 46,6\\
+\texttt{\seqsplit{UTIL\_RATE}} & 0,3304 & 11,4 & 6,6\\
+\texttt{\seqsplit{LOAN\_TENURE\_DAYS}} & 0,2605 & 9,0 & 8,9\\
+\texttt{\seqsplit{CURR\_BAL}} & 0,2593 & 9,0 & 4,2\\
+\texttt{\seqsplit{LAISUAT}} & 0,2541 & 8,8 & 6,4\\
+\texttt{\seqsplit{PARENTORGNBR}} & 0,2175 & 7,5 & 6,4\\
+\texttt{\seqsplit{ORGNBR}} & 0,2121 & 7,3 & 6,2\\
+\texttt{\seqsplit{BASE\_BAL}} & 0,1837 & 6,4 & 6,0\\
+\texttt{\seqsplit{CURRMIACCTTYPCD}} & 0,1638 & 5,7 & 5,5\\
+\texttt{\seqsplit{MUCDICHVAY}} & 0,0659 & 2,3 & 2,3\\
+\texttt{\seqsplit{MJACCTTYPCD}} & 0,0189 & 0,7 & 0,7\\
 \hline
 \end{tabular}
 \end{table}
 
 \begin{table}[H]
 \centering
-\caption{SHAP (trung bình $|\phi_j|$) và Gain từng biến --- LightGBM 20 biến, bộ dữ liệu B}
+\caption{Tỷ trọng SHAP và Gain từng biến --- LightGBM 20 biến, bộ dữ liệu B}
 \label{tab:shap-b-top15}
 \begin{tabular}{|l|r|r|}
 \hline
-Biến & $|\phi_j|$ & Gain (\%)\\
+Biến & SHAP (\%) & Gain (\%)\\
 \hline
-\texttt{Lãi chưa thu hạch toán ngoại bảng} & 1,0443 & 54,8\\
-\texttt{\seqsplit{ENG\_LOAN\_AGE\_DAYS}} & 0,8622 & 8,4\\
-\texttt{Số dư nợ theo nguyên tệ} & 0,2508 & 9,3\\
-\texttt{\seqsplit{ENG\_DAYS\_TO\_MATURITY}} & 0,2329 & 8,9\\
-\texttt{Lãi suất} & 0,2161 & 4,0\\
-\texttt{\seqsplit{ENG\_TENOR\_ACTUAL\_DAYS}} & 0,2010 & 3,7\\
-\texttt{Mã chi nhánh TCTD} & 0,1842 & 4,3\\
-\texttt{Lãi phải thu hạch toán nội bảng} & 0,1599 & 5,1\\
-Mục đích sử dụng tiền vay theo ngành kinh tế & 0,0626 & 0,2\\
-Mô tả mục đích sử dụng tiền vay & 0,0447 & 0,4\\
-Mã thời hạn cấp tín dụng & 0,0364 & 0,5\\
-Phương thức cho vay & 0,0328 & 0,1\\
-Tám biến còn lại & $\leq 0,010$ & $\leq 0,1$\\
+\texttt{Lãi chưa thu hạch toán ngoại bảng} & 31,3 & 54,8\\
+\texttt{\seqsplit{ENG\_LOAN\_AGE\_DAYS}} & 25,6 & 8,4\\
+\texttt{\seqsplit{ENG\_DAYS\_TO\_MATURITY}} & 7,2 & 8,9\\
+\texttt{Số dư nợ theo nguyên tệ} & 7,1 & 9,2\\
+\texttt{Lãi suất} & 7,0 & 3,9\\
+\texttt{\seqsplit{ENG\_TENOR\_ACTUAL\_DAYS}} & 6,0 & 3,7\\
+\texttt{Mã chi nhánh TCTD} & 5,3 & 4,4\\
+\texttt{Lãi phải thu hạch toán nội bảng} & 4,7 & 5,1\\
+Mục đích sử dụng tiền vay phân theo ngành kinh tế & 2,2 & 0,2\\
+\texttt{Mô tả mục đích sử dụng tiền vay} & 1,3 & 0,4\\
+\texttt{Mã thời hạn cấp tín dụng} & 1,3 & 0,5\\
+\texttt{Phương thức cho vay} & 0,6 & 0,1\\
+Tám biến còn lại & $\leq 0,3$ & $\leq 0,1$\\
 \hline
 \end{tabular}
 \end{table}
 
 \begin{table}[H]
 \centering
-\caption{Ảnh hưởng của việc sửa lỗi điền khuyết ba biến cơ cấu nợ --- bộ dữ liệu B, Macro-F1}
+\caption{Điền trung vị so với điền 0 cho ba biến cơ cấu nợ --- bộ dữ liệu B, Macro-F1}
 \label{tab:restructure-impute}
 \begin{tabular}{|l|c|c||c|c|}
 \hline
 \multirow{2}{*}{Mô hình} & \multicolumn{2}{c||}{Tập kiểm định nội bộ} & \multicolumn{2}{c|}{Tập ngoài thời gian}\\
 \cline{2-5}
- & Trung vị (lỗi) & Điền 0 (đã sửa) & Trung vị (lỗi) & Điền 0 (đã sửa)\\
+ & Trung vị & Điền 0 & Trung vị & Điền 0\\
 \hline
-LightGBM & 0,6930 & 0,6989 & 0,6960 & 0,7023\\
-XGBoost & 0,6846 & 0,6797 & 0,6833 & 0,6826\\
-Random Forest & 0,6587 & 0,6610 & 0,6623 & 0,6618\\
-\hline
-\end{tabular}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Ma trận chuyển nhóm nợ của cặp 2 (20260531 $\to$ 20260630)}
-\label{tab:transition-matrix-2}
-\begin{tabular}{|c|r|r|r|r|r|}
-\hline
-\multirow{2}{*}{Nhóm tại $T$} & \multicolumn{5}{c|}{Nhóm tại $T+h$}\\
-\cline{2-6}
- & 1 & 2 & 3 & 4 & 5\\
-\hline
-1 & 86.719 & \textbf{206} & 0 & 0 & 0\\
-2 & 143 & 6.151 & \textbf{8} & 0 & 0\\
-3 & 5 & 0 & 970 & \textbf{12} & 0\\
-4 & 0 & 0 & 0 & 1.389 & \textbf{32}\\
-5 & 3 & 0 & 0 & 0 & 2.982\\
+LightGBM & 0,6954 & 0,6935 & 0,6982 & 0,6985\\
+XGBoost & 0,6941 & 0,6942 & 0,6861 & 0,6849\\
+Random Forest & 0,6568 & 0,6620 & 0,6631 & 0,6608\\
 \hline
 \end{tabular}
 \end{table}
 
 \begin{table}[H]
 \centering
-\caption{Khoản vay bị loại do không có mặt trên tập ngoài thời gian, theo nhóm nợ tại $T$}
+\caption{Khoản vay kỳ 30/04/2026 không có mặt ở kỳ 31/05/2026, theo nhóm nợ tại $T$}
 \label{tab:transition-exclusion}
-\begin{tabular}{|c|r|r||r|r|}
+\begin{tabular}{|c|r|r|r|}
 \hline
-\multirow{2}{*}{Nhóm tại $T$} & \multicolumn{2}{c||}{Cặp 1} & \multicolumn{2}{c|}{Cặp 2}\\
-\cline{2-5}
- & Bị loại & Tỷ lệ loại trong nhóm (\%) & Bị loại & Tỷ lệ loại trong nhóm (\%)\\
+Nhóm tại $T$ & Số khoản vay & Bị loại & Tỷ lệ loại trong nhóm (\%)\\
 \hline
-1 & 1.604 & 1,80 & 1.602 & 1,81\\
-2 & 29 & 0,46 & 37 & 0,58\\
-3 & 2 & 0,20 & 4 & 0,40\\
-4 & 4 & 0,28 & 0 & 0,00\\
-5 & 10 & 0,34 & 11 & 0,37\\
+1 & 88.875 & 1.604 & 1,80\\
+2 & 6.321 & 29 & 0,46\\
+3 & 998 & 2 & 0,20\\
+4 & 1.446 & 4 & 0,28\\
+5 & 2.977 & 10 & 0,34\\
 \hline
-Tổng & 1.649 & & 1.654 & \\
+Tổng & 100.617 & 1.649 & 1,64\\
 \hline
 \end{tabular}
 \end{table}

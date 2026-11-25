@@ -1,0 +1,63 @@
+[16:48:41] OFF:
+snapshot  group  2026-04-30  2026-05-31  2026-06-30
+0             1        0.01        1.23        2.45
+1             2       21.55       19.55       23.01
+2             3       78.06       78.61       80.63
+3             4       93.02       93.53       94.50
+4             5       97.18       97.43       98.77
+[16:59:01] T1J:
+       model        config                   subset  ...  groups macro_f1  accuracy
+0   lightgbm          full   June: seen (Apr train)  ...   12345   0.6283    0.8866
+1   lightgbm          full  June: unseen (Apr test)  ...   12345   0.5761    0.8811
+2   lightgbm          full       June: not in April  ...      12   0.4962    0.9849
+3   lightgbm          full                June: all  ...   12345   0.6177    0.8880
+4   lightgbm  conservative   June: seen (Apr train)  ...   12345   0.4366    0.8663
+5   lightgbm  conservative  June: unseen (Apr test)  ...   12345   0.3863    0.8606
+6   lightgbm  conservative       June: not in April  ...      12   0.4965    0.9861
+7   lightgbm  conservative                June: all  ...   12345   0.4264    0.8682
+8    xgboost          full   June: seen (Apr train)  ...   12345   0.6255    0.9084
+9    xgboost          full  June: unseen (Apr test)  ...   12345   0.5781    0.9017
+10   xgboost          full       June: not in April  ...      12   0.4988    0.9952
+11   xgboost          full                June: all  ...   12345   0.6160    0.9092
+12   xgboost  conservative   June: seen (Apr train)  ...   12345   0.4124    0.8711
+13   xgboost  conservative  June: unseen (Apr test)  ...   12345   0.3881    0.8674
+14   xgboost  conservative       June: not in April  ...      12   0.4969    0.9877
+15   xgboost  conservative                June: all  ...   12345   0.4075    0.8733
+
+[16 rows x 7 columns]
+[16:59:04] SH: đã vẽ beeswarm
+[16:59:21] CB p1 (tổng phần tăng dự phòng 27,938):
+                       method  k_pct  ...  share_of_total  breakeven_cost_per_review
+0    XGBoost + overdue fields      1  ...           0.716                     20.218
+1    XGBoost + overdue fields      2  ...           0.806                     11.382
+2    XGBoost + overdue fields      5  ...           0.843                      4.757
+3    XGBoost + overdue fields     10  ...           0.929                      2.621
+4  Distance to next threshold      1  ...           0.504                     14.222
+5  Distance to next threshold      2  ...           0.634                      8.957
+6  Distance to next threshold      5  ...           0.668                      3.770
+7  Distance to next threshold     10  ...           0.676                      1.909
+
+[8 rows x 5 columns]
+[16:59:37] CB p2 (tổng phần tăng dự phòng 53,433):
+                       method  k_pct  ...  share_of_total  breakeven_cost_per_review
+0    XGBoost + overdue fields      1  ...           0.664                     35.989
+1    XGBoost + overdue fields      2  ...           0.702                     19.012
+2    XGBoost + overdue fields      5  ...           0.949                     10.286
+3    XGBoost + overdue fields     10  ...           0.959                      5.196
+4  Distance to next threshold      1  ...           0.001                      0.040
+5  Distance to next threshold      2  ...           0.114                      3.099
+6  Distance to next threshold      5  ...           0.140                      1.519
+7  Distance to next threshold     10  ...           0.142                      0.771
+
+[8 rows x 5 columns]
+[16:59:49] TR:
+              direction  ... recall@5
+0  Apr->May to May->Jun  ...   0.2687
+1  Apr->May to May->Jun  ...   0.4440
+2  Apr->May to May->Jun  ...   0.6754
+3  May->Jun to Apr->May  ...   0.2755
+4  May->Jun to Apr->May  ...   0.2755
+5  May->Jun to Apr->May  ...   0.8377
+
+[6 rows x 6 columns]
+[16:59:49] HOÀN TẤT

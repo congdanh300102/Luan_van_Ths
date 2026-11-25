@@ -1,0 +1,65 @@
+[15:53:00] MAIN fold 5/50
+[15:55:54] MAIN fold 10/50
+[16:05:58] MAIN fold 15/50
+[16:10:15] MAIN fold 20/50
+[16:36:48] MAIN fold 25/50
+[16:38:49] MAIN fold 30/50
+[18:08:18] MAIN fold 35/50
+[18:14:54] MAIN fold 40/50
+[22:21:56] MAIN fold 45/50
+[08:06:08] MAIN: tiếp tục từ fold 45
+[08:09:22] MAIN fold 50/50
+[08:09:22] main:
+                                       method  ...  ndcg@5_mean
+7     XGB + overdue fields + G_T + rule score  ...       0.7482
+6                  XGB + overdue fields + G_T  ...       0.5623
+3            Rule: distance to next threshold  ...       0.4848
+5                        XGB + overdue fields  ...       0.5305
+8     XGB pairwise ranking (full information)  ...       0.3213
+10                     XGB, 20 features + G_T  ...       0.3000
+4   WOE-logistic scorecard (full information)  ...       0.1934
+9                            XGB, 20 features  ...       0.2090
+0                                    DPD at T  ...       0.1376
+2                         On-balance interest  ...       0.0187
+1                        Off-balance interest  ...       0.1405
+
+[11 rows x 6 columns]
+                                         a  ... p_corrected
+0               XGB + overdue fields + G_T  ...      0.0043
+1                     XGB + overdue fields  ...      0.9120
+2                   XGB, 20 features + G_T  ...      0.0000
+3                         XGB, 20 features  ...      0.0000
+4               XGB + overdue fields + G_T  ...      0.0000
+5  XGB + overdue fields + G_T + rule score  ...      0.0000
+6               XGB + overdue fields + G_T  ...      0.0120
+7               XGB + overdue fields + G_T  ...      0.0000
+
+[8 rows x 4 columns]
+[08:11:43] EXTRA ablation no_offbalance: 0.2951
+[08:13:48] EXTRA ablation no_both_interest: 0.2928
+[08:16:24] EXTRA exits: {'events': 310, 'added_exit_events': 45, 'ap_mean': np.float64(0.23351546059199163), 'ap_std': np.float64(0.03795714611272416)}
+[08:16:37] EXTRA CB:
+                             method  k_pct  ...  share_of_total  per_reviewed_loan
+0        XGB + overdue fields + G_T      1  ...           0.570             16.080
+1        XGB + overdue fields + G_T      2  ...           0.602              8.504
+2        XGB + overdue fields + G_T      5  ...           0.743              4.195
+3        XGB + overdue fields + G_T     10  ...           0.751              2.119
+4  Rule: distance to next threshold      1  ...           0.504             14.222
+5  Rule: distance to next threshold      2  ...           0.634              8.957
+6  Rule: distance to next threshold      5  ...           0.668              3.770
+7  Rule: distance to next threshold     10  ...           0.676              1.909
+
+[8 rows x 7 columns]
+[08:16:45] EXTRA SHAP (53 sự kiện):
+                            feature  mean_abs_shap
+13                     DPD_INTEREST       1.925303
+16                              G_T       0.533304
+10            ENG_TENOR_ACTUAL_DAYS       0.516500
+0           Số dư nợ theo nguyên tệ       0.491121
+9              ENG_DAYS_TO_MATURITY       0.440152
+3                          Lãi suất       0.429389
+8                 ENG_LOAN_AGE_DAYS       0.336477
+7                 Mã chi nhánh TCTD       0.330152
+15                 OVERDUE_INTEREST       0.228797
+1   Lãi phải thu hạch toán nội bảng       0.198778
+[08:16:45] HOÀN TẤT

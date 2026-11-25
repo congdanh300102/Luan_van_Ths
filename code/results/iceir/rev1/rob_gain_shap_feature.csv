@@ -1,0 +1,19 @@
+﻿feature,gain_pct,shap_pct,group
+ENG_LOAN_AGE_DAYS,23.280269853564533,47.78647072614029,Đặc trưng kỹ thuật (engineered)
+ENG_DAYS_TO_MATURITY,22.805533164075847,11.414546789255912,Đặc trưng kỹ thuật (engineered)
+Mã chi nhánh TCTD,15.197085071780158,6.464529191901708,Chi nhánh
+Số dư nợ theo nguyên tệ,13.891055838921865,10.882419250510903,Dư nợ & Thanh toán
+Lãi suất,11.317570387341199,10.548924553240216,Lãi suất
+ENG_TENOR_ACTUAL_DAYS,10.583351197812968,5.440296042526359,Đặc trưng kỹ thuật (engineered)
+Mô tả mục đích sử dụng tiền vay,1.14805918863463,2.9452498064159047,Hình thức & Mục đích vay
+Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.7101932658167476,2.0972371753969874,Hình thức & Mục đích vay
+Mã thời hạn cấp tín dụng,0.43815733433851844,1.023136349593001,Kỳ hạn & Cơ cấu lại
+Số tiền nợ gốc cơ cấu,0.21477657814445544,0.11312120396481573,Kỳ hạn & Cơ cấu lại
+Phương thức cho vay,0.12755747322488917,0.7938168181728005,Hình thức & Mục đích vay
+Hoạt động cấp tín dụng bằng phương tiện điện tử,0.10330555424788111,0.3167802289827154,Hình thức & Mục đích vay
+Số lần cơ cấu lại thời hạn trả nợ,0.09320506807690149,0.0653384328258164,Kỳ hạn & Cơ cấu lại
+Số tiền nợ lãi cơ cấu,0.07127509120740383,0.08558312559901668,Kỳ hạn & Cơ cấu lại
+ENG_HAS_RESTRUCTURE,0.013688449763843761,0.019438439621823556,Đặc trưng kỹ thuật (engineered)
+Hình thức cấp tín dụng,0.004916483048163088,0.0031118658517417337,Hình thức & Mục đích vay
+Mã tiền tệ,0.0,0.0,Hình thức & Mục đích vay
+Nguồn cấp tín dụng,0.0,0.0,Hình thức & Mục đích vay

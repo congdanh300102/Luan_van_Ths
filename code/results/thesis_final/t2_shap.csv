@@ -1,0 +1,81 @@
+﻿sample,n,feature,mean_abs_shap
+events,53,Số dư nợ theo nguyên tệ,0.7544861
+events,53,Lãi phải thu hạch toán nội bảng,1.0565952
+events,53,Lãi chưa thu hạch toán ngoại bảng,0.39554492
+events,53,Lãi suất,0.3882903
+events,53,Số lần cơ cấu lại thời hạn trả nợ,0.0
+events,53,Số tiền nợ gốc cơ cấu,0.0
+events,53,Số tiền nợ lãi cơ cấu,0.0
+events,53,Mã chi nhánh TCTD,0.42058864
+events,53,ENG_LOAN_AGE_DAYS,0.43158346
+events,53,ENG_DAYS_TO_MATURITY,0.49565127
+events,53,ENG_TENOR_ACTUAL_DAYS,0.35936219
+events,53,ENG_HAS_RESTRUCTURE,0.0
+events,53,Mã thời hạn cấp tín dụng,0.030626463
+events,53,Hình thức cấp tín dụng,0.0
+events,53,Phương thức cho vay,0.026287489
+events,53,Mã tiền tệ,0.0
+events,53,Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.08572385
+events,53,Mô tả mục đích sử dụng tiền vay,0.15594275
+events,53,Nguồn cấp tín dụng,0.0
+events,53,Hoạt động cấp tín dụng bằng phương tiện điện tử,0.0002940085
+non_events,447,Số dư nợ theo nguyên tệ,0.6726333
+non_events,447,Lãi phải thu hạch toán nội bảng,0.9184027
+non_events,447,Lãi chưa thu hạch toán ngoại bảng,0.22962284
+non_events,447,Lãi suất,0.38299683
+non_events,447,Số lần cơ cấu lại thời hạn trả nợ,0.0
+non_events,447,Số tiền nợ gốc cơ cấu,0.0
+non_events,447,Số tiền nợ lãi cơ cấu,0.0
+non_events,447,Mã chi nhánh TCTD,0.37146756
+non_events,447,ENG_LOAN_AGE_DAYS,0.44096085
+non_events,447,ENG_DAYS_TO_MATURITY,0.5264651
+non_events,447,ENG_TENOR_ACTUAL_DAYS,0.46961161
+non_events,447,ENG_HAS_RESTRUCTURE,0.0
+non_events,447,Mã thời hạn cấp tín dụng,0.022241162
+non_events,447,Hình thức cấp tín dụng,0.0
+non_events,447,Phương thức cho vay,0.02198568
+non_events,447,Mã tiền tệ,0.0
+non_events,447,Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.058377907
+non_events,447,Mô tả mục đích sử dụng tiền vay,0.0930356
+non_events,447,Nguồn cấp tín dụng,0.0
+non_events,447,Hoạt động cấp tín dụng bằng phương tiện điện tử,0.0011169083
+stratified_500,500,Số dư nợ theo nguyên tệ,0.68130946
+stratified_500,500,Lãi phải thu hạch toán nội bảng,0.933051
+stratified_500,500,Lãi chưa thu hạch toán ngoại bảng,0.24721059
+stratified_500,500,Lãi suất,0.38355798
+stratified_500,500,Số lần cơ cấu lại thời hạn trả nợ,0.0
+stratified_500,500,Số tiền nợ gốc cơ cấu,0.0
+stratified_500,500,Số tiền nợ lãi cơ cấu,0.0
+stratified_500,500,Mã chi nhánh TCTD,0.37667447
+stratified_500,500,ENG_LOAN_AGE_DAYS,0.43996683
+stratified_500,500,ENG_DAYS_TO_MATURITY,0.5231989
+stratified_500,500,ENG_TENOR_ACTUAL_DAYS,0.45792526
+stratified_500,500,ENG_HAS_RESTRUCTURE,0.0
+stratified_500,500,Mã thời hạn cấp tín dụng,0.023130002
+stratified_500,500,Hình thức cấp tín dụng,0.0
+stratified_500,500,Phương thức cho vay,0.022441672
+stratified_500,500,Mã tiền tệ,0.0
+stratified_500,500,Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.0612766
+stratified_500,500,Mô tả mục đích sử dụng tiền vay,0.099703744
+stratified_500,500,Nguồn cấp tín dụng,0.0
+stratified_500,500,Hoạt động cấp tín dụng bằng phương tiện điện tử,0.0010296807
+random_500,500,Số dư nợ theo nguyên tệ,0.6643463
+random_500,500,Lãi phải thu hạch toán nội bảng,0.940849
+random_500,500,Lãi chưa thu hạch toán ngoại bảng,0.24132985
+random_500,500,Lãi suất,0.38653305
+random_500,500,Số lần cơ cấu lại thời hạn trả nợ,0.0
+random_500,500,Số tiền nợ gốc cơ cấu,0.0
+random_500,500,Số tiền nợ lãi cơ cấu,0.0
+random_500,500,Mã chi nhánh TCTD,0.36632645
+random_500,500,ENG_LOAN_AGE_DAYS,0.47709188
+random_500,500,ENG_DAYS_TO_MATURITY,0.5215474
+random_500,500,ENG_TENOR_ACTUAL_DAYS,0.5194485
+random_500,500,ENG_HAS_RESTRUCTURE,0.0
+random_500,500,Mã thời hạn cấp tín dụng,0.023125676
+random_500,500,Hình thức cấp tín dụng,0.0
+random_500,500,Phương thức cho vay,0.020978857
+random_500,500,Mã tiền tệ,0.0
+random_500,500,Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.05605589
+random_500,500,Mô tả mục đích sử dụng tiền vay,0.08127084
+random_500,500,Nguồn cấp tín dụng,0.0
+random_500,500,Hoạt động cấp tín dụng bằng phương tiện điện tử,0.001043428

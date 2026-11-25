@@ -1,0 +1,75 @@
+[22:22:34] === Phần A ===
+[22:22:40] A1 Logistic Regression: F1m=0.4204 ordMAE=0.2785 (2s)
+[22:22:40] A1 Decision Tree: F1m=0.5896 ordMAE=0.2085 (0s)
+[22:22:42] A1 Random Forest: F1m=0.6184 ordMAE=0.1716 (2s)
+[22:22:45] A1 XGBoost: F1m=0.6391 ordMAE=0.1557 (3s)
+[22:22:52] A1 LightGBM: F1m=0.6484 ordMAE=0.1529 (6s)
+[22:23:08] A1 CatBoost: F1m=0.5454 ordMAE=0.3366 (17s)
+[22:23:21] A2 group Gain vs SHAP:
+                           gain_pct   shap_pct
+group                                         
+Kỳ hạn khoản vay          55.570053  40.900810
+Dư nợ và hạn mức sử dụng  16.851399  26.796906
+Đơn vị/Chi nhánh          12.687291  14.882492
+Lãi suất                   6.408463   8.804261
+Sản phẩm và mục đích vay   8.482794   8.615522
+rho_feat=0.845 p=0.0010
+[22:23:54] A3:
+       strategy  f1_macro  roc_auc_macro
+0         SMOTE  0.639111       0.918648
+1   Không xử lý  0.620597       0.928055
+2       Kết hợp  0.590429       0.907394
+3  Trọng số lớp  0.598495       0.915663
+[22:25:54] A4:
+    k  f1_macro  roc_auc_macro
+0   3  0.610175       0.884668
+1   5  0.623640       0.910373
+2   7  0.633051       0.917077
+3   9  0.643245       0.919769
+4  11  0.634290       0.919073
+5  13  0.635664       0.918397
+[22:26:16] L-A:
+                                  cau_hinh  ...  ordinal_mae
+0                 Cấu hình chính (11 biến)  ...     0.155712
+1                      Bỏ DAYS_TO_MATURITY  ...     0.198111
+2  Bỏ DAYS_TO_MATURITY và LOAN_TENURE_DAYS  ...     0.230328
+
+[3 rows x 4 columns]
+[22:26:21] L-A share đáo hạn trước 2020-11-08:
+NHOMNOMOI
+1     3.973289
+2    28.671329
+3    50.000000
+4    55.229592
+5    88.039274
+Name: da_dao_han, dtype: float64
+[22:26:33] S3 LabelEncoder | XGBoost: 0.6391
+[22:26:36] S3 LabelEncoder | Logistic Regression: 0.4204
+[22:26:37] S3 One-Hot sinh 53 cột (min_frequency=20)
+[22:26:45] S3 One-Hot | XGBoost: 0.6391
+[22:26:46] S3 One-Hot | Logistic Regression: 0.4394
+[22:27:02] A SMOTE-NC: [0.6391, 0.6384]
+[22:27:18] lưới A Logistic Regression: mặc định 0.4204 tốt nhất 0.4216 biên độ 0.0223 (16s)
+[22:27:22] lưới A Decision Tree: mặc định 0.5896 tốt nhất 0.6086 biên độ 0.0471 (4s)
+[22:28:05] lưới A Random Forest: mặc định 0.6184 tốt nhất 0.6313 biên độ 0.0196 (43s)
+[22:31:00] lưới A XGBoost: mặc định 0.6391 tốt nhất 0.6416 biên độ 0.0191 (175s)
+[22:34:11] lưới A LightGBM: mặc định 0.6484 tốt nhất 0.6484 biên độ 0.0261 (191s)
+[22:41:05] lưới A CatBoost: mặc định 0.5454 tốt nhất 0.5677 biên độ 0.0418 (414s)
+[22:42:14] A d0: [{'d0': '2020-12-31', 'model': 'XGBoost', 'f1_macro': 0.6391107538665586}, {'d0': '2020-12-31', 'model': 'Logistic Regression', 'f1_macro': 0.42038733779167614}, {'d0': '2021-12-31', 'model': 'XGBoost', 'f1_macro': 0.6391107538665586}, {'d0': '2021-12-31', 'model': 'Logistic Regression', 'f1_macro': 0.42038733779167614}, {'d0': '2023-12-31', 'model': 'XGBoost', 'f1_macro': 0.6391107538665586}, {'d0': '2023-12-31', 'model': 'Logistic Regression', 'f1_macro': 0.4212023639321595}]
+[22:42:14] === Phần I ===
+[22:42:46] I: IV toàn mẫu so với chỉ tập huấn luyện
+                              feature  iv_toan_mau  iv_chi_train bo  chenh_lech
+0   Lãi chưa thu hạch toán ngoại bảng       5.0901        5.1800  B      0.0899
+22                    CURRMIACCTTYPCD       1.9921        1.9339  A      0.0582
+20                   DAYS_TO_MATURITY       4.5541        4.5951  A      0.0410
+27                           BASE_BAL       0.5356        0.5086  A      0.0270
+23                         MUCDICHVAY       1.4141        1.3977  A      0.0164
+4     Mô tả mục đích sử dụng tiền vay       0.3611        0.3458  B      0.0153
+1                   ENG_LOAN_AGE_DAYS       1.1170        1.1039  B      0.0131
+21                   LOAN_TENURE_DAYS       1.9981        1.9872  A      0.0109
+6            Mã thời hạn cấp tín dụng       0.2928        0.3033  B      0.0105
+5                            Lãi suất       0.3130        0.3220  B      0.0090
+24                          UTIL_RATE       1.2513        1.2427  A      0.0086
+26                            LAISUAT       0.7540        0.7459  A      0.0081
+[22:42:46] I: chênh lệch tuyệt đối lớn nhất 0.0899; không biến nào đổi mức cảnh báo 1,0: True
+[22:42:46] HOÀN TẤT

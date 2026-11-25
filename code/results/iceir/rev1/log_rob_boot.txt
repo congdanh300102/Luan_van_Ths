@@ -1,0 +1,26 @@
+[14:56:25] ROB baseline moderate SMOTE LightGBM: 0.4290 / 0.4728
+[14:56:50] ROB imbalance none LightGBM: 0.4291 / 0.4818
+[14:57:14] ROB imbalance class_weight LightGBM: 0.3767 / 0.4268
+[14:57:41] ROB imbalance SMOTE+class_weight LightGBM: 0.3876 / 0.4184
+[14:58:09] ROB smote_nc SMOTE-NC LightGBM: 0.4416 / 0.4728
+[14:58:25] ROB smote_nc SMOTE-NC XGBoost: 0.4252 / 0.4556
+[15:01:43] ROB branch LightGBM: 0.4299
+[15:01:58] ROB branch XGBoost: 0.4198
+[15:02:28] ROB top8 8 features by Gain: ENG_LOAN_AGE_DAYS; ENG_DAYS_TO_MATURITY; Mã chi nhánh TCTD; Số dư nợ theo nguyên tệ; Lãi suất; ENG_TENOR_ACTUAL_DAYS; Mô tả mục đích sử dụng tiền vay; Mục đích sử dụng tiền vay phân theo ngành kinh tế LightGBM: 0.4333 / 0.4723
+[15:36:09] BOOT lightgbm full internal test: 0.6935 [0.6751, 0.7130]
+[15:36:19] BOOT lightgbm full May seen: 0.7144 [0.7061, 0.7224]
+[15:36:21] BOOT lightgbm full May unseen: 0.6349 [0.6178, 0.6517]
+[15:36:33] BOOT lightgbm full May all: 0.6985 [0.6909, 0.7062]
+[15:36:41] BOOT lightgbm conservative internal test: 0.4290 [0.4102, 0.4471]
+[15:36:50] BOOT lightgbm conservative May seen: 0.4899 [0.4792, 0.4998]
+[15:36:53] BOOT lightgbm conservative May unseen: 0.4043 [0.3895, 0.4183]
+[15:37:05] BOOT lightgbm conservative May all: 0.4728 [0.4631, 0.4824]
+[15:37:14] BOOT xgboost full internal test: 0.6942 [0.6760, 0.7139]
+[15:37:24] BOOT xgboost full May seen: 0.6969 [0.6876, 0.7056]
+[15:37:26] BOOT xgboost full May unseen: 0.6369 [0.6181, 0.6542]
+[15:37:36] BOOT xgboost full May all: 0.6849 [0.6769, 0.6930]
+[15:37:46] BOOT xgboost conservative internal test: 0.4230 [0.4062, 0.4397]
+[15:37:54] BOOT xgboost conservative May seen: 0.4663 [0.4561, 0.4772]
+[15:37:56] BOOT xgboost conservative May unseen: 0.4071 [0.3917, 0.4222]
+[15:46:11] BOOT xgboost conservative May all: 0.4545 [0.4451, 0.4629]
+[15:46:11] HOÀN TẤT

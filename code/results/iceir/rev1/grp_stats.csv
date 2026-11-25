@@ -1,0 +1,15 @@
+﻿stat,value
+contracts,100617.0
+customers,73494.0
+contracts_per_customer_mean,1.3690505347375297
+contracts_per_customer_max,313.0
+share_customers_multi,0.16868043649821754
+share_contracts_in_multi_customers,0.3927765685719113
+multi_customers_with_mixed_groups,0.0
+contract_split_test_share_customer_in_train,0.35663883919697875
+may_unseen_contracts_customer_in_train,0.3537126715092817
+may_contracts_new_customers,590.0
+grouped_split_train_n,80493.0
+grouped_split_test_n,20124.0
+task2_event_customers,181.0
+task2_events_in_customers_with_2plus_events,119.0

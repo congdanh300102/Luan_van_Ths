@@ -1,0 +1,8 @@
+﻿a,b,mean_diff,p_corrected
+"XGB, 20 features + G_T",Rule: distance to next threshold,0.0039744332014301845,0.9053931930637571
+"XGB, 20 features + G_T","XGB, 20 features",0.02814229069757885,0.004013960011344576
+XGB + overdue fields + G_T,XGB + overdue fields,0.08948714647751072,5.120303915078009e-07
+XGB + overdue fields + G_T,Rule: distance to next threshold,0.2798431009549201,3.706423578884092e-11
+XGB + overdue fields + G_T + rule score,XGB + overdue fields + G_T,0.09357584981601416,2.900628967557053e-06
+"XGB, 20 features",Rule: distance to next threshold,-0.024167857496148665,0.44987262007314704
+XGB + overdue fields,Rule: distance to next threshold,0.19035595447740938,6.9058708877097875e-06

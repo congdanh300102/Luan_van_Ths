@@ -91,10 +91,12 @@ MODEL_OPTIONS = {
 DATA_CREDIT_INFO_TRAIN = _resolve_raw("Thông tin tín dụng 20260430.xlsx")
 DATA_CREDIT_INFO_TEST  = _resolve_raw("Thông tin tín dụng 20260531.xlsx")
 
-# Kỳ báo cáo thứ ba, THẬT — ngân hàng cung cấp bổ sung ngày 2026-09-12, cho
-# phép xây cặp chuyển nhóm nợ thứ hai (20260531 -> 20260630) bằng dữ liệu
-# thật, thay vì kỳ mô phỏng DATA_CREDIT_INFO_SIM ở dưới. Dùng trong
-# src/generate_transition_report_pair2.py.
+# Kỳ 20260630: KHÔNG phải dữ liệu ngân hàng. Mọi phiên bản của tệp này đều có
+# dấu hiệu của dữ liệu mô phỏng từ kỳ 20260531 (generate_synthetic_period*.py
+# trong lịch sử git): không có khoản vay mới nào, ma trận chuyển nhóm khớp xác
+# suất của bộ sinh, đặc trưng sao chép từ kỳ trước. Luận văn và bài ICEIR chỉ
+# dùng hai kỳ thật 20260430/20260531; biến này chỉ còn để các script cũ
+# (generate_transition_report_pair2.py, diagnose_transition_pairs.py) chạy được.
 DATA_CREDIT_INFO_TEST2 = _resolve_raw("Thông tin tín dụng 20260630.xlsx")
 
 CREDIT_INFO_TARGET_COL = "Nhóm nợ tự phân loại"

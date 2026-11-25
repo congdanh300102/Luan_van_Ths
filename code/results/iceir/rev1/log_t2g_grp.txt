@@ -1,0 +1,57 @@
+[14:55:21] T2G: 98968 khoản vay, 265 sự kiện
+[14:57:16] T2G fold 10/50
+[15:01:56] T2G fold 20/50
+[15:03:45] T2G fold 30/50
+[15:21:13] T2G fold 40/50
+[15:22:56] T2G fold 50/50
+[15:22:56] t2g:
+                                    method  ap_mean  ...  recall@5_mean  ndcg@5_mean
+3  XGB + overdue fields + G_T + rule score   0.5763  ...         0.8483       0.7531
+2               XGB + overdue fields + G_T   0.4827  ...         0.8589       0.5958
+1                     XGB + overdue fields   0.3932  ...         0.8483       0.5638
+5                   XGB, 20 features + G_T   0.2068  ...         0.5691       0.4142
+0         Rule: distance to next threshold   0.2029  ...         0.8389       0.4807
+4                         XGB, 20 features   0.1787  ...         0.5158       0.3436
+
+[6 rows x 6 columns]
+                                         a  ... p_corrected
+0                   XGB, 20 features + G_T  ...      0.9054
+1                   XGB, 20 features + G_T  ...      0.0040
+2               XGB + overdue fields + G_T  ...      0.0000
+3               XGB + overdue fields + G_T  ...      0.0000
+4  XGB + overdue fields + G_T + rule score  ...      0.0000
+5                         XGB, 20 features  ...      0.4499
+6                     XGB + overdue fields  ...      0.0000
+
+[7 rows x 4 columns]
+[15:24:48] GRP T1 lightgbm full: [0.6653, 0.7258, 0.6202, 0.7046]
+[15:25:02] GRP T1 lightgbm conservative: [0.4189, 0.5021, 0.4133, 0.4844]
+[15:25:12] GRP T1 xgboost full: [0.6676, 0.7016, 0.6287, 0.6868]
+[15:25:22] GRP T1 xgboost conservative: [0.4169, 0.4666, 0.412, 0.4553]
+[15:25:46] GRP thống kê: {'contracts': 100617, 'customers': 73494, 'contracts_per_customer_mean': np.float64(1.3690505347375297), 'contracts_per_customer_max': 313, 'share_customers_multi': 0.16868043649821754, 'share_contracts_in_multi_customers': 0.3927765685719113, 'multi_customers_with_mixed_groups': 0, 'contract_split_test_share_customer_in_train': 0.35663883919697875, 'may_unseen_contracts_customer_in_train': 0.3537126715092817, 'may_contracts_new_customers': 590, 'grouped_split_train_n': 80493, 'grouped_split_test_n': 20124, 'task2_event_customers': 181, 'task2_events_in_customers_with_2plus_events': 119}
+[15:26:20] GRP T2 lặp 1/10
+[15:26:54] GRP T2 lặp 2/10
+[15:27:29] GRP T2 lặp 3/10
+[15:28:05] GRP T2 lặp 4/10
+[15:28:39] GRP T2 lặp 5/10
+[15:29:13] GRP T2 lặp 6/10
+[15:29:48] GRP T2 lặp 7/10
+[15:34:43] GRP T2 lặp 8/10
+[15:35:18] GRP T2 lặp 9/10
+[15:35:52] GRP T2 lặp 10/10
+[15:35:52] grp_task2:
+                             method  ap_mean  ...  recall@5_mean  ndcg@5_mean
+2        XGB + overdue fields + G_T   0.2915  ...         0.8234       0.5623
+0  Rule: distance to next threshold   0.2061  ...         0.8404       0.4848
+1              XGB + overdue fields   0.2033  ...         0.8166       0.5305
+3                  XGB, 20 features   0.0264  ...         0.3343       0.2090
+
+[4 rows x 6 columns]
+                            a  ... p_corrected
+0            XGB, 20 features  ...      0.0000
+1        XGB + overdue fields  ...      0.9120
+2  XGB + overdue fields + G_T  ...      0.0043
+3  XGB + overdue fields + G_T  ...      0.0000
+
+[4 rows x 4 columns]
+[15:35:52] HOÀN TẤT

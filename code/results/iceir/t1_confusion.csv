@@ -1,0 +1,61 @@
+﻿,pred_1,pred_2,pred_3,pred_4,pred_5,model,split
+true_1,17766,0,0,0,10,Logistic Regression,validation
+true_2,1251,0,3,9,1,Logistic Regression,validation
+true_3,180,0,3,9,8,Logistic Regression,validation
+true_4,215,1,0,47,26,Logistic Regression,validation
+true_5,122,1,1,46,425,Logistic Regression,validation
+true_1,87417,9,0,1020,81,Logistic Regression,holdout
+true_2,6267,3,7,44,18,Logistic Regression,holdout
+true_3,886,1,10,63,31,Logistic Regression,holdout
+true_4,1046,6,8,211,150,Logistic Regression,holdout
+true_5,604,2,3,239,2148,Logistic Regression,holdout
+true_1,17743,20,7,4,2,Decision Tree,validation
+true_2,980,216,48,20,0,Decision Tree,validation
+true_3,37,27,109,27,0,Decision Tree,validation
+true_4,13,9,44,174,49,Decision Tree,validation
+true_5,9,0,5,58,523,Decision Tree,validation
+true_1,84878,605,281,2732,31,Decision Tree,holdout
+true_2,4935,1094,248,60,2,Decision Tree,holdout
+true_3,187,116,538,141,9,Decision Tree,holdout
+true_4,58,47,169,954,193,Decision Tree,holdout
+true_5,44,9,25,214,2704,Decision Tree,holdout
+true_1,17772,2,2,0,0,Random Forest,validation
+true_2,986,199,66,13,0,Random Forest,validation
+true_3,37,22,105,34,2,Random Forest,validation
+true_4,14,12,31,191,41,Random Forest,validation
+true_5,9,0,7,53,526,Random Forest,validation
+true_1,87027,378,70,12,1040,Random Forest,holdout
+true_2,4984,994,286,64,11,Random Forest,holdout
+true_3,195,65,589,132,10,Random Forest,holdout
+true_4,61,34,113,1043,170,Random Forest,holdout
+true_5,47,6,28,173,2742,Random Forest,holdout
+true_1,17760,11,1,0,4,XGBoost,validation
+true_2,973,238,45,8,0,XGBoost,validation
+true_3,36,26,105,32,1,XGBoost,validation
+true_4,14,11,26,206,32,XGBoost,validation
+true_5,9,1,2,41,542,XGBoost,validation
+true_1,87062,388,395,649,33,XGBoost,holdout
+true_2,4919,1238,154,25,3,XGBoost,holdout
+true_3,185,103,598,102,3,XGBoost,holdout
+true_4,58,50,59,1159,95,XGBoost,holdout
+true_5,39,16,12,113,2816,XGBoost,holdout
+true_1,17754,18,2,0,2,LightGBM,validation
+true_2,968,249,41,6,0,LightGBM,validation
+true_3,35,29,103,32,1,LightGBM,validation
+true_4,14,11,25,204,35,LightGBM,validation
+true_5,9,1,3,44,538,LightGBM,validation
+true_1,86124,1314,223,835,31,LightGBM,holdout
+true_2,4860,1347,109,19,4,LightGBM,holdout
+true_3,174,98,627,89,3,LightGBM,holdout
+true_4,53,45,48,1202,73,LightGBM,holdout
+true_5,40,13,11,82,2850,LightGBM,holdout
+true_1,12166,5508,102,0,0,CatBoost,validation
+true_2,243,883,132,6,0,CatBoost,validation
+true_3,9,35,127,29,0,CatBoost,validation
+true_4,2,12,49,196,30,CatBoost,validation
+true_5,2,6,5,74,508,CatBoost,validation
+true_1,58720,28138,604,133,932,CatBoost,holdout
+true_2,1178,4459,670,22,10,CatBoost,holdout
+true_3,35,170,644,138,4,CatBoost,holdout
+true_4,17,53,182,1036,133,CatBoost,holdout
+true_5,17,28,40,261,2650,CatBoost,holdout

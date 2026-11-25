@@ -1,0 +1,25 @@
+[01:20:13] T2: 98968 khoản vay, 265 sự kiện
+[01:20:13] T2 kiểm định:
+        reference                    comparator  ...  p_wilcoxon_naive        p_holm
+0  XGBoost (none)             LightGBM (custom)  ...      3.230278e-01  7.060778e-01
+1  XGBoost (none)          Random Forest (none)  ...      4.011463e-05  4.212674e-01
+2  XGBoost (none)               CatBoost (none)  ...      1.776357e-15  4.644890e-04
+3  XGBoost (none)        Decision Tree (custom)  ...      1.776357e-15  2.576508e-06
+4  XGBoost (none)  Logistic Regression (custom)  ...      1.776357e-15  9.524405e-09
+
+[5 rows x 7 columns]
+[01:20:15] T2 Recall@k:
+   k_pct  n_reviewed  found    recall  precision       lift
+0      1         198     16  0.301887   0.080808  30.188679
+1      2         396     21  0.396226   0.053030  19.811321
+2      5         990     28  0.528302   0.028283  10.566038
+3     10        1979     35  0.660377   0.017686   6.603774
+AP theo loại: [{'type': 'all', 'events': 53, 'ap': 0.1743696749429074, 'base': 0.0026775790643629384}, {'type': '1to2', 'events': 44, 'ap': 0.15888391483369205, 'base': 0.002223907000252717}, {'type': 'rarer', 'events': 9, 'ap': 0.07860101927661754, 'base': 0.00045569620253164554}]
+[02:33:17] T2 ablation XGBoost no_offbalance: AP 0.1708 (đầy đủ 0.1787, p=0.228)
+[03:33:04] T2 ablation XGBoost no_both_interest: AP 0.1285 (đầy đủ 0.1787, p=2.83e-05)
+[04:50:32] T2 ablation LightGBM no_offbalance: AP 0.1700 (đầy đủ 0.1746, p=0.575)
+[05:34:47] T2 ablation LightGBM no_both_interest: AP 0.1219 (đầy đủ 0.1746, p=0.000241)
+[07:54:02] T2 ablation Random Forest no_offbalance: AP 0.1627 (đầy đủ 0.1666, p=0.31)
+[07:56:29] T2 ablation Random Forest no_both_interest: AP 0.1221 (đầy đủ 0.1666, p=1.39e-05)
+[07:56:30] T2 Recall@k không biến lãi: [{'k_pct': 1, 'found': 11, 'recall': np.float64(0.20754716981132076)}, {'k_pct': 2, 'found': 14, 'recall': np.float64(0.2641509433962264)}, {'k_pct': 5, 'found': 18, 'recall': np.float64(0.33962264150943394)}, {'k_pct': 10, 'found': 25, 'recall': np.float64(0.4716981132075472)}]
+[07:56:30] HOÀN TẤT

@@ -1,0 +1,17 @@
+﻿model,config,subset,n,macro_f1,accuracy
+lightgbm,full,internal test (customer split),20124,0.665324964561787,0.93415821904194
+lightgbm,full,May: customers in training,79711,0.7258003466480705,0.9271618722635521
+lightgbm,full,May: customers not in training,20563,0.6202010489153083,0.9180567037883577
+lightgbm,full,May: all,100274,0.7045747321385747,0.9252946925424337
+lightgbm,conservative,internal test (customer split),20124,0.418947546525655,0.9015106340687736
+lightgbm,conservative,May: customers in training,79711,0.5020532298853891,0.8979563673771499
+lightgbm,conservative,May: customers not in training,20563,0.4132816941171553,0.8880513543743617
+lightgbm,conservative,May: all,100274,0.48440326803080114,0.8959251650477691
+xgboost,full,internal test (customer split),20124,0.6675576108053846,0.9343569866825681
+xgboost,full,May: customers in training,79711,0.7016351007100513,0.9267478767045954
+xgboost,full,May: customers not in training,20563,0.6287154820790699,0.9204882556047269
+xgboost,full,May: all,100274,0.686848344976511,0.9254642280152382
+xgboost,conservative,internal test (customer split),20124,0.41687295676941377,0.9006658715961041
+xgboost,conservative,May: customers in training,79711,0.4665522774132821,0.8997628934525975
+xgboost,conservative,May: customers not in training,20563,0.4120219124407378,0.8920390993532072
+xgboost,conservative,May: all,100274,0.45534883816749794,0.8981789895685821

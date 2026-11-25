@@ -1,0 +1,12 @@
+[18:22:10] T1 dữ liệu: train 80493, nội bộ 20124, ngoài thời gian 100274; thiếu ENG ngoài TG: {'ENG_LOAN_AGE_DAYS': 0.0, 'ENG_DAYS_TO_MATURITY': 0.0, 'ENG_TENOR_ACTUAL_DAYS': 0.0, 'ENG_HAS_RESTRUCTURE': 0.0}
+[18:22:25] T1 Logistic Regression: nội bộ 0.4029 | ngoài TG 0.3799
+[18:22:27] T1 Decision Tree: nội bộ 0.6566 | ngoài TG 0.5903
+[18:22:32] T1 Random Forest: nội bộ 0.6620 | ngoài TG 0.6608
+[18:22:40] T1 XGBoost: nội bộ 0.6942 | ngoài TG 0.6849
+[18:22:53] T1 LightGBM: nội bộ 0.6935 | ngoài TG 0.6985
+[18:24:05] T1 CatBoost: nội bộ 0.6009 | ngoài TG 0.5812
+[18:24:11] T1 Gain/SHAP: ρ biến 0.962, ρ nhóm 0.886 (p=0.019)
+[18:30:12] T1 lưới XGBoost: biên độ 0.0957
+[18:31:26] T1 lưới LightGBM: biên độ 0.0561
+[18:31:50] T1 PSI lớn nhất: 0.0411
+[18:31:50] HOÀN TẤT

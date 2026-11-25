@@ -1,0 +1,9 @@
+[23:10:38] === Phần R ===
+[23:11:51] R: tỷ lệ thiếu sau khi trả về NaN: {'Số lần cơ cấu lại thời hạn trả nợ': 0.996, 'Số tiền nợ gốc cơ cấu': 0.9972, 'Số tiền nợ lãi cơ cấu': 0.9982}
+[23:12:23] R trung vị LightGBM: {'variant': 'trung vị', 'model': 'LightGBM', 'validation': 0.6953731848400813, 'holdout': 0.698244125163918}
+[23:12:41] R trung vị XGBoost: {'variant': 'trung vị', 'model': 'XGBoost', 'validation': 0.6940954150752375, 'holdout': 0.6861158743369298}
+[23:12:49] R trung vị Random Forest: {'variant': 'trung vị', 'model': 'Random Forest', 'validation': 0.656848140802062, 'holdout': 0.663110909619764}
+[23:13:20] R điền 0 LightGBM: {'variant': 'điền 0', 'model': 'LightGBM', 'validation': 0.6934731326853814, 'holdout': 0.6984776289387993}
+[23:13:34] R điền 0 XGBoost: {'variant': 'điền 0', 'model': 'XGBoost', 'validation': 0.6941892675347824, 'holdout': 0.6848693420889707}
+[23:13:43] R điền 0 Random Forest: {'variant': 'điền 0', 'model': 'Random Forest', 'validation': 0.6620333550643808, 'holdout': 0.6608227333724088}
+[23:13:43] HOÀN TẤT

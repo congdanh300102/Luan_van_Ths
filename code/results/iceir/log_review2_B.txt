@@ -1,0 +1,24 @@
+[16:48:41] p2: 98614 khoản vay, 268 sự kiện, cơ học 194
+[16:52:44] p2 fold 10/50
+[16:55:37] p2 fold 20/50
+[16:58:13] p2 fold 30/50
+[17:01:18] p2 fold 40/50
+[17:03:49] p2 fold 50/50
+[17:03:49] p2:
+                           method  ap_mean  ...  ndcg@5_mean  ap_nonmechanical_mean
+6        XGBoost + overdue fields   0.3447  ...       0.4897                 0.3527
+5           XGBoost (20 features)   0.1784  ...       0.2992                 0.3770
+7           XGBoost rank:pairwise   0.0871  ...       0.1451                 0.2857
+4          WOE-logistic scorecard   0.0425  ...       0.0871                 0.1346
+1      Distance to next threshold   0.0382  ...       0.1995                 0.0006
+0                        DPD at T   0.0129  ...       0.1239                 0.0015
+2     Off-balance unpaid interest   0.0035  ...       0.1006                 0.0015
+3  On-balance interest receivable   0.0031  ...       0.0026                 0.0008
+
+[8 rows x 9 columns]
+                          a                           b  mean_diff  p_corrected
+0  XGBoost + overdue fields  Distance to next threshold     0.3065       0.0000
+1     XGBoost (20 features)  Distance to next threshold     0.1402       0.0000
+2     XGBoost rank:pairwise       XGBoost (20 features)    -0.0912       0.0004
+[17:04:52] M6 p2: {'pair': 'p2', 'exits': 1660, 'added_events': 48, 'events': 316, 'ap_mean': 0.150028697711363, 'ap_std': 0.03493207836468101}
+[17:04:52] HOÀN TẤT

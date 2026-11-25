@@ -1,5 +1,19 @@
 # Giải thích kết quả trong `code/results/`
 
+> **Nguồn số liệu của bản luận văn hiện hành (11/2026): `thesis_final/`.**
+> Mọi bảng và con số trong `luanvan_latex/` được sinh từ MỘT lần chạy trên một
+> máy bằng `python3 -m src.rerun_thesis_final A B I T X R S`, chỉ dùng dữ liệu
+> thật (bộ A và hai kỳ 20260430, 20260531 của bộ B); các chỗ số liệu trong
+> văn bản được điền bằng `python3 -m src.fill_thesis_numbers`.
+>
+> Các file ở cấp thư mục này (`credit_info_*`, `rev2_*`, `revision_*`,
+> `fixed_*`, `transition_*`, `diagnose_*`) là kết quả của các lần chạy TRƯỚC,
+> giữ lại để đối chiếu lịch sử. Một số còn mang lỗi đã sửa (định dạng ngày,
+> điền khuyết biến cơ cấu, cách chia khoảng IV) hoặc được chạy trên máy khác
+> nên lệch vài phần nghìn. Mọi file `transition_pair2_*`, `diagnose_*` và
+> phần "cặp 2" dùng kỳ 20260630 — đây là dữ liệu MÔ PHỎNG, không phải dữ liệu
+> ngân hàng, và không được dùng làm bằng chứng.
+
 Thư mục này chứa các file được **sinh tự động** từ những lần chạy huấn luyện /
 phân tích trong app Streamlit (chủ yếu từ trang **7 — Phân tích & Lựa chọn Đặc
 trưng**, trang **2 — Huấn luyện**, và module `src/iv_analysis.py`), cộng thêm

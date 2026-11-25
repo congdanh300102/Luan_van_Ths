@@ -1,0 +1,5 @@
+[22:27:54] === Phần X ===
+[22:28:33] X tuổi khoản vay: [{'ky': '20260430', 'n': 100617, 'tuoi_khoan_vay_trung_vi': 395.0, 'thieu_eng_pct': 0.0}, {'ky': '20260531', 'n': 100274, 'tuoi_khoan_vay_trung_vi': 426.0, 'thieu_eng_pct': 0.0}]
+[22:28:37] X PR: AP 0.1744, dự báo dương tại 0,5: 7, đúng 6
+[22:32:04] X M6: {'n': 100617, 'events': 310, 'added_exit_events': 45, 'base_rate': np.float64(0.003080990289911248), 'ap_mean': 0.19310002407410007, 'ap_std': 0.050082603097130404}
+[22:32:04] HOÀN TẤT

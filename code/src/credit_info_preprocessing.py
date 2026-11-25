@@ -76,37 +76,29 @@ RAW_CATEGORICAL_COLS = [
 ]
 
 
-def _parse_yyyymmdd(s: pd.Series) -> pd.Series:
-    """Phân tích cột ngày của bộ Thông tin tín dụng, chịu được HAI định dạng số
-    lẫn lộn giữa các kỳ báo cáo.
+def _parse_yyyymmdd(s: pd.Series, col: str = "") -> pd.Series:
+    """Phân tích cột ngày của bộ Thông tin tín dụng theo đúng MỘT định dạng
+    chuẩn: số nguyên yyyymmdd (VD 20220817).
 
-    Kỳ 20260430 lưu ngày dưới dạng số nguyên yyyymmdd (VD 20220817), nhưng kỳ
-    20260531 và 20260630 lưu "Ngày giải ngân"/"Ngày kết thúc khế ước" dưới dạng
-    số thứ tự ngày kiểu Excel (VD 45965 = 04/11/2025) do khác định dạng ô tính
-    khi xuất dữ liệu nguồn. Phiên bản trước chỉ nhận dạng yyyymmdd nên trả về
-    NaT cho TOÀN BỘ hai cột này ở hai kỳ sau — kéo theo ba đặc trưng kỹ thuật
-    (ENG_LOAN_AGE_DAYS, ENG_DAYS_TO_MATURITY, ENG_TENOR_ACTUAL_DAYS) rỗng 100%
-    ở mọi phân tích dùng kỳ 20260531 hoặc 20260630, mà không phát sinh lỗi nào
-    nhìn thấy được. Đây là cùng một lớp lỗi đã xử lý ở bộ A (_parse_date trong
-    preprocessing.py).
+    Dữ liệu nguồn của mọi kỳ thật (20260430, 20260531) đều lưu ngày theo định
+    dạng này; tệp 20260531 gốc từng lưu ngày dạng số thứ tự kiểu Excel và đã
+    được chuẩn hóa tại nguồn (bản gốc lưu ở data/raw/_backup_original/).
 
-    Quy ước phân biệt: giá trị >= 19000101 được hiểu là yyyymmdd; giá trị dương
-    nhỏ hơn 100000 được hiểu là số thứ tự ngày kiểu Excel với mốc gốc
-    30/12/1899. Hai miền giá trị không giao nhau nên phép phân biệt là xác định.
+    Hàm cố ý NGHIÊM NGẶT: mọi giá trị khác rỗng nhưng không đọc được theo
+    yyyymmdd đều gây ValueError, thay vì âm thầm trả về NaT. Cách làm cũ (trả
+    NaT không báo lỗi) từng khiến ba đặc trưng thời gian rỗng 100% ở tập kiểm
+    tra mà không ai phát hiện.
     """
     v = pd.to_numeric(s, errors="coerce")
-    out = pd.Series(pd.NaT, index=s.index, dtype="datetime64[ns]")
-
-    is_ymd = v >= 19000101
-    if is_ymd.any():
-        out.loc[is_ymd] = pd.to_datetime(
-            v[is_ymd].astype("Int64").astype(str), format="%Y%m%d", errors="coerce")
-
-    is_serial = (v > 0) & (v < 100000)
-    if is_serial.any():
-        out.loc[is_serial] = pd.to_datetime(
-            v[is_serial], unit="D", origin="1899-12-30", errors="coerce")
-
+    present = s.notna() & (s.astype(str).str.strip() != "")
+    out = pd.to_datetime(v.astype("Int64").astype(str), format="%Y%m%d", errors="coerce")
+    out = pd.Series(out, index=s.index, dtype="datetime64[ns]")
+    bad = present & out.isna()
+    if bad.any():
+        examples = s[bad].head(3).tolist()
+        raise ValueError(
+            f"Cột ngày '{col}' có {int(bad.sum())} giá trị không đúng định dạng yyyymmdd "
+            f"(ví dụ {examples}). Hãy chuẩn hóa dữ liệu nguồn về yyyymmdd trước khi chạy.")
     return out
 
 
@@ -114,7 +106,7 @@ def parse_dates(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     for col in DATE_COLS:
         if col in df.columns:
-            df[col] = _parse_yyyymmdd(df[col])
+            df[col] = _parse_yyyymmdd(df[col], col)
     return df
 
 

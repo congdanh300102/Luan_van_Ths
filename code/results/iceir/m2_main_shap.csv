@@ -1,0 +1,25 @@
+﻿feature,mean_abs_shap
+DPD_INTEREST,1.8481519
+Số dư nợ theo nguyên tệ,0.5835496
+ENG_TENOR_ACTUAL_DAYS,0.43572956
+Lãi suất,0.43076175
+ENG_DAYS_TO_MATURITY,0.42585897
+ENG_LOAN_AGE_DAYS,0.37213552
+Mã chi nhánh TCTD,0.32839343
+OVERDUE_INTEREST,0.2622952
+Lãi phải thu hạch toán nội bảng,0.19946495
+OVERDUE_PRINCIPAL,0.09963978
+DPD_PRINCIPAL,0.08055003
+Mô tả mục đích sử dụng tiền vay,0.06410269
+Mục đích sử dụng tiền vay phân theo ngành kinh tế,0.036449738
+Phương thức cho vay,0.030739892
+Lãi chưa thu hạch toán ngoại bảng,0.020817457
+Mã thời hạn cấp tín dụng,0.020266771
+ENG_HAS_RESTRUCTURE,0.0
+Số tiền nợ lãi cơ cấu,0.0
+Số tiền nợ gốc cơ cấu,0.0
+Số lần cơ cấu lại thời hạn trả nợ,0.0
+Hình thức cấp tín dụng,0.0
+Mã tiền tệ,0.0
+Nguồn cấp tín dụng,0.0
+Hoạt động cấp tín dụng bằng phương tiện điện tử,0.0
