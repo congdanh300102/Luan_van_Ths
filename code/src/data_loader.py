@@ -15,10 +15,14 @@ def get_raw_bytes(data_path: Path) -> bytes:
     if data_path.exists():
         return data_path.read_bytes()
 
-    st.warning(
-        "⚠️ Không tìm thấy file dữ liệu tại:\n"
-        f"`{data_path}`\n\n"
-        "Vui lòng upload file **Data_credit_rating_VN.xlsx**:"
+    # Giữ file đã upload trong phiên làm việc → chỉ cần upload một lần cho mọi trang.
+    cache_key = f"_uploaded_bytes::{data_path.name}"
+    if cache_key in st.session_state:
+        return st.session_state[cache_key]
+
+    st.info(
+        "Bản online không kèm dữ liệu (dữ liệu ngân hàng không được đưa lên git). "
+        f"Vui lòng upload file **{data_path.name}**; file chỉ được giữ trong phiên làm việc này."
     )
     uploaded = st.file_uploader(
         "Upload file dữ liệu", type=["xlsx"],
@@ -27,4 +31,5 @@ def get_raw_bytes(data_path: Path) -> bytes:
     if uploaded is None:
         st.stop()
 
-    return uploaded.read()
+    st.session_state[cache_key] = uploaded.getvalue()
+    return st.session_state[cache_key]
