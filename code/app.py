@@ -8,6 +8,16 @@ st.set_page_config(
 )
 
 st.title("📊 Hệ thống Dự báo Nhóm Nợ")
+
+from config.config import DATA_RAW  # noqa: E402
+
+if DATA_RAW.parent.name == "sample":
+    st.info(
+        "Bản online dùng **dữ liệu mẫu ẩn danh**: một phần khách hàng được lấy mẫu, "
+        "tên/mã khách hàng, số hợp đồng, số khế ước, mã chi nhánh đã thay bằng mã giả "
+        "và số tiền đã được làm nhiễu ±10%. Kết quả trên app chỉ để minh hoạ, "
+        "không trùng với số liệu của luận văn."
+    )
 st.markdown(
     "Ứng dụng trí tuệ nhân tạo (Machine Learning) giúp ngân hàng "
     "**tự động dự báo khả năng chuyển nhóm nợ** của từng khách hàng vay — "

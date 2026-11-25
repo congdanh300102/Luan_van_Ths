@@ -1,3 +1,4 @@
+import sys
 import unicodedata
 from pathlib import Path
 
@@ -22,8 +23,13 @@ def _resolve_raw(filename: str) -> Path:
     if direct.exists():
         return direct
     if not raw_dir.is_dir():
-        # Streamlit Cloud: data/raw không có trong git (dữ liệu ngân hàng) →
-        # trả đường dẫn dự kiến; src/data_loader.py sẽ hiện ô upload.
+        # Streamlit Cloud: data/raw không có trong git (dữ liệu ngân hàng).
+        # CHỈ app Streamlit được dùng bộ mẫu ẩn danh data/sample/ (sinh bởi
+        # src/make_demo_sample.py); script nghiên cứu không bao giờ tự rơi
+        # sang dữ liệu mẫu mà báo lỗi FileNotFoundError như bình thường.
+        sample = ROOT_DIR / "data" / "sample" / filename
+        if "streamlit" in sys.modules and sample.exists():
+            return sample
         return direct
     target_nfc = unicodedata.normalize("NFC", filename)
     for p in raw_dir.iterdir():

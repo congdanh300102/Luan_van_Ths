@@ -13,6 +13,9 @@ def get_raw_bytes(data_path: Path) -> bytes:
     - Nếu không → hiện file uploader (Streamlit Cloud không có file)
     """
     if data_path.exists():
+        if data_path.parent.name == "sample":
+            st.caption("ℹ️ Đang dùng **dữ liệu mẫu ẩn danh** (data/sample/): chỉ để minh hoạ, "
+                       "số liệu không trùng với luận văn.")
         return data_path.read_bytes()
 
     # Giữ file đã upload trong phiên làm việc → chỉ cần upload một lần cho mọi trang.
